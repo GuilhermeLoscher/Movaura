@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import errno
+import logging
 import uuid
 import shutil
 from datetime import datetime, timezone
@@ -22,6 +23,9 @@ from core.json_store import read_json_object, write_json_atomic
 from core.runtime_paths import data_root
 
 
+logger = logging.getLogger(__name__)
+
+
 class GenerationStorage:
     def __init__(self, root: Path | None = None) -> None:
         self.root = root or data_root() / "ai_generation"
@@ -30,6 +34,7 @@ class GenerationStorage:
         self.cleanup_warnings: list[str] = []
         self.save_image = lambda image, path: image.save(str(path), "PNG")
         self.replace_file = lambda temporary, final: temporary.replace(final)
+        self.unlink_file = lambda path: path.unlink(missing_ok=True)
         try:
             self.final_root.mkdir(parents=True, exist_ok=True)
         except PermissionError as exc:
@@ -92,8 +97,19 @@ class GenerationStorage:
             metadata=dict(result.metadata),
         )
 
-    def remove_result(self, result: GenerationResult) -> None:
-        self._remove_paths([image.path for image in result.images])
+    def remove_result(self, result: GenerationResult) -> list[str]:
+        """Best-effort rollback for generated final images.
+
+        Only files inside the managed AI results root can be removed. All
+        failures are collected and returned so the worker can preserve the
+        original error while still reporting rollback details.
+        """
+        warnings: list[str] = []
+        for image in result.images:
+            warning = self._remove_managed_path(image.path)
+            if warning:
+                warnings.append(warning)
+        return warnings
 
     def cleanup_job_dir(self, path: Path | None) -> None:
         if path and path.exists():
@@ -102,11 +118,13 @@ class GenerationStorage:
                 shutil.rmtree(path)
             except OSError as exc:
                 self._record_cleanup_warning(path, exc)
+                logger.warning("Could not clean AI generation temp directory %s: %s", path, exc)
             try:
                 parent.rmdir()
             except OSError as exc:
                 if parent.exists() and not any(parent.iterdir()):
                     self._record_cleanup_warning(parent, exc)
+                    logger.warning("Could not remove empty AI temp parent %s: %s", parent, exc)
 
     def _available_path(self, request: GenerationRequest, seed: int, index: int) -> Path:
         stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -179,12 +197,31 @@ class GenerationStorage:
             except OSError as exc:
                 self._record_cleanup_warning(temporary, exc)
 
-    def _remove_paths(self, paths: list[Path]) -> None:
+    def _remove_paths(self, paths: list[Path]) -> list[str]:
+        warnings: list[str] = []
         for path in paths:
-            try:
-                path.unlink(missing_ok=True)
-            except OSError as exc:
-                self._record_cleanup_warning(path, exc)
+            warning = self._remove_path(path)
+            if warning:
+                warnings.append(warning)
+        return warnings
+
+    def _remove_managed_path(self, path: Path) -> str | None:
+        if not is_inside_path(path, self.final_root):
+            message = f"rollback skipped outside AI results root: {path}"
+            self.cleanup_warnings.append(message)
+            logger.warning(message)
+            return message
+        return self._remove_path(path)
+
+    def _remove_path(self, path: Path) -> str | None:
+        try:
+            self.unlink_file(path)
+            return None
+        except OSError as exc:
+            warning = f"{path}: {exc}"
+            self.cleanup_warnings.append(warning)
+            logger.warning("Could not remove AI generated file %s: %s", path, exc)
+            return warning
 
     @staticmethod
     def _storage_error(message: str, exc: OSError) -> GenerationError:
@@ -210,9 +247,15 @@ class GenerationStorage:
 class GenerationHistoryStore:
     MAX_ITEMS = 120
 
-    def __init__(self, path: Path | None = None, results_root: Path | None = None) -> None:
+    def __init__(
+        self,
+        path: Path | None = None,
+        results_root: Path | None = None,
+        persistent_data_root: Path | None = None,
+    ) -> None:
         self.path = path or data_root() / "ai_generation" / "history.json"
         self.results_root = results_root or data_root() / "ai_generation" / "results"
+        self.persistent_data_root = persistent_data_root or data_root()
         self.cleanup_warnings: list[str] = []
 
     def items(self) -> list[GenerationHistoryItem]:
@@ -313,18 +356,27 @@ class GenerationHistoryStore:
             Path(raw_path).unlink(missing_ok=True)
         except OSError as exc:
             self.cleanup_warnings.append(f"{raw_path}: {exc}")
+            logger.warning("Could not delete orphan AI history image %s: %s", raw_path, exc)
 
     def _persistent_path_strings(self) -> list[str]:
         paths: list[str] = []
         for filename in ("library.json", "playlists.json", "settings.json"):
-            data = read_json_object(data_root() / filename) or {}
+            data = read_json_object(self.persistent_data_root / filename) or {}
             self._collect_path_strings(data, paths)
         return paths
 
     def _collect_path_strings(self, value: object, paths: list[str]) -> None:
         if isinstance(value, dict):
             for key, current in value.items():
-                if key in {"path", "media_path", "file", "source"} and isinstance(current, str):
+                if key in {
+                    "path",
+                    "media_path",
+                    "file",
+                    "source",
+                    "current_wallpaper",
+                    "active_wallpaper",
+                    "applied_wallpaper",
+                } and isinstance(current, str):
                     paths.append(current)
                 self._collect_path_strings(current, paths)
         elif isinstance(value, list):

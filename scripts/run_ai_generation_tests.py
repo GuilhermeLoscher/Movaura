@@ -4,6 +4,7 @@ import shutil
 import sys
 import tempfile
 import errno
+import time
 from pathlib import Path
 from threading import Event
 
@@ -21,6 +22,49 @@ from core.ai_generation.storage import GenerationHistoryStore, GenerationStorage
 from core.json_store import write_json_atomic
 from core.playlist_manager import PlaylistEntry, PlaylistManager
 from core.wallpaper_library import WallpaperLibrary
+
+
+class FailingHistoryStore(GenerationHistoryStore):
+    def __init__(
+        self,
+        path: Path,
+        results_root: Path,
+        persistent_data_root: Path,
+        fail_result: bool = False,
+        fail_failure: bool = False,
+    ) -> None:
+        super().__init__(path, results_root, persistent_data_root)
+        self.fail_result = fail_result
+        self.fail_failure = fail_failure
+
+    def add_result(self, result: GenerationResult, message: str = "Concluido", protected_paths: set[str] | None = None):
+        if self.fail_result:
+            raise PermissionError(errno.EACCES, "history result denied")
+        return super().add_result(result, message, protected_paths)
+
+    def add_failure(self, request: GenerationRequest, message: str, protected_paths: set[str] | None = None):
+        if self.fail_failure:
+            raise PermissionError(errno.EACCES, "history failure denied")
+        return super().add_failure(request, message, protected_paths)
+
+
+class UnexpectedFailureProvider(MockImageGenerationProvider):
+    def generate(self, request, output_dir: Path, progress, should_cancel):
+        output_dir.mkdir(parents=True, exist_ok=True)
+        raise RuntimeError("unexpected provider failure")
+
+
+class SlowCancelableProvider(MockImageGenerationProvider):
+    def __init__(self, release_delay: float = 0.35) -> None:
+        self.release_delay = release_delay
+
+    def generate(self, request, output_dir: Path, progress, should_cancel):
+        output_dir.mkdir(parents=True, exist_ok=True)
+        progress(10, "Provider lento iniciado.")
+        while not should_cancel():
+            time.sleep(0.01)
+        time.sleep(self.release_delay)
+        raise GenerationError(GenerationErrorCode.CANCELLED, "Geracao cancelada.")
 
 
 def make_request(simulate_error: str = "", quantity: int = 2, seed: int | None = 1234) -> GenerationRequest:
@@ -70,6 +114,30 @@ def wait_until(condition, timeout_ms: int = 5000) -> bool:
     loop.exec()
     app.processEvents()
     return bool(condition())
+
+
+def run_queue_job(
+    provider,
+    storage: GenerationStorage,
+    history: GenerationHistoryStore,
+    request: GenerationRequest,
+    timeout_ms: int = 5000,
+) -> tuple[GenerationQueue, dict[str, list[object]]]:
+    queue = GenerationQueue(provider, storage, history)
+    signals: dict[str, list[object]] = {"completed": [], "failed": [], "cancelled": [], "states": []}
+    queue.completed.connect(lambda result: signals["completed"].append(result))
+    queue.failed.connect(lambda error: signals["failed"].append(error))
+    queue.cancelled.connect(lambda message: signals["cancelled"].append(message))
+    queue.state_changed.connect(lambda state, message: signals["states"].append((state, message)))
+    assert queue.start(request), "queue job did not start"
+    assert wait_until(lambda: terminal_count(signals) == 1 and not queue.is_running, timeout_ms), signals
+    assert terminal_count(signals) == 1, f"expected one terminal signal, got {signals}"
+    assert queue.thread is None and queue.worker is None, "queue references were not released"
+    return queue, signals
+
+
+def terminal_count(signals: dict[str, list[object]]) -> int:
+    return len(signals["completed"]) + len(signals["failed"]) + len(signals["cancelled"])
 
 
 def test_provider_and_storage(temp: Path) -> None:
@@ -216,10 +284,163 @@ def test_generation_queue_shutdown_timeout_keeps_refs(temp: Path) -> None:
     assert queue.thread is fake_thread, "timed-out shutdown discarded thread reference"
 
 
+def test_add_result_failure_add_failure_works_qthread(temp: Path) -> None:
+    provider = MockImageGenerationProvider()
+    storage = GenerationStorage(temp / "result-fail-storage")
+    history = FailingHistoryStore(temp / "result-fail-history.json", storage.final_root, temp, fail_result=True)
+    queue, signals = run_queue_job(provider, storage, history, make_request(quantity=1, seed=101))
+    assert not signals["completed"] and signals["failed"] and not signals["cancelled"]
+    assert len(history.items()) == 1 and history.items()[0].status == "failed", "failure history was not recorded"
+    assert not list(storage.final_root.glob("*.png")), "final image was not rolled back"
+    assert_no_temp_left(storage)
+    assert queue.shutdown(), "shutdown after handled failure should return true"
+
+
+def test_add_result_failure_add_failure_failure_qthread(temp: Path) -> None:
+    provider = MockImageGenerationProvider()
+    storage = GenerationStorage(temp / "double-history-fail-storage")
+    history = FailingHistoryStore(
+        temp / "double-history-fail.json",
+        storage.final_root,
+        temp,
+        fail_result=True,
+        fail_failure=True,
+    )
+    queue, signals = run_queue_job(provider, storage, history, make_request(quantity=1, seed=102))
+    assert not signals["completed"] and len(signals["failed"]) == 1 and not signals["cancelled"]
+    error = signals["failed"][0]
+    assert isinstance(error, GenerationError)
+    assert "history.add_result failed" in error.technical_message
+    assert "history.add_failure failed" in error.technical_message
+    assert not history.items(), "failed add_failure should not create history entries"
+    assert not list(storage.final_root.glob("*.png")), "final image was not rolled back"
+    assert_no_temp_left(storage)
+    assert queue.start(make_request(quantity=1, seed=103)), "queue did not accept a new job after failed history"
+    assert wait_until(lambda: not queue.is_running), "follow-up job did not finish"
+    assert queue.shutdown(), "shutdown after double history failure should return true"
+
+
+def test_add_result_failure_rollback_failure_add_failure_works_qthread(temp: Path) -> None:
+    provider = MockImageGenerationProvider()
+    storage = GenerationStorage(temp / "rollback-fail-storage")
+    history = FailingHistoryStore(temp / "rollback-fail-history.json", storage.final_root, temp, fail_result=True)
+    original_unlink = storage.unlink_file
+
+    def fail_one(path: Path) -> None:
+        if path.name.endswith("-2.png"):
+            raise PermissionError(errno.EACCES, "rollback denied")
+        original_unlink(path)
+
+    storage.unlink_file = fail_one
+    queue, signals = run_queue_job(provider, storage, history, make_request(quantity=2, seed=104))
+    assert not signals["completed"] and len(signals["failed"]) == 1 and not signals["cancelled"]
+    error = signals["failed"][0]
+    assert isinstance(error, GenerationError)
+    assert "history.add_result failed" in error.technical_message
+    assert "rollback warnings" in error.technical_message
+    assert storage.cleanup_warnings, "rollback warning was not recorded"
+    remaining = list(storage.final_root.glob("*.png"))
+    assert len(remaining) == 1 and remaining[0].name.endswith("-2.png"), "rollback failure was not explicit"
+    assert len(history.items()) == 1 and history.items()[0].status == "failed", "failure was not recorded"
+    assert_no_temp_left(storage)
+    storage.unlink_file = original_unlink
+    storage.remove_result(GenerationResult("mock", make_request(quantity=1), [GenerationImage(remaining[0], 1, 1, 1, "")]))
+
+
+def test_add_result_failure_rollback_failure_add_failure_failure_qthread(temp: Path) -> None:
+    provider = MockImageGenerationProvider()
+    storage = GenerationStorage(temp / "all-secondary-fail-storage")
+    history = FailingHistoryStore(
+        temp / "all-secondary-fail-history.json",
+        storage.final_root,
+        temp,
+        fail_result=True,
+        fail_failure=True,
+    )
+    original_unlink = storage.unlink_file
+
+    def fail_one(path: Path) -> None:
+        if path.name.endswith("-2.png"):
+            raise PermissionError(errno.EACCES, "rollback denied")
+        original_unlink(path)
+
+    storage.unlink_file = fail_one
+    queue, signals = run_queue_job(provider, storage, history, make_request(quantity=2, seed=105))
+    assert not signals["completed"] and len(signals["failed"]) == 1 and not signals["cancelled"]
+    error = signals["failed"][0]
+    assert isinstance(error, GenerationError)
+    assert "history.add_result failed" in error.technical_message
+    assert "rollback warnings" in error.technical_message
+    assert "history.add_failure failed" in error.technical_message
+    assert queue.thread is None and queue.worker is None
+    assert queue.shutdown(), "shutdown should work after all secondary failure paths"
+    storage.unlink_file = original_unlink
+    for path in storage.final_root.glob("*.png"):
+        path.unlink(missing_ok=True)
+    assert_no_temp_left(storage)
+
+
+def test_unexpected_provider_failure_add_failure_failure_qthread(temp: Path) -> None:
+    provider = UnexpectedFailureProvider()
+    storage = GenerationStorage(temp / "unexpected-storage")
+    history = FailingHistoryStore(temp / "unexpected-history.json", storage.final_root, temp, fail_failure=True)
+    _queue, signals = run_queue_job(provider, storage, history, make_request(quantity=1, seed=106))
+    assert not signals["completed"] and len(signals["failed"]) == 1 and not signals["cancelled"]
+    error = signals["failed"][0]
+    assert isinstance(error, GenerationError)
+    assert error.code == GenerationErrorCode.UNKNOWN
+    assert "unexpected provider failure" in error.technical_message
+    assert "history.add_failure failed" in error.technical_message
+    assert_no_temp_left(storage)
+
+
+def test_cancellation_with_failure_history_unavailable_qthread(temp: Path) -> None:
+    provider = MockImageGenerationProvider()
+    storage = GenerationStorage(temp / "cancel-history-unavailable-storage")
+    history = FailingHistoryStore(temp / "cancel-history-unavailable.json", storage.final_root, temp, fail_failure=True)
+    queue = GenerationQueue(provider, storage, history)
+    signals: dict[str, list[object]] = {"completed": [], "failed": [], "cancelled": [], "states": []}
+    queue.completed.connect(lambda result: signals["completed"].append(result))
+    queue.failed.connect(lambda error: signals["failed"].append(error))
+    queue.cancelled.connect(lambda message: signals["cancelled"].append(message))
+    queue.state_changed.connect(lambda state, message: signals["states"].append((state, message)))
+    assert queue.start(make_request(quantity=1, seed=107)), "cancel job did not start"
+    queue.cancel()
+    assert wait_until(lambda: terminal_count(signals) == 1 and not queue.is_running), signals
+    assert not signals["completed"] and not signals["failed"] and len(signals["cancelled"]) == 1
+    assert not history.items(), "cancelled job should not write failure history"
+    assert_no_temp_left(storage)
+
+
+def test_normal_success_single_terminal_qthread(temp: Path) -> None:
+    provider = MockImageGenerationProvider()
+    storage = GenerationStorage(temp / "success-storage")
+    history = GenerationHistoryStore(temp / "success-history.json", storage.final_root, temp)
+    _queue, signals = run_queue_job(provider, storage, history, make_request(quantity=1, seed=108))
+    assert len(signals["completed"]) == 1 and not signals["failed"] and not signals["cancelled"]
+    assert len(history.items()) == 1 and history.items()[0].status == "completed"
+    final_images = list(storage.final_root.glob("*.png"))
+    assert len(final_images) == 1 and not QImage(str(final_images[0])).isNull(), "success final image invalid"
+    assert_no_temp_left(storage)
+
+
+def test_real_shutdown_with_slow_thread(temp: Path) -> None:
+    provider = SlowCancelableProvider(release_delay=0.35)
+    storage = GenerationStorage(temp / "slow-shutdown-storage")
+    history = GenerationHistoryStore(temp / "slow-shutdown-history.json", storage.final_root, temp)
+    queue = GenerationQueue(provider, storage, history)
+    assert queue.start(make_request(quantity=1, seed=109)), "slow job did not start"
+    assert wait_until(lambda: queue.is_running, 1000), "slow thread did not start"
+    assert not queue.shutdown(timeout_ms=20, second_timeout_ms=0), "short shutdown timeout should fail"
+    assert queue.thread is not None, "short shutdown discarded thread reference"
+    assert queue.shutdown(timeout_ms=1000, second_timeout_ms=500), "shutdown after provider release should succeed"
+    assert queue.thread is None and queue.worker is None
+
+
 def test_history_delete_preserves_library(temp: Path) -> None:
     provider = MockImageGenerationProvider()
     storage = GenerationStorage(temp / "history-storage")
-    history = GenerationHistoryStore(temp / "history-delete.json")
+    history = GenerationHistoryStore(temp / "history-delete.json", storage.final_root, temp)
     job_dir = storage.job_dir()
     result = storage.post_process(provider.generate(make_request(quantity=1), job_dir, lambda *_: None, lambda: False))
     storage.cleanup_job_dir(job_dir)
@@ -232,7 +453,7 @@ def test_history_delete_preserves_library(temp: Path) -> None:
 
 def test_history_retention_deletes_only_safe_orphans(temp: Path) -> None:
     storage = GenerationStorage(temp / "retention-storage")
-    history = GenerationHistoryStore(temp / "retention.json", storage.final_root)
+    history = GenerationHistoryStore(temp / "retention.json", storage.final_root, temp)
     protected_outside = temp / "outside.png"
     protected_outside.write_bytes(b"outside")
     old_inside = storage.final_root / "old-inside.png"
@@ -254,6 +475,23 @@ def test_history_retention_deletes_only_safe_orphans(temp: Path) -> None:
     assert len(history.items()) == 120, "history retention limit was not enforced"
     assert not old_inside.exists(), "unreferenced AI result inside root was not cleaned"
     assert protected_outside.exists(), "protected outside path was deleted"
+
+
+def test_history_persistent_data_root_isolated(temp: Path) -> None:
+    storage = GenerationStorage(temp / "isolated-storage")
+    protected = storage.final_root / "protected.png"
+    removable = storage.final_root / "removable.png"
+    protected.parent.mkdir(parents=True, exist_ok=True)
+    protected.write_bytes(b"protected")
+    removable.write_bytes(b"removable")
+    write_json_atomic(temp / "settings.json", {"media_path": str(protected)})
+    history = GenerationHistoryStore(temp / "isolated-history.json", storage.final_root, temp)
+    request = make_request(quantity=1)
+    history.add_result(GenerationResult("mock", request, [GenerationImage(protected, 1, 1, 1, "")]))
+    removed_item = history.add_result(GenerationResult("mock", request, [GenerationImage(removable, 1, 1, 2, "")]))
+    assert history.delete_item(removed_item.id), "history delete failed"
+    assert protected.exists(), "persistent settings path was not protected"
+    assert not removable.exists(), "unprotected AI result was not removed"
 
 
 def test_storage_failure_mapping_and_rollbacks(temp: Path) -> None:
@@ -336,8 +574,17 @@ def main() -> int:
         test_generation_queue_qthread_lifecycle(temp)
         test_generation_queue_cancel_and_shutdown(temp)
         test_generation_queue_shutdown_timeout_keeps_refs(temp)
+        test_add_result_failure_add_failure_works_qthread(temp)
+        test_add_result_failure_add_failure_failure_qthread(temp)
+        test_add_result_failure_rollback_failure_add_failure_works_qthread(temp)
+        test_add_result_failure_rollback_failure_add_failure_failure_qthread(temp)
+        test_unexpected_provider_failure_add_failure_failure_qthread(temp)
+        test_cancellation_with_failure_history_unavailable_qthread(temp)
+        test_normal_success_single_terminal_qthread(temp)
+        test_real_shutdown_with_slow_thread(temp)
         test_history_delete_preserves_library(temp)
         test_history_retention_deletes_only_safe_orphans(temp)
+        test_history_persistent_data_root_isolated(temp)
         test_storage_failure_mapping_and_rollbacks(temp)
         test_library_favorites_and_playlist(temp)
         print("ai_generation_tests=ok")

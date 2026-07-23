@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from threading import Event
 
@@ -8,6 +9,9 @@ from PyQt6.QtCore import QObject, QThread, pyqtSignal
 from core.ai_generation.models import GenerationError, GenerationErrorCode, GenerationRequest, GenerationResult, GenerationState
 from core.ai_generation.providers import ImageGenerationProvider
 from core.ai_generation.storage import GenerationHistoryStore, GenerationStorage
+
+
+logger = logging.getLogger(__name__)
 
 
 class GenerationWorker(QObject):
@@ -37,6 +41,7 @@ class GenerationWorker(QObject):
 
     def run(self) -> None:
         output_dir: Path | None = None
+        terminal_emitted = False
         try:
             self.state_changed.emit(GenerationState.ENHANCING_PROMPT.value, "Preparando prompt...")
             self.progress.emit(4, "Prompt pronto.")
@@ -52,33 +57,73 @@ class GenerationWorker(QObject):
             try:
                 self.history.add_result(final_result)
             except Exception as exc:
-                self.storage.remove_result(final_result)
+                logger.exception("Nao foi possivel registrar sucesso da geracao no historico.")
+                rollback_warnings = self.storage.remove_result(final_result)
+                technical = [f"history.add_result failed: {type(exc).__name__}: {exc}"]
+                if rollback_warnings:
+                    technical.append("rollback warnings: " + " | ".join(rollback_warnings))
                 raise GenerationError(
                     GenerationErrorCode.SAVE_FAILED,
                     "Nao foi possivel salvar o historico da geracao.",
-                    f"{type(exc).__name__}: {exc}",
+                    " ; ".join(technical),
                 ) from exc
             self.state_changed.emit(GenerationState.COMPLETED.value, "Wallpaper gerado.")
             self.completed.emit(final_result)
+            terminal_emitted = True
         except GenerationError as exc:
             if exc.code == GenerationErrorCode.CANCELLED:
                 self.state_changed.emit(GenerationState.CANCELLED.value, exc.user_message)
                 self.cancelled.emit(exc.user_message)
+                terminal_emitted = True
             else:
-                self.history.add_failure(self.request, exc.user_message)
+                exc = self._with_failure_history_attempt(exc)
                 self.state_changed.emit(GenerationState.FAILED.value, exc.user_message)
                 self.failed.emit(exc)
+                terminal_emitted = True
         except Exception as exc:
             error = GenerationError(
                 GenerationErrorCode.UNKNOWN,
                 "Nao foi possivel gerar o wallpaper.",
                 f"{type(exc).__name__}: {exc}",
             )
-            self.history.add_failure(self.request, error.user_message)
+            error = self._with_failure_history_attempt(error)
             self.state_changed.emit(GenerationState.FAILED.value, error.user_message)
             self.failed.emit(error)
+            terminal_emitted = True
         finally:
-            self.storage.cleanup_job_dir(output_dir)
+            try:
+                self.storage.cleanup_job_dir(output_dir)
+            except Exception as exc:
+                logger.exception("Nao foi possivel limpar temporarios da geracao de IA.")
+                if not terminal_emitted:
+                    fallback = GenerationError(
+                        GenerationErrorCode.SAVE_FAILED,
+                        "Nao foi possivel finalizar a geracao.",
+                        f"cleanup_job_dir failed: {type(exc).__name__}: {exc}",
+                    )
+                    self.state_changed.emit(GenerationState.FAILED.value, fallback.user_message)
+                    self.failed.emit(fallback)
+                    terminal_emitted = True
+            if not terminal_emitted:
+                fallback = GenerationError(
+                    GenerationErrorCode.UNKNOWN,
+                    "Nao foi possivel finalizar a geracao.",
+                    "Worker exited without a terminal signal.",
+                )
+                logger.error("AI generation worker exited without terminal signal.")
+                self.state_changed.emit(GenerationState.FAILED.value, fallback.user_message)
+                self.failed.emit(fallback)
+
+    def _with_failure_history_attempt(self, error: GenerationError) -> GenerationError:
+        try:
+            self.history.add_failure(self.request, error.user_message)
+            return error
+        except Exception as history_exc:
+            logger.exception("Nao foi possivel registrar a falha da geracao no historico.")
+            technical = error.technical_message
+            suffix = f"history.add_failure failed: {type(history_exc).__name__}: {history_exc}"
+            technical = f"{technical} ; {suffix}" if technical else suffix
+            return GenerationError(error.code, error.user_message, technical)
 
 
 class GenerationQueue(QObject):
@@ -103,6 +148,7 @@ class GenerationQueue(QObject):
         self.worker: GenerationWorker | None = None
         self.cancel_event: Event | None = None
         self._shutting_down = False
+        self._finishing = False
 
     @property
     def is_running(self) -> bool:
@@ -136,12 +182,14 @@ class GenerationQueue(QObject):
             GenerationState.FAILED.value,
             "A geracao ainda esta encerrando. Aguarde alguns segundos antes de fechar o Movaura.",
         )
+        logger.warning("AI generation thread exceeded shutdown timeout of %s ms.", timeout_ms)
         if second_timeout_ms > 0 and self._wait_for_thread(second_timeout_ms):
             self._clear_refs()
             return True
         return False
 
     def _start_now(self, request: GenerationRequest) -> None:
+        self._finishing = False
         self.cancel_event = Event()
         self.thread = QThread()
         self.worker = GenerationWorker(self.provider, self.storage, self.history, request, self.cancel_event)
@@ -163,9 +211,13 @@ class GenerationQueue(QObject):
         self.thread.start()
 
     def _finish(self, *_args: object) -> None:
+        if self._finishing:
+            return
+        self._finishing = True
         if self._wait_for_thread(3000):
             self._clear_refs()
             return
+        logger.warning("AI generation thread did not finish after terminal signal.")
         self.state_changed.emit(
             GenerationState.FAILED.value,
             "A thread de geracao nao encerrou dentro do tempo esperado.",
@@ -183,3 +235,4 @@ class GenerationQueue(QObject):
         self.worker = None
         self.thread = None
         self.cancel_event = None
+        self._finishing = False

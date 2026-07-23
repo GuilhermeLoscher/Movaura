@@ -28,6 +28,8 @@ class UpdateChecker:
                 False,
                 "Nenhum servidor de atualizacao foi configurado nesta versao.",
             )
+        if not self._safe_manifest_url(manifest_url):
+            return UpdateResult(False, "O servidor de atualizacao deve usar HTTPS.")
         request = urllib.request.Request(
             manifest_url,
             headers={"User-Agent": f"Movaura/{APP_VERSION}"},
@@ -42,7 +44,7 @@ class UpdateChecker:
         sha256 = str(data.get("sha256", "")).strip().upper()
         if (
             not version
-            or urlparse(download_url).scheme not in {"http", "https"}
+            or not self._safe_download_url(download_url)
             or not re.fullmatch(r"[0-9A-F]{64}", sha256)
         ):
             return UpdateResult(False, "O manifesto de atualizacao e invalido.")
@@ -59,6 +61,8 @@ class UpdateChecker:
     def download(self, result: UpdateResult) -> Path:
         if not result.available or not result.download_url:
             raise ValueError("Nenhuma atualização válida para baixar.")
+        if not self._safe_download_url(result.download_url):
+            raise ValueError("O link de atualizacao deve usar HTTPS.")
         suffix = Path(urlparse(result.download_url).path).suffix or ".exe"
         target_dir = data_root() / "updates"
         target_dir.mkdir(parents=True, exist_ok=True)
@@ -73,6 +77,16 @@ class UpdateChecker:
             target.unlink(missing_ok=True)
             raise ValueError("O instalador baixado não passou na verificação SHA-256.")
         return target
+
+
+    @staticmethod
+    def _safe_manifest_url(url: str) -> bool:
+        scheme = urlparse(url).scheme.lower()
+        return scheme in {"https", "file"}
+
+    @staticmethod
+    def _safe_download_url(url: str) -> bool:
+        return urlparse(url).scheme.lower() == "https"
 
     @staticmethod
     def verify_file(path: Path, expected_sha256: str) -> bool:

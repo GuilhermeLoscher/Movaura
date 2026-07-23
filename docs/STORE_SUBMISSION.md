@@ -5,8 +5,9 @@
 - Standalone gerado em `dist/standalone/Movaura`.
 - MSIX nao assinado gerado em `release/msix/Movaura-0.9.0.0.msix`.
 - Validacao estrutural por `makeappx unpack`: aprovada.
-- Windows App Certification Kit encontrado, mas a execucao local exigiu elevacao administrativa.
-- Assinatura digital ainda precisa usar os dados/certificado reais do Partner Center.
+- Windows App Certification Kit executado em 23 de julho de 2026 com `OVERALL_RESULT="PASS"`.
+- O WACK pode listar um `FAIL` opcional em "Executaveis bloqueados" por referencias de criacao de processo em Python, Qt e FFmpeg; no relatorio local ele aparece com `OPTIONAL="TRUE"` e nao altera o resultado geral PASS.
+- Assinatura digital ainda precisa usar os dados/certificado reais do Partner Center antes da instalacao/distribuicao final.
 
 ## Descricao curta sugerida
 
@@ -21,6 +22,8 @@ O app inclui monitoramento de desempenho, perfis Leve/Recomendado/Maxima qualida
 ## Aviso funcional para certificacao
 
 O Movaura usa compositor nativo e APIs de desktop do Windows para apresentar wallpapers animados. Em algumas configuracoes do Windows 11, o app usa uma janela/composicao segura e isolada quando o host de area de trabalho do Explorer nao permite renderizacao direta abaixo dos icones. O usuario pode pausar, parar ou restaurar o wallpaper pelo painel principal.
+
+O pacote MSIX declara somente a capability restrita `runFullTrust`, necessaria para executar o app Win32 empacotado e seus auxiliares nativos. Essa capability deve ser justificada nas notas do Partner Center como requisito tecnico para o compositor de wallpaper local.
 
 ## Politica de privacidade base
 
@@ -40,7 +43,8 @@ Para distribuicao comercial, usar somente build FFmpeg compativel com LGPL, sem 
 
 1. Assinar `release/msix/Movaura-0.9.0.0.msix` com `scripts/sign_msix.ps1` e certificado real.
 2. Instalar o MSIX assinado em uma maquina limpa.
-3. Rodar Windows App Certification Kit como administrador.
-4. Testar aplicar, pausar, parar, importar video/imagem/GIF e abrir biblioteca.
-5. Capturar screenshots finais da aba Inicio, Biblioteca, Criar com IA, Desempenho e wallpaper aplicado.
-6. Conferir identidade `PackageName`, `Publisher`, `PublisherDisplayName` e versao com os dados reservados no Partner Center.
+3. Rodar Windows App Certification Kit como administrador e confirmar `OVERALL_RESULT="PASS"` no pacote assinado final.
+4. Registrar nas notas de certificacao qualquer resultado opcional do WACK, especialmente "Executaveis bloqueados" opcional causado por runtime Python/Qt/FFmpeg.
+5. Testar aplicar, pausar, parar, importar video/imagem/GIF e abrir biblioteca.
+6. Capturar screenshots finais da aba Inicio, Biblioteca, Criar com IA, Desempenho e wallpaper aplicado.
+7. Conferir identidade `PackageName`, `Publisher`, `PublisherDisplayName` e versao com os dados reservados no Partner Center.

@@ -141,18 +141,30 @@ def test_update_checker() -> None:
         )
         result = UpdateChecker().check(manifest.as_uri())
         assert not result.available
+        manifest.write_text(
+            json.dumps(
+                {
+                    "version": "99.0.0",
+                    "download_url": "http://example.com/Movaura-Setup.exe",
+                    "sha256": "B" * 64,
+                }
+            ),
+            encoding="utf-8",
+        )
+        result = UpdateChecker().check(manifest.as_uri())
+        assert not result.available
+        result = UpdateChecker().check("http://example.com/update.json")
+        assert not result.available
         installer = Path(temp) / "Movaura-Setup.exe"
         installer.write_bytes(b"installer")
         digest = __import__("hashlib").sha256(installer.read_bytes()).hexdigest().upper()
-        update = UpdateResult(
-            True,
-            "ok",
-            "99.0.1",
-            installer.as_uri(),
-            digest,
-        )
-        downloaded = UpdateChecker().download(update)
-        assert downloaded.is_file()
+        update = UpdateResult(True, "ok", "99.0.1", installer.as_uri(), digest)
+        try:
+            UpdateChecker().download(update)
+        except ValueError as exc:
+            assert "HTTPS" in str(exc)
+        else:
+            raise AssertionError("insecure update download should be blocked")
 
 
 def test_startup_command() -> None:

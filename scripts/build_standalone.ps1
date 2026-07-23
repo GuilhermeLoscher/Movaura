@@ -8,6 +8,7 @@ $root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $dist = Join-Path $root "dist\standalone"
 $work = Join-Path $root "build\pyinstaller"
 $reports = Join-Path $root "release\reports"
+$dataWork = Join-Path $root "build\pyinstaller-data"
 $report = Join-Path $reports "standalone-validation.txt"
 
 function Resolve-BuildPython {
@@ -59,7 +60,7 @@ Invoke-Checked "product smoke tests" {
 }
 Invoke-Checked "self-test dev" { & $python app.py --self-test }
 
-foreach ($path in @($dist, $work)) {
+foreach ($path in @($dist, $work, $dataWork)) {
     $resolved = [System.IO.Path]::GetFullPath($path)
     if (-not $resolved.StartsWith($root + [System.IO.Path]::DirectorySeparatorChar)) {
         throw "Diretorio de build invalido: $resolved"
@@ -85,6 +86,25 @@ foreach ($path in @($nativeCompositor, $nativeHost, $nativeProbe, $plugins, $wal
     }
 }
 
+$stagedPlugins = Join-Path $dataWork "plugins"
+New-Item -ItemType Directory -Path $stagedPlugins -Force | Out-Null
+Get-ChildItem -LiteralPath $plugins -Recurse -File |
+    Where-Object {
+        $_.FullName -notmatch "[\\/]__pycache__[\\/]" -and
+        $_.Extension.ToLowerInvariant() -notin @(".pyc", ".pyo")
+    } |
+    ForEach-Object {
+        $pluginRoot = [System.IO.Path]::GetFullPath($plugins).TrimEnd("\", "/") + [System.IO.Path]::DirectorySeparatorChar
+        $sourcePath = [System.IO.Path]::GetFullPath($_.FullName)
+        if (-not $sourcePath.StartsWith($pluginRoot, [System.StringComparison]::OrdinalIgnoreCase)) {
+            throw "Arquivo de plugin fora da raiz esperada: $sourcePath"
+        }
+        $relative = $sourcePath.Substring($pluginRoot.Length)
+        $target = Join-Path $stagedPlugins $relative
+        New-Item -ItemType Directory -Path (Split-Path $target -Parent) -Force | Out-Null
+        Copy-Item -LiteralPath $_.FullName -Destination $target -Force
+    }
+
 $pyinstallerArgs = @(
     "-m", "PyInstaller",
     "--noconfirm",
@@ -100,7 +120,7 @@ $pyinstallerArgs = @(
     "--add-binary", "$nativeCompositor;native_compositor_app\bin",
     "--add-binary", "$nativeHost;native_host\bin",
     "--add-binary", "$nativeProbe;native_host_app\bin",
-    "--add-data", "$plugins;plugins",
+    "--add-data", "$stagedPlugins;plugins",
     "--add-data", "$assets;assets",
     "--add-data", "$catalogManifest;data"
 )
@@ -128,6 +148,7 @@ if (Test-Path -LiteralPath (Join-Path $tools "ffmpeg\bin\ffmpeg.exe")) {
 }
 $pyinstallerArgs += (Join-Path $root "app.py")
 
+"Plugins staged without caches: $stagedPlugins" | Add-Content -LiteralPath $report -Encoding UTF8
 Invoke-Checked "PyInstaller" { & $python @pyinstallerArgs }
 
 $applicationRoot = Join-Path $dist "Movaura"
@@ -164,3 +185,4 @@ $item = Get-Item -LiteralPath $application
 "Validation: ok" | Add-Content -LiteralPath $report -Encoding UTF8
 $item | Select-Object FullName, Length, LastWriteTime
 Write-Host "Relatorio: $report"
+

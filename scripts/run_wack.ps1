@@ -23,6 +23,11 @@ if ([string]::IsNullOrWhiteSpace($PackagePath)) {
     $PackagePath = $candidate.FullName
 }
 
+if (-not (Test-Path -LiteralPath $PackagePath)) {
+    throw "MSIX nao encontrado: $PackagePath"
+}
+$PackagePath = (Resolve-Path -LiteralPath $PackagePath).Path
+
 if ([string]::IsNullOrWhiteSpace($ReportPath)) {
     $reports = Join-Path $root "release\certification"
     New-Item -ItemType Directory -Path $reports -Force | Out-Null
@@ -30,6 +35,8 @@ if ([string]::IsNullOrWhiteSpace($ReportPath)) {
 }
 
 Write-Host "Rodando Windows App Certification Kit em: $PackagePath"
+$resetArgs = @("/c", "`"$appcert`" reset")
+& cmd.exe @resetArgs
 $arguments = @(
     "/c",
     "`"$appcert`" test -appxpackagepath `"$PackagePath`" -reportoutputpath `"$ReportPath`""

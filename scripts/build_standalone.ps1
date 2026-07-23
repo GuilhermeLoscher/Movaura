@@ -53,7 +53,7 @@ New-Item -ItemType Directory -Path $reports -Force | Out-Null
 "Python: $python" | Add-Content -LiteralPath $report -Encoding UTF8
 
 Invoke-Checked "compileall" { & $python -m compileall -q app.py core renderers ui plugins scripts }
-Invoke-Checked "Qt binding source residue check" { & $python scripts\check_no_pyqt_artifacts.py app.py core renderers ui plugins scripts requirements.txt README.md LEIA-ME-PRIMEIRO.txt native_host\README.md .github }
+Invoke-Checked "Qt binding source residue check" { & $python scripts\check_no_pyqt_artifacts.py app.py core renderers ui plugins scripts requirements.txt requirements-build.txt README.md LEIA-ME-PRIMEIRO.txt native_host\README.md .github --report-base release\reports\qt-binding-audit }
 Invoke-Checked "product smoke tests" {
     $env:QT_QPA_PLATFORM = "offscreen"
     $env:PYTHONDONTWRITEBYTECODE = "1"
@@ -136,6 +136,7 @@ if (Test-Path -LiteralPath (Join-Path $tools "ffmpeg\bin\ffmpeg.exe")) {
     if ($ffmpegConfig -match "--enable-gpl" -or $ffmpegConfig -match "--enable-nonfree" -or $ffmpegConfig -notmatch "--disable-libx264" -or $ffmpegConfig -notmatch "--disable-libx265") {
         throw "FFmpeg comercial bloqueado: o build em tools\ffmpeg parece GPL/nonfree."
     }
+    Invoke-Checked "FFmpeg audit" { & $python scripts\audit_ffmpeg.py --root tools\ffmpeg --report-base release\reports\ffmpeg-audit }
     $pyinstallerArgs += @("--add-data", "$(Join-Path $ffmpegRoot 'bin');tools\ffmpeg\bin")
     foreach ($licenseFile in @("LICENSE.txt", "README.txt")) {
         $licensePath = Join-Path $ffmpegRoot $licenseFile
@@ -161,6 +162,7 @@ if (-not (Test-Path -LiteralPath $application)) {
 Copy-Item -LiteralPath $wallpapers -Destination $applicationRoot -Recurse -Force
 Invoke-ExeChecked "self-test standalone" $application @("--self-test")
 Invoke-Checked "Qt binding standalone artifact check" { & $python scripts\check_no_pyqt_artifacts.py --artifact $applicationRoot }
+Invoke-Checked "standalone inventory and hashes" { & $python scripts\generate_artifact_reports.py $applicationRoot --name standalone --reports release\reports }
 
 $copyWithSpacesRoot = Join-Path $root "build\Path With Spaces\Movaura"
 if (Test-Path -LiteralPath $copyWithSpacesRoot) {

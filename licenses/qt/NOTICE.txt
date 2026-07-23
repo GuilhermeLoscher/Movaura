@@ -1,0 +1,8 @@
+Qt
+Version: 6.10.0 bundled through PySide6 wheels
+License: LGPL-3.0-only / GPL-3.0-only / commercial, module-dependent
+Homepage: https://www.qt.io/licensing
+Source / documentation: https://doc.qt.io/qt-6/licensing.html
+Usage in Movaura: Qt runtime DLLs and plugins redistributed dynamically.
+
+Compliance note: this notice is provided for redistribution review. It is not legal advice and should be reviewed before commercial publication.

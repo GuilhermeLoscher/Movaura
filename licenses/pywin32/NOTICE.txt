@@ -1,0 +1,8 @@
+pywin32
+Version: 311
+License: PSF-style / BSD-style open-source license
+Homepage: https://github.com/mhammond/pywin32
+Source / documentation: https://github.com/mhammond/pywin32
+Usage in Movaura: Windows API bindings used by desktop integration.
+
+Compliance note: this notice is provided for redistribution review. It is not legal advice and should be reviewed before commercial publication.

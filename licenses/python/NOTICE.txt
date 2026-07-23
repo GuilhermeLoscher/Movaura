@@ -1,0 +1,8 @@
+Python
+Version: 3.12.x embedded by PyInstaller
+License: Python Software Foundation License
+Homepage: https://www.python.org/psf/license/
+Source / documentation: https://docs.python.org/3/license.html
+Usage in Movaura: Python runtime bundled by PyInstaller.
+
+Compliance note: this notice is provided for redistribution review. It is not legal advice and should be reviewed before commercial publication.

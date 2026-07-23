@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from pathlib import Path
 
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon, QPixmap
 from PyQt6.QtWidgets import (
+    QApplication,
     QCheckBox,
     QComboBox,
     QFormLayout,
@@ -18,6 +20,7 @@ from PyQt6.QtWidgets import (
     QPlainTextEdit,
     QProgressBar,
     QPushButton,
+    QInputDialog,
     QScrollArea,
     QSizePolicy,
     QSplitter,
@@ -31,6 +34,7 @@ from core.ai_generation.prompting import QUALITY_LABELS, RESOLUTIONS, STYLES, en
 from core.ai_generation.providers import MockImageGenerationProvider
 from core.ai_generation.queue import GenerationQueue
 from core.ai_generation.storage import GenerationHistoryStore, GenerationStorage
+from core.playlist_manager import PlaylistEntry, PlaylistManager
 from core.settings import MovauraSettings
 from core.wallpaper_library import WallpaperItem, WallpaperLibrary
 
@@ -56,9 +60,11 @@ class AIGenerationPage(QWidget):
         self.history = GenerationHistoryStore()
         self.provider = MockImageGenerationProvider()
         self.queue = GenerationQueue(self.provider, self.storage, self.history, self)
+        self.playlists = PlaylistManager()
         self.current_result: GenerationResult | None = None
         self.selected_image: GenerationImage | None = None
         self.last_saved_library_path: Path | None = None
+        self.selected_history_item = None
         self.result_buttons: list[QPushButton] = []
         self._build_ui()
         self._connect_signals()
@@ -114,6 +120,8 @@ class AIGenerationPage(QWidget):
         self.resolution_combo = QComboBox()
         for label, value in RESOLUTIONS.items():
             self.resolution_combo.addItem(label, value)
+        self.resolution_combo.addItem("Usar resolucao do monitor", "monitor")
+        self.resolution_combo.addItem("Personalizada", "custom")
         self.quality_combo = QComboBox()
         for value, label in QUALITY_LABELS.items():
             self.quality_combo.addItem(label, value)
@@ -122,6 +130,12 @@ class AIGenerationPage(QWidget):
         self.seed_spin = QSpinBox()
         self.seed_spin.setRange(0, 999999999)
         self.seed_spin.setSpecialValueText("Automatico")
+        self.custom_width_spin = QSpinBox()
+        self.custom_width_spin.setRange(320, 7680)
+        self.custom_width_spin.setValue(1920)
+        self.custom_height_spin = QSpinBox()
+        self.custom_height_spin.setRange(240, 4320)
+        self.custom_height_spin.setValue(1080)
         self.enhance_checkbox = QCheckBox("Melhorar prompt automaticamente")
         self.enhance_checkbox.setChecked(True)
         for widget in (
@@ -130,6 +144,8 @@ class AIGenerationPage(QWidget):
             self.quality_combo,
             self.quantity_spin,
             self.seed_spin,
+            self.custom_width_spin,
+            self.custom_height_spin,
         ):
             self._polish_input(widget)
         form.addRow("Estilo", self.style_combo)
@@ -168,6 +184,8 @@ class AIGenerationPage(QWidget):
         self._polish_input(self.simulate_error_combo)
         advanced_layout.addRow("Prompt negativo", self.negative_edit)
         advanced_layout.addRow("Seed", self.seed_spin)
+        advanced_layout.addRow("Largura personalizada", self.custom_width_spin)
+        advanced_layout.addRow("Altura personalizada", self.custom_height_spin)
         advanced_layout.addRow("Simular erro", self.simulate_error_combo)
         self.advanced_body.setVisible(False)
         left.addWidget(advanced)
@@ -193,24 +211,30 @@ class AIGenerationPage(QWidget):
 
         action_grid = QGridLayout()
         self.generate_button = QPushButton("Gerar wallpaper")
+        self.variation_button = QPushButton("Criar variacao")
         self.cancel_button = QPushButton("Cancelar")
         self.clear_button = QPushButton("Limpar resultado")
         self.preview_button = QPushButton("Pre-visualizar")
         self.apply_button = QPushButton("Aplicar")
         self.save_button = QPushButton("Salvar na biblioteca")
         self.favorite_button = QPushButton("Favoritar")
+        self.playlist_button = QPushButton("Adicionar a playlist")
         self.open_library_button = QPushButton("Abrir biblioteca")
+        self.delete_history_button = QPushButton("Excluir historico")
         self.stop_wallpaper_button = QPushButton("Parar/restaurar")
         for index, button in enumerate(
             (
                 self.generate_button,
+                self.variation_button,
                 self.cancel_button,
                 self.clear_button,
                 self.preview_button,
                 self.apply_button,
                 self.save_button,
                 self.favorite_button,
+                self.playlist_button,
                 self.open_library_button,
+                self.delete_history_button,
                 self.stop_wallpaper_button,
             )
         ):
@@ -261,20 +285,25 @@ class AIGenerationPage(QWidget):
 
     def _connect_signals(self) -> None:
         self.generate_button.clicked.connect(self._generate)
+        self.variation_button.clicked.connect(self._generate_variation)
         self.cancel_button.clicked.connect(self.queue.cancel)
         self.clear_button.clicked.connect(self._clear_current_result)
         self.preview_button.clicked.connect(self._preview_selected)
         self.apply_button.clicked.connect(self._apply_selected)
         self.save_button.clicked.connect(self._save_selected_to_library)
         self.favorite_button.clicked.connect(self._favorite_selected)
+        self.playlist_button.clicked.connect(self._add_selected_to_playlist)
         self.open_library_button.clicked.connect(self._open_library)
+        self.delete_history_button.clicked.connect(self._delete_selected_history)
         self.stop_wallpaper_button.clicked.connect(self.stop_requested.emit)
         self.advanced_group.toggled.connect(self.advanced_body.setVisible)
         self.history_group.toggled.connect(self.history_body.setVisible)
         self.prompt_edit.textChanged.connect(self._refresh_enhanced_prompt)
         self.negative_edit.textChanged.connect(self._refresh_enhanced_prompt)
         self.style_combo.currentIndexChanged.connect(self._refresh_enhanced_prompt)
+        self.resolution_combo.currentIndexChanged.connect(self._refresh_enhanced_prompt)
         self.enhance_checkbox.toggled.connect(self._refresh_enhanced_prompt)
+        self.history_list.itemClicked.connect(self._history_item_clicked)
         self.queue.progress.connect(self._progress_changed)
         self.queue.state_changed.connect(self._state_changed)
         self.queue.completed.connect(self._generation_completed)
@@ -295,7 +324,7 @@ class AIGenerationPage(QWidget):
         style = style_by_id(style_id)
         negative = self.negative_edit.toPlainText().strip()
         enhanced = enhance_prompt(prompt, style_id, negative) if self.enhance_checkbox.isChecked() else prompt
-        resolution = self.resolution_combo.currentData() or (1920, 1080)
+        resolution = self._selected_resolution()
         quality = str(self.quality_combo.currentData() or "recommended")
         seed = self.seed_spin.value() or None
         return GenerationRequest(
@@ -312,11 +341,52 @@ class AIGenerationPage(QWidget):
             simulate_error=str(self.simulate_error_combo.currentData() or ""),
         )
 
+    def _selected_resolution(self) -> tuple[int, int]:
+        value = self.resolution_combo.currentData()
+        if value == "monitor":
+            screen = QApplication.primaryScreen()
+            if screen:
+                size = screen.size()
+                return max(320, int(size.width())), max(240, int(size.height()))
+            return (1920, 1080)
+        if value == "custom":
+            return (self.custom_width_spin.value(), self.custom_height_spin.value())
+        return (int(value[0]), int(value[1])) if isinstance(value, tuple) else (1920, 1080)
+
     def _generate(self) -> None:
         request = self._request_from_form()
         if not request.prompt:
             QMessageBox.information(self, "Criar com IA", "Descreva o wallpaper antes de gerar.")
             return
+        self._start_generation(request)
+
+    def _generate_variation(self) -> None:
+        if self.selected_history_item:
+            self._load_history_item(self.selected_history_item)
+        request = self._request_from_form()
+        if not request.prompt:
+            QMessageBox.information(self, "Criar variacao", "Selecione um item do historico ou descreva o wallpaper.")
+            return
+        seed = self._new_variation_seed(request.seed)
+        self.seed_spin.setValue(seed)
+        varied = GenerationRequest(
+            prompt=request.prompt,
+            enhanced_prompt=request.enhanced_prompt,
+            negative_prompt=request.negative_prompt,
+            style_id=request.style_id,
+            style_name=request.style_name,
+            resolution=request.resolution,
+            quantity=request.quantity,
+            quality=request.quality,
+            seed=seed,
+            provider_id=request.provider_id,
+            simulate_error=request.simulate_error,
+            source_image=str(self.selected_image.path) if self.selected_image else "",
+            metadata=dict(request.metadata),
+        )
+        self._start_generation(varied)
+
+    def _start_generation(self, request: GenerationRequest) -> None:
         self.settings.data.update(
             {
                 "ai_generation_provider": request.provider_id,
@@ -330,11 +400,18 @@ class AIGenerationPage(QWidget):
         self.settings.save()
         self.current_result = None
         self.selected_image = None
+        self.last_saved_library_path = None
         self._clear_results()
         self.progress.setValue(0)
         if not self.queue.start(request):
             self.status_label.setText("Ja existe uma geracao em andamento.")
         self._refresh_actions()
+
+    @staticmethod
+    def _new_variation_seed(current: int | None) -> int:
+        base = current or 0
+        tick = int(datetime.now(timezone.utc).timestamp() * 1000) % 1_000_000_000
+        return (base + tick + 104729) % 1_000_000_000 or 1
 
     def _progress_changed(self, value: int, message: str) -> None:
         self.progress.setValue(value)
@@ -428,22 +505,57 @@ class AIGenerationPage(QWidget):
             self.start_requested.emit()
 
     def _save_selected_to_library(self) -> None:
-        if not self.selected_image:
-            return
-        imported = self.library.import_files([self.selected_image.path])
-        if imported:
-            self.library.update_details(imported[0], ["ia", "movaura", "mock"], "Criados com IA", "leve")
-            self.last_saved_library_path = imported[0].path
-            self.wallpaper_selected.emit(imported[0])
+        item = self._persist_selected_to_library()
+        if item:
+            self.wallpaper_selected.emit(item)
             self.status_label.setText("Wallpaper salvo na biblioteca.")
             self.status_changed.emit("Wallpaper salvo na biblioteca.")
             self._refresh_history()
 
+    def _persist_selected_to_library(self) -> WallpaperItem | None:
+        if not self.selected_image:
+            return
+        existing = self._library_item_for_path(self.selected_image.path)
+        if existing:
+            self.last_saved_library_path = existing.path
+            return existing
+        imported = self.library.import_files([self.selected_image.path])
+        if imported:
+            self.library.update_details(imported[0], ["ia", "movaura", "mock"], "Criados com IA", "leve")
+            self.last_saved_library_path = imported[0].path
+            return imported[0]
+        QMessageBox.warning(self, "Criar com IA", "Nao foi possivel salvar o wallpaper na biblioteca.")
+        return None
+
     def _favorite_selected(self) -> None:
-        item = self._selected_as_library_item()
+        item = self._library_item_for_path(self.last_saved_library_path or Path())
         if item:
             self.library.toggle_favorite(item)
             self.status_label.setText("Favorito atualizado.")
+            return
+        QMessageBox.information(self, "Favoritar", "Salve o wallpaper na biblioteca antes de favoritar.")
+
+    def _add_selected_to_playlist(self) -> None:
+        item = self._persist_selected_to_library()
+        if not item:
+            return
+        names = self.playlists.names()
+        active = self.settings.get_str("active_playlist") or "default"
+        name, ok = QInputDialog.getItem(
+            self,
+            "Adicionar a playlist",
+            "Playlist",
+            names,
+            max(0, names.index(active)) if active in names else 0,
+            False,
+        )
+        if not ok or not name:
+            return
+        entries = self.playlists.entries(name)
+        if not any(Path(entry.path) == item.path for entry in entries):
+            entries.append(PlaylistEntry(str(item.path), 60))
+            self.playlists.save(name, entries)
+        self.status_label.setText(f"Wallpaper adicionado a playlist {name}.")
 
     def _open_library(self) -> None:
         self.library_requested.emit(self.last_saved_library_path)
@@ -463,24 +575,105 @@ class AIGenerationPage(QWidget):
             resource_class="leve",
         )
 
+    def _library_item_for_path(self, path: Path) -> WallpaperItem | None:
+        if not path:
+            return None
+        try:
+            target = path.resolve()
+        except OSError:
+            target = path
+        for item in self.library.items():
+            try:
+                current = item.path.resolve()
+            except OSError:
+                current = item.path
+            if current == target:
+                return item
+        return None
+
     def _refresh_history(self) -> None:
         self.history_list.clear()
         for item in self.history.items()[:30]:
-            text = f"{item.created_at[:19].replace('T', ' ')} | {item.style_name} | {item.status}\n{item.prompt[:120]}"
+            seed = f" | seed {item.seed}" if item.seed is not None else ""
+            text = f"{item.created_at[:19].replace('T', ' ')} | {item.style_name} | {item.status}{seed}\n{item.prompt[:120]}"
             list_item = QListWidgetItem(text)
             list_item.setData(Qt.ItemDataRole.UserRole, item)
             self.history_list.addItem(list_item)
 
+    def _history_item_clicked(self, list_item: QListWidgetItem) -> None:
+        item = list_item.data(Qt.ItemDataRole.UserRole)
+        if item:
+            self.selected_history_item = item
+            self._load_history_item(item)
+
+    def _load_history_item(self, item) -> None:
+        self.prompt_edit.setPlainText(item.prompt)
+        self.negative_edit.setPlainText(getattr(item, "negative_prompt", "") or "")
+        self._set_combo_data(self.style_combo, item.style_id)
+        self._set_combo_data(self.quality_combo, item.quality)
+        self._set_resolution_from_history(item.resolution)
+        self.seed_spin.setValue(int(item.seed or 0))
+        images = [
+            GenerationImage(
+                path=Path(path),
+                width=self._selected_resolution()[0],
+                height=self._selected_resolution()[1],
+                seed=int(item.seed or 0),
+                prompt=item.enhanced_prompt or item.prompt,
+                metadata={"history_id": item.id},
+            )
+            for path in item.images
+            if Path(path).is_file()
+        ]
+        if images:
+            self.current_result = GenerationResult(item.provider_id, self._request_from_form(), images)
+            self.selected_image = images[0]
+            self._show_results(images)
+        self.status_label.setText("Historico carregado. Voce pode aplicar, salvar ou criar variacao.")
+        self._refresh_actions()
+
+    def _delete_selected_history(self) -> None:
+        list_item = self.history_list.currentItem()
+        if not list_item:
+            QMessageBox.information(self, "Historico", "Selecione um item do historico para excluir.")
+            return
+        item = list_item.data(Qt.ItemDataRole.UserRole)
+        protected = {str(library_item.path) for library_item in self.library.items()}
+        if self.history.delete_item(item.id, protected):
+            if self.selected_history_item and self.selected_history_item.id == item.id:
+                self.selected_history_item = None
+            self._refresh_history()
+            self.status_label.setText("Item do historico excluido.")
+
+    def _set_resolution_from_history(self, value: str) -> None:
+        for index in range(self.resolution_combo.count()):
+            data = self.resolution_combo.itemData(index)
+            if isinstance(data, tuple) and value == f"{data[0]}x{data[1]}":
+                self.resolution_combo.setCurrentIndex(index)
+                return
+        if "x" in value:
+            try:
+                width, height = [int(part) for part in value.lower().split("x", 1)]
+            except ValueError:
+                return
+            self.custom_width_spin.setValue(width)
+            self.custom_height_spin.setValue(height)
+            self._set_combo_data(self.resolution_combo, "custom")
+
     def _refresh_actions(self) -> None:
         running = self.queue.is_running
         has_selection = self.selected_image is not None
+        has_history_selection = self.history_list.currentItem() is not None
         self.generate_button.setEnabled(not running)
+        self.variation_button.setEnabled((has_selection or self.selected_history_item is not None) and not running)
         self.cancel_button.setEnabled(running)
         self.clear_button.setEnabled(has_selection and not running)
         self.preview_button.setEnabled(has_selection and not running)
         self.apply_button.setEnabled(has_selection and not running)
         self.save_button.setEnabled(has_selection and not running)
         self.favorite_button.setEnabled(has_selection and not running)
+        self.playlist_button.setEnabled(has_selection and not running)
+        self.delete_history_button.setEnabled(has_history_selection and not running)
 
     def _refresh_enhanced_prompt(self) -> None:
         request = self._request_from_form()
@@ -499,3 +692,6 @@ class AIGenerationPage(QWidget):
             if combo.itemText(index) == text:
                 combo.setCurrentIndex(index)
                 return
+
+    def shutdown(self) -> None:
+        self.queue.shutdown()

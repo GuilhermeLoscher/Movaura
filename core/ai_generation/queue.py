@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from collections import deque
 from pathlib import Path
+from threading import Event
 
 from PyQt6.QtCore import QObject, QThread, pyqtSignal
 
@@ -22,25 +24,27 @@ class GenerationWorker(QObject):
         storage: GenerationStorage,
         history: GenerationHistoryStore,
         request: GenerationRequest,
+        cancel_event: Event,
     ) -> None:
         super().__init__()
         self.provider = provider
         self.storage = storage
         self.history = history
         self.request = request
-        self._cancelled = False
+        self.cancel_event = cancel_event
 
     def cancel(self) -> None:
-        self._cancelled = True
+        self.cancel_event.set()
 
     def run(self) -> None:
+        output_dir: Path | None = None
         try:
             self.state_changed.emit(GenerationState.ENHANCING_PROMPT.value, "Preparando prompt...")
             self.progress.emit(4, "Prompt pronto.")
-            output_dir: Path = self.storage.job_dir()
+            output_dir = self.storage.job_dir()
             self.state_changed.emit(GenerationState.GENERATING.value, "Gerando wallpaper...")
-            result = self.provider.generate(self.request, output_dir, self.progress.emit, lambda: self._cancelled)
-            if self._cancelled:
+            result = self.provider.generate(self.request, output_dir, self.progress.emit, self.cancel_event.is_set)
+            if self.cancel_event.is_set():
                 raise GenerationError(GenerationErrorCode.CANCELLED, "Geracao cancelada.")
             self.state_changed.emit(GenerationState.POST_PROCESSING.value, "Finalizando imagem...")
             final_result = self.storage.post_process(result)
@@ -66,6 +70,8 @@ class GenerationWorker(QObject):
             self.history.add_failure(self.request, error.user_message)
             self.state_changed.emit(GenerationState.FAILED.value, error.user_message)
             self.failed.emit(error)
+        finally:
+            self.storage.cleanup_job_dir(output_dir)
 
 
 class GenerationQueue(QObject):
@@ -88,16 +94,46 @@ class GenerationQueue(QObject):
         self.history = history
         self.thread: QThread | None = None
         self.worker: GenerationWorker | None = None
+        self.cancel_event: Event | None = None
+        self._pending: deque[GenerationRequest] = deque()
+        self._shutting_down = False
 
     @property
     def is_running(self) -> bool:
         return self.thread is not None and self.thread.isRunning()
 
     def start(self, request: GenerationRequest) -> bool:
-        if self.is_running:
+        if self._shutting_down:
             return False
+        if self.is_running:
+            self._pending.append(request)
+            self.state_changed.emit(GenerationState.QUEUED.value, "Geracao adicionada a fila.")
+            return True
+        self._start_now(request)
+        return True
+
+    def cancel(self) -> None:
+        if self.cancel_event:
+            self.cancel_event.set()
+        if self.worker:
+            self.worker.cancel()
+        self._pending.clear()
+
+    def shutdown(self, timeout_ms: int = 5000) -> None:
+        self._shutting_down = True
+        self.cancel()
+        self._wait_for_thread(timeout_ms)
+        if self.worker:
+            self.worker.deleteLater()
+        self.worker = None
+        self.thread = None
+        self.cancel_event = None
+        self._pending.clear()
+
+    def _start_now(self, request: GenerationRequest) -> None:
+        self.cancel_event = Event()
         self.thread = QThread()
-        self.worker = GenerationWorker(self.provider, self.storage, self.history, request)
+        self.worker = GenerationWorker(self.provider, self.storage, self.history, request, self.cancel_event)
         self.worker.moveToThread(self.thread)
         self.thread.started.connect(self.worker.run)
         self.worker.progress.connect(self.progress)
@@ -111,17 +147,18 @@ class GenerationQueue(QObject):
         self.thread.finished.connect(self.thread.deleteLater)
         self.state_changed.emit(GenerationState.QUEUED.value, "Geracao colocada na fila.")
         self.thread.start()
-        return True
-
-    def cancel(self) -> None:
-        if self.worker:
-            self.worker.cancel()
 
     def _finish(self, *_args: object) -> None:
-        if self.thread:
-            self.thread.quit()
-            self.thread.wait(3000)
+        self._wait_for_thread(3000)
         if self.worker:
             self.worker.deleteLater()
         self.worker = None
         self.thread = None
+        self.cancel_event = None
+        if not self._shutting_down and self._pending:
+            self._start_now(self._pending.popleft())
+
+    def _wait_for_thread(self, timeout_ms: int) -> None:
+        if self.thread:
+            self.thread.quit()
+            self.thread.wait(timeout_ms)

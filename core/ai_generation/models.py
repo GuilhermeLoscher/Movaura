@@ -24,6 +24,10 @@ class GenerationErrorCode(str, Enum):
     PROVIDER_UNAVAILABLE = "provider_unavailable"
     EMPTY_RESULT = "empty_result"
     INVALID_IMAGE = "invalid_image"
+    SAVE_FAILED = "save_failed"
+    PERMISSION_DENIED = "permission_denied"
+    DISK_FULL = "disk_full"
+    MALFORMED_METADATA = "malformed_metadata"
     CANCELLED = "cancelled"
     UNKNOWN = "unknown"
 
@@ -103,6 +107,8 @@ class GenerationHistoryItem:
     images: list[str]
     status: str
     message: str = ""
+    negative_prompt: str = ""
+    seed: int | None = None
 
     def to_json(self) -> dict[str, Any]:
         return {
@@ -115,6 +121,8 @@ class GenerationHistoryItem:
             "style_name": self.style_name,
             "resolution": self.resolution,
             "quality": self.quality,
+            "negative_prompt": self.negative_prompt,
+            "seed": self.seed,
             "images": list(self.images),
             "status": self.status,
             "message": self.message,
@@ -135,7 +143,16 @@ class GenerationHistoryItem:
             style_name=str(data.get("style_name", "Cinematico")),
             resolution=str(data.get("resolution", "")),
             quality=str(data.get("quality", "recommended")),
+            negative_prompt=str(data.get("negative_prompt", "")),
+            seed=_optional_int(data.get("seed")),
             images=[str(item) for item in images],
             status=str(data.get("status", "completed")),
             message=str(data.get("message", "")),
         )
+
+
+def _optional_int(value: Any) -> int | None:
+    try:
+        return None if value in (None, "") else int(value)
+    except (TypeError, ValueError):
+        return None

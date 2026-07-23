@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import errno
+import hashlib
 import random
 import time
 from pathlib import Path
@@ -61,21 +63,17 @@ class MockImageGenerationProvider:
         self._simulate_error_if_requested(request.simulate_error, "before")
         quantity = max(1, min(request.quantity, self.capabilities.max_images))
         width, height = request.resolution
-        base_seed = request.seed if request.seed is not None else abs(hash(request.final_prompt)) % 1_000_000
+        base_seed = request.seed if request.seed is not None else self._stable_seed(request)
         images: list[GenerationImage] = []
 
         for index in range(quantity):
-            if should_cancel():
-                raise GenerationError(
-                    GenerationErrorCode.CANCELLED,
-                    "Geracao cancelada.",
-                    "Cancellation requested by user.",
-                )
+            self._raise_if_cancelled(should_cancel, "Cancellation requested by user.")
             percent = int(index / quantity * 70)
             progress(percent, f"Gerando variacao {index + 1} de {quantity}...")
             self._sleep_with_cancel(request.quality, should_cancel)
             seed = base_seed + index * 9973
             path = output_dir / f"movaura-ai-{seed}-{index + 1}.png"
+            self._simulate_error_if_requested(request.simulate_error, "during", path)
             self._render_mock_wallpaper(request, path, width, height, seed)
             if QImage(str(path)).isNull():
                 raise GenerationError(
@@ -113,16 +111,37 @@ class MockImageGenerationProvider:
         duration = {"fast": 0.25, "recommended": 0.45, "max": 0.7}.get(quality, 0.45)
         steps = max(2, int(duration / 0.05))
         for _ in range(steps):
-            if should_cancel():
-                raise GenerationError(
-                    GenerationErrorCode.CANCELLED,
-                    "Geracao cancelada.",
-                    "Cancellation requested while waiting.",
-                )
+            MockImageGenerationProvider._raise_if_cancelled(
+                should_cancel,
+                "Cancellation requested while waiting.",
+            )
             time.sleep(duration / steps)
 
     @staticmethod
-    def _simulate_error_if_requested(value: str, stage: str) -> None:
+    def _raise_if_cancelled(should_cancel: CancelCallback, technical_message: str) -> None:
+        if should_cancel():
+            raise GenerationError(
+                GenerationErrorCode.CANCELLED,
+                "Geracao cancelada.",
+                technical_message,
+            )
+
+    @staticmethod
+    def _stable_seed(request: GenerationRequest) -> int:
+        source = "|".join(
+            [
+                request.final_prompt,
+                request.negative_prompt,
+                request.style_id,
+                f"{request.resolution[0]}x{request.resolution[1]}",
+                request.quality,
+            ]
+        )
+        digest = hashlib.sha256(source.encode("utf-8")).hexdigest()
+        return int(digest[:12], 16) % 1_000_000_000
+
+    @staticmethod
+    def _simulate_error_if_requested(value: str, stage: str, path: Path | None = None) -> None:
         code = value.strip().lower()
         if not code or code == "none":
             return
@@ -136,6 +155,49 @@ class MockImageGenerationProvider:
         if code in mapping and stage == "before":
             error_code, message = mapping[code]
             raise GenerationError(error_code, message, f"Mock simulated error: {code}")
+        if stage == "during" and path:
+            if code == "invalid":
+                path.write_text("isto nao e uma imagem png", encoding="utf-8")
+                raise GenerationError(
+                    GenerationErrorCode.INVALID_IMAGE,
+                    "A imagem retornada falhou na validacao.",
+                    str(path),
+                )
+            if code == "corrupt":
+                path.write_bytes(b"\x89PNG\r\n\x1a\ncorrompido")
+                raise GenerationError(
+                    GenerationErrorCode.INVALID_IMAGE,
+                    "A imagem retornada esta corrompida.",
+                    str(path),
+                )
+            if code == "save_failure":
+                target = path.parent
+                image = QImage(16, 16, QImage.Format.Format_RGB32)
+                image.fill(QColor("#000000"))
+                if not image.save(str(target), "PNG"):
+                    raise GenerationError(
+                        GenerationErrorCode.SAVE_FAILED,
+                        "Nao foi possivel salvar a imagem gerada.",
+                        f"QImage.save returned false for {target}",
+                    )
+            if code == "permission_denied":
+                raise GenerationError(
+                    GenerationErrorCode.PERMISSION_DENIED,
+                    "Sem permissao para gravar a imagem gerada.",
+                    f"{PermissionError(errno.EACCES, 'permission denied', str(path))}",
+                )
+            if code == "disk_full":
+                raise GenerationError(
+                    GenerationErrorCode.DISK_FULL,
+                    "Sem espaco suficiente para salvar a imagem gerada.",
+                    f"{OSError(errno.ENOSPC, 'no space left on device', str(path))}",
+                )
+            if code == "malformed_metadata":
+                raise GenerationError(
+                    GenerationErrorCode.MALFORMED_METADATA,
+                    "O provedor retornou metadados invalidos.",
+                    "Mock metadata payload is malformed.",
+                )
         if code == "invalid" and stage == "after":
             raise GenerationError(
                 GenerationErrorCode.INVALID_IMAGE,
@@ -201,4 +263,24 @@ class MockImageGenerationProvider:
             prompt,
         )
         painter.end()
-        image.save(str(path), "PNG")
+        MockImageGenerationProvider._save_png_atomic(image, path)
+
+    @staticmethod
+    def _save_png_atomic(image: QImage, path: Path) -> None:
+        temporary = path.with_suffix(f"{path.suffix}.tmp")
+        if temporary.exists():
+            temporary.unlink()
+        if not image.save(str(temporary), "PNG"):
+            raise GenerationError(
+                GenerationErrorCode.SAVE_FAILED,
+                "Nao foi possivel salvar a imagem gerada.",
+                f"QImage.save returned false for {temporary}",
+            )
+        if QImage(str(temporary)).isNull():
+            temporary.unlink(missing_ok=True)
+            raise GenerationError(
+                GenerationErrorCode.INVALID_IMAGE,
+                "A imagem gerada nao pode ser validada.",
+                str(temporary),
+            )
+        temporary.replace(path)

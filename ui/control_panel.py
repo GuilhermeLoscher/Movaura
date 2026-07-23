@@ -1184,6 +1184,8 @@ class ControlPanel(QWidget):
         self.status_label.setText(f"Falha ao baixar atualização: {result}")
 
     def _quit(self) -> None:
+        if hasattr(self, "ai_generation_page"):
+            self.ai_generation_page.shutdown()
         self._stop_wallpaper()
         self.settings.save()
         self.app.quit()
@@ -1195,6 +1197,8 @@ class ControlPanel(QWidget):
             self.engine.tray.notify_running_in_background()
             event.ignore()
             return
+        if hasattr(self, "ai_generation_page"):
+            self.ai_generation_page.shutdown()
         self.settings.save()
         self.app.quit()
         super().closeEvent(event)

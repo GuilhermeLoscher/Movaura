@@ -28,6 +28,9 @@ jobs:
       - name: Compile Python sources
         run: python -m compileall -q app.py core renderers ui plugins scripts
 
+      - name: Check text encoding
+        run: python scripts/check_encoding_artifacts.py app.py core renderers ui plugins scripts docs README.md LEIA-ME-PRIMEIRO.txt requirements.txt requirements-build.txt --report release/reports/encoding-audit.txt
+
       - name: Run AI generation tests
         run: python scripts/run_ai_generation_tests.py
 

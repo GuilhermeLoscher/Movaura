@@ -96,6 +96,19 @@ def test_scene_package() -> None:
         import zipfile
         with zipfile.ZipFile(package) as archive:
             assert any(name.startswith("thumbnail") for name in archive.namelist())
+        malicious = root / "malicious.movaura"
+        with zipfile.ZipFile(malicious, "w", zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr("scene.json", "{}")
+            archive.writestr("../escape.txt", "bad")
+        assert not manager.import_scene(malicious).success
+        script_package = root / "script.movaura"
+        with zipfile.ZipFile(script_package, "w", zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr(
+                "scene.json",
+                json.dumps({"format": "movaura-scene", "version": 1, "settings": {}}),
+            )
+            archive.writestr("media/run.ps1", "bad")
+        assert not manager.import_scene(script_package).success
 
 
 def test_validator() -> None:

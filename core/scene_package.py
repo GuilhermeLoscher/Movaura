@@ -15,6 +15,24 @@ from core.thumbnail_cache import thumbnail_digest
 
 SCENE_FORMAT = "movaura-scene"
 SCENE_VERSION = 1
+MAX_PACKAGE_ENTRIES = 64
+MAX_PACKAGE_UNCOMPRESSED_BYTES = 750 * 1024 * 1024
+MAX_MEDIA_BYTES = 650 * 1024 * 1024
+ALLOWED_THUMBNAIL_SUFFIXES = {".bmp", ".jpeg", ".jpg", ".png", ".webp"}
+FORBIDDEN_PACKAGE_SUFFIXES = {
+    ".bat",
+    ".cmd",
+    ".com",
+    ".dll",
+    ".exe",
+    ".js",
+    ".lnk",
+    ".msi",
+    ".ps1",
+    ".pyd",
+    ".scr",
+    ".vbs",
+}
 
 
 @dataclass(frozen=True)
@@ -74,6 +92,9 @@ class ScenePackageManager:
                 names = set(archive.namelist())
                 if "scene.json" not in names:
                     return ScenePackageResult(False, "O pacote não contém uma cena válida.")
+                package_error = self._validate_archive_members(archive)
+                if package_error:
+                    return ScenePackageResult(False, package_error)
                 if any(self._unsafe_name(name) for name in names):
                     return ScenePackageResult(False, "O pacote contém caminhos inválidos.")
                 scene = json.loads(archive.read("scene.json").decode("utf-8"))
@@ -86,6 +107,11 @@ class ScenePackageManager:
                 if media_name:
                     if media_name not in names or self._unsafe_name(media_name):
                         return ScenePackageResult(False, "A mídia declarada não foi encontrada no pacote.")
+                    info = archive.getinfo(media_name)
+                    if info.file_size > MAX_MEDIA_BYTES:
+                        return ScenePackageResult(False, "A midia do pacote e grande demais.")
+                    if not WallpaperLibrary.kind_for_path(Path(media_name)):
+                        return ScenePackageResult(False, "A midia do pacote nao e compativel.")
                     destination.mkdir(parents=True, exist_ok=True)
                     archive.extract(media_name, destination)
                     settings["media_path"] = str(destination / media_name)
@@ -106,7 +132,32 @@ class ScenePackageManager:
     @staticmethod
     def _unsafe_name(name: str) -> bool:
         path = Path(name)
-        return path.is_absolute() or ".." in path.parts
+        return path.is_absolute() or ".." in path.parts or "\\" in name
+
+    @staticmethod
+    def _validate_archive_members(archive: zipfile.ZipFile) -> str:
+        infos = archive.infolist()
+        if len(infos) > MAX_PACKAGE_ENTRIES:
+            return "O pacote contem arquivos demais."
+        total_size = sum(item.file_size for item in infos)
+        if total_size > MAX_PACKAGE_UNCOMPRESSED_BYTES:
+            return "O pacote e grande demais para importar com seguranca."
+        for item in infos:
+            name = item.filename
+            if ScenePackageManager._unsafe_name(name):
+                return "O pacote contem caminhos invalidos."
+            path = Path(name)
+            suffix = path.suffix.lower()
+            if suffix in FORBIDDEN_PACKAGE_SUFFIXES:
+                return "O pacote contem arquivos executaveis ou scripts."
+            if name == "scene.json":
+                continue
+            if name.startswith("media/") and WallpaperLibrary.kind_for_path(path):
+                continue
+            if path.name.startswith("thumbnail") and suffix in ALLOWED_THUMBNAIL_SUFFIXES:
+                continue
+            return "O pacote contem arquivos nao permitidos."
+        return ""
 
     @staticmethod
     def _thumbnail_for(media_path: Path) -> Path | None:

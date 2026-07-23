@@ -53,6 +53,7 @@ New-Item -ItemType Directory -Path $reports -Force | Out-Null
 "Python: $python" | Add-Content -LiteralPath $report -Encoding UTF8
 
 Invoke-Checked "compileall" { & $python -m compileall -q app.py core renderers ui plugins scripts }
+Invoke-Checked "encoding audit" { & $python scripts\check_encoding_artifacts.py app.py core renderers ui plugins scripts docs README.md LEIA-ME-PRIMEIRO.txt requirements.txt requirements-build.txt --report release\reports\encoding-audit.txt }
 Invoke-Checked "Qt binding source residue check" { & $python scripts\check_no_pyqt_artifacts.py app.py core renderers ui plugins scripts requirements.txt requirements-build.txt README.md LEIA-ME-PRIMEIRO.txt native_host\README.md .github --report-base release\reports\qt-binding-audit }
 Invoke-Checked "product smoke tests" {
     $env:QT_QPA_PLATFORM = "offscreen"

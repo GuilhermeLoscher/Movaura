@@ -19,10 +19,19 @@ The AI lifecycle test intentionally prints simulated provider/history/rollback f
 ai_generation_tests=ok
 ```
 
+## Build and package validation executed locally
+
+- `scripts/build_standalone.ps1 -PythonExe C:\NovaWall\.build-venv\Scripts\python.exe`: PASS
+- Standalone self-test from `dist\standalone\Movaura\Movaura.exe`: PASS
+- Standalone path-with-spaces self-test: PASS
+- `scripts/build_msix_package.ps1 -StandalonePath dist\standalone\Movaura -PythonExe C:\NovaWall\.build-venv\Scripts\python.exe`: PASS
+- `scripts/validate_msix_layout.py`: PASS, 300 files validated
+- Final MSIX SHA-256: `0E8E821E7533A4C1D40D8E29ECB3CA14063F0BE4775E95C5C9D5930A49CC8330`
+- `scripts/run_wack.ps1 -PackagePath release\msix\Movaura-0.9.0.0.msix`: PASS overall, 1 optional warning documented in `docs/WACK_FINAL_REPORT.md`
+
 ## Pending
 
 - GitHub Actions CI run after push.
-- Fresh standalone rebuild after all audit changes.
-- Fresh MSIX rebuild after all audit changes.
-- Fresh WACK on the final regenerated MSIX.
 - Human manual test checklist.
+- Partner Center real identity build/signing.
+- Professional legal review for final commercial distribution.

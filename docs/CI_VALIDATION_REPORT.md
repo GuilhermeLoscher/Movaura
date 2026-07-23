@@ -67,6 +67,8 @@ Expected reports:
 
 ## Current status
 
-Local workflow edits are prepared. GitHub-hosted CI result is not yet known until the branch is pushed and the workflow runs.
+Local workflow edits are prepared. Local standalone/MSIX/WACK validation passed after the final audit changes.
 
-Status: `READY FOR CI REVIEW`, not Store-ready.
+GitHub-hosted CI result is not yet known until the branch is pushed and the workflow runs.
+
+Status: `READY FOR PARTNER CENTER IDENTITY`, not Store-ready.

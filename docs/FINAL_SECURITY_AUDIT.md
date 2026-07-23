@@ -1,6 +1,6 @@
 # Final security audit
 
-Status: `READY FOR CI REVIEW`
+Status: `READY FOR PARTNER CENTER IDENTITY`
 
 ## Findings
 
@@ -14,6 +14,7 @@ Status: `READY FOR CI REVIEW`
 | Supabase anon key/service role | Medium | No secret found in source scan | `docs/FINAL_AUDIT_BASELINE.md` |
 | Update checker downloads installers | Medium | Existing SHA-256 verification present | `core/update_checker.py` |
 | Logs may contain technical paths | Low | Accepted for local support logs | Privacy policy documents local diagnostics. |
+| Final WACK optional warning | Low | Documented | `docs/WACK_FINAL_REPORT.md` records the optional blocked-executable warning. |
 
 ## Notes
 
@@ -25,6 +26,5 @@ Status: `READY FOR CI REVIEW`
 ## Required next steps
 
 - Run CI on GitHub after push.
-- Run WACK after final regenerated MSIX.
 - Complete manual test checklist.
 - Complete legal review for FFmpeg/Qt/PySide6.

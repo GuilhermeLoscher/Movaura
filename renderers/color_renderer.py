@@ -1,5 +1,5 @@
-from PyQt6.QtGui import QColor, QPainter
-from PyQt6.QtWidgets import QWidget
+from PySide6.QtGui import QColor, QPainter
+from PySide6.QtWidgets import QWidget
 
 from renderers.base import RendererContext
 

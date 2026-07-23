@@ -4,7 +4,7 @@ import ctypes
 from ctypes import wintypes
 from dataclasses import dataclass
 
-from PyQt6.QtCore import QRect
+from PySide6.QtCore import QRect
 
 
 MONITORINFOF_PRIMARY = 0x00000001

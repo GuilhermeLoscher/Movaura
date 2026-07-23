@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from PyQt6.QtCore import QUrl, Qt
-from PyQt6.QtMultimedia import QAudioOutput, QMediaPlayer
-from PyQt6.QtMultimediaWidgets import QVideoWidget
+from PySide6.QtCore import QUrl, Qt
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
+from PySide6.QtMultimediaWidgets import QVideoWidget
 
 from renderers.base import RendererContext
 

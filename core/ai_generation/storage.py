@@ -7,8 +7,8 @@ import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QImage
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QImage
 
 from core.ai_generation.models import (
     GenerationError,

@@ -191,7 +191,7 @@ versão comercial em novas combinações de Windows e GPU.
 - Catálogo online conectável por manifesto JSON e telemetria opcional desativada por padrão.
 
 Movaura é uma base profissional para wallpapers no Windows 11, construída
-com Python, PyQt6, Win32 e um compositor nativo em C++.
+com Python, PySide6, Win32 e um compositor nativo em C++.
 
 ## Estado da versão
 
@@ -215,7 +215,7 @@ Para uso normal:
 2. Conclua o assistente de instalação.
 3. Abra `Movaura` pelo menu Iniciar ou pelo atalho opcional da área de trabalho.
 
-O instalador inclui Python, PyQt6 e os componentes nativos necessários. Não é
+O instalador inclui Python, PySide6 e os componentes nativos necessários. Não é
 necessário instalar Python separadamente. No painel:
 
 1. Escolha o modo.
@@ -250,7 +250,7 @@ ou clique duas vezes no ícone para restaurar a janela.
 
 ## Recursos concluídos
 
-- Painel PyQt6 em português.
+- Painel PySide6 em português.
 - Papel de parede estático seguro com cor ou imagem.
 - Restauração do wallpaper anterior e da posição da imagem.
 - Renderização nativa de vídeo MP4/WebM, GIF, imagem, cor e efeito pulsante.

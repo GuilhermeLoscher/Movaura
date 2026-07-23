@@ -9,8 +9,8 @@ import uuid
 from pathlib import Path
 from typing import Callable, Protocol
 
-from PyQt6.QtCore import QRectF, Qt
-from PyQt6.QtGui import QColor, QFont, QImage, QLinearGradient, QPainter, QPen
+from PySide6.QtCore import QRectF, Qt
+from PySide6.QtGui import QColor, QFont, QImage, QLinearGradient, QPainter, QPen
 
 from core.ai_generation.models import (
     GenerationError,

@@ -4,7 +4,7 @@ import ctypes
 from ctypes import wintypes
 from collections.abc import Callable
 
-from PyQt6.QtCore import QObject, QTimer
+from PySide6.QtCore import QObject, QTimer
 
 
 WM_HOTKEY = 0x0312

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import math
 
-from PyQt6.QtCore import QElapsedTimer, QTimer, Qt
-from PyQt6.QtGui import QColor, QLinearGradient, QPainter
-from PyQt6.QtOpenGLWidgets import QOpenGLWidget
+from PySide6.QtCore import QElapsedTimer, QTimer, Qt
+from PySide6.QtGui import QColor, QLinearGradient, QPainter
+from PySide6.QtOpenGLWidgets import QOpenGLWidget
 
 from renderers.base import RendererContext
 

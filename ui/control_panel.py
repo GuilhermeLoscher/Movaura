@@ -7,9 +7,9 @@ from collections.abc import Callable
 from pathlib import Path
 from threading import Thread
 
-from PyQt6.QtCore import QObject, QSize, QTimer, pyqtSignal
-from PyQt6.QtGui import QIcon, QPixmap
-from PyQt6.QtWidgets import (
+from PySide6.QtCore import QObject, QSize, QTimer, Signal
+from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtWidgets import (
     QApplication,
     QCheckBox,
     QColorDialog,
@@ -111,7 +111,7 @@ MULTI_MONITOR_MODES = {
 
 
 class BackgroundOperation(QObject):
-    finished = pyqtSignal(object)
+    finished = Signal(object)
 
 
 class ControlPanel(QWidget):

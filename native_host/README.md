@@ -7,7 +7,7 @@ Python version.
 ## Why This Exists
 
 On some Windows 11 Explorer layouts, `SHELLDLL_DefView` lives directly under
-`Progman` and no desktop-sized `WorkerW` exists. In that state, PyQt6 plus
+`Progman` and no desktop-sized `WorkerW` exists. In that state, PySide6 plus
 `SetParent` can attach windows, but they either render above icons or remain
 hidden behind Explorer's icon host.
 

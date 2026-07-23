@@ -9,8 +9,8 @@ from tempfile import TemporaryDirectory
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PyQt6.QtCore import QRect
-from PyQt6.QtWidgets import QApplication
+from PySide6.QtCore import QRect
+from PySide6.QtWidgets import QApplication
 
 from core.monitor_manager import MonitorInfo
 from core.media_analyzer import analyze_media

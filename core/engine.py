@@ -6,8 +6,8 @@ import os
 from collections.abc import Callable
 from pathlib import Path
 
-from PyQt6.QtCore import QTimer
-from PyQt6.QtWidgets import QApplication, QWidget
+from PySide6.QtCore import QTimer
+from PySide6.QtWidgets import QApplication, QWidget
 
 from core.desktop_host import DesktopHost, HostMode
 from core.desktop_probe import DesktopProbe

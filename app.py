@@ -5,9 +5,9 @@ import signal
 import sys
 from pathlib import Path
 
-from PyQt6.QtCore import QTimer
-from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QApplication
+from PySide6.QtCore import QTimer
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QApplication
 
 from core.app_logging import configure_logging
 from core.desktop_host import HostMode

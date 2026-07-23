@@ -61,7 +61,12 @@ jobs:
       - name: Generate package checksums
         shell: pwsh
         run: |
-          Get-FileHash -LiteralPath release/msix/*.msix -Algorithm SHA256 |
+          $packages = Get-ChildItem -Path release/msix -Filter *.msix -File
+          if (-not $packages) {
+            throw "Nenhum pacote MSIX encontrado para gerar checksum."
+          }
+          $packages |
+            Get-FileHash -Algorithm SHA256 |
             ForEach-Object { "$($_.Hash)  $($_.Path)" } |
             Set-Content -LiteralPath release/reports/msix-package-sha256.txt -Encoding UTF8
 

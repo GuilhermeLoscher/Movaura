@@ -23,6 +23,7 @@ Pinned dependencies:
 | pywin32 | 311 | Windows desktop, Explorer, tray and native integration helpers. |
 | pyinstaller | 6.20.0 | Standalone packaging tool. |
 | pyinstaller-hooks-contrib | 2026.5 | PyInstaller hook set used during packaging. |
+| Pillow | 12.2.0 | Generates MSIX logo assets from the project icon. |
 | altgraph | 0.17.5 | PyInstaller dependency. |
 | packaging | 25.0 | Packaging/version helper dependency. |
 | pefile | 2024.8.26 | PyInstaller Windows binary analysis dependency. |

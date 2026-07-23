@@ -35,7 +35,9 @@ This PR migrates Movaura from PyQt6 to PySide6 and completes the current Microso
 
 ## Status and limitations
 
-Current status: `READY FOR PARTNER CENTER IDENTITY`
+Current status before GitHub Actions verification: `READY FOR CI REVIEW`
+
+Current head commit prepared for PR: `89709fbb00125d9a511582a5252d16f17715b84a`
 
 Do not merge until:
 

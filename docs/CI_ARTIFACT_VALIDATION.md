@@ -4,9 +4,9 @@ Date: 2026-07-23
 
 Branch: `migration/pyside6`
 
-Commit: `7a13b2266a531b431984b1b219175c6b2233ab2e`
+Commit: `89709fbb00125d9a511582a5252d16f17715b84a`
 
-Status: `PENDING CI RUN`
+Status: `PENDING PR CI RUN`
 
 ## Required artifacts
 
@@ -72,8 +72,8 @@ release/certification/wack-20260723-172615.xml
 
 NÃO EXECUTADO
 
-Motivo: the pull request CI run has not been observed yet in this task.
+Motivo: the GitHub connector did not have permission to create the pull request (`403 Resource not accessible by integration`), and no pull-request workflow run was available for commit `89709fbb00125d9a511582a5252d16f17715b84a`.
 
 Impacto: the branch remains ready for CI review, but CI artifacts cannot be marked as validated.
 
-Ação necessária: create/open the PR, wait for GitHub Actions to finish, download artifacts and complete this report.
+Ação necessária: create/open the PR manually from `migration/pyside6` to `main`, wait for GitHub Actions to finish, download artifacts and complete this report.

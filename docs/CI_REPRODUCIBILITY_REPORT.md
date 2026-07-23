@@ -4,7 +4,7 @@ Date: 2026-07-23
 
 Branch: `migration/pyside6`
 
-Commit: `7a13b2266a531b431984b1b219175c6b2233ab2e`
+Commit: `89709fbb00125d9a511582a5252d16f17715b84a`
 
 Status: `READY FOR CI REVIEW`
 
@@ -55,4 +55,4 @@ Local WACK evidence is preserved in `release/certification/wack-20260723-172615.
 
 ## Next step
 
-Open the pull request and verify the GitHub Actions run for commit `7a13b2266a531b431984b1b219175c6b2233ab2e` or any later legitimate CI-fix commit.
+Open the pull request and verify the GitHub Actions run for commit `89709fbb00125d9a511582a5252d16f17715b84a` or any later legitimate CI-fix commit.

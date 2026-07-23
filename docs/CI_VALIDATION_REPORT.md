@@ -71,6 +71,8 @@ Local workflow edits are prepared. Local standalone/MSIX/WACK validation passed 
 
 GitHub-hosted CI result is not yet known until the branch is pushed and the workflow runs.
 
+PR creation through the GitHub connector was attempted after pushing commit `89709fbb00125d9a511582a5252d16f17715b84a`, but GitHub returned `403 Resource not accessible by integration`. Manual PR creation is required with the body in `docs/PULL_REQUEST_DESCRIPTION.md`.
+
 Status before GitHub Actions verification: `READY FOR CI REVIEW`, not Store-ready.
 
 The local package is ready for the Partner Center identity step only after GitHub Actions is green and CI artifacts are reviewed.

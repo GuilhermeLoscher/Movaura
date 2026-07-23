@@ -1,0 +1,14 @@
+{
+  "color": "#0078ff",
+  "experience_mode": "animated-preview",
+  "fps": 30,
+  "host_mode": "native-composition",
+  "low_power_mode": true,
+  "media_path": "",
+  "native_surface": "preview",
+  "pause_when_fullscreen_app": false,
+  "plugins_enabled": true,
+  "renderer": "video",
+  "screen": 0,
+  "tray_enabled": true
+}

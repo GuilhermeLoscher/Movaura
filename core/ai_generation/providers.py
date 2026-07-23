@@ -1,0 +1,204 @@
+from __future__ import annotations
+
+import random
+import time
+from pathlib import Path
+from typing import Callable, Protocol
+
+from PyQt6.QtCore import QRectF, Qt
+from PyQt6.QtGui import QColor, QFont, QImage, QLinearGradient, QPainter, QPen
+
+from core.ai_generation.models import (
+    GenerationError,
+    GenerationErrorCode,
+    GenerationImage,
+    GenerationRequest,
+    GenerationResult,
+    ProviderCapabilities,
+)
+from core.ai_generation.prompting import style_by_id
+
+
+ProgressCallback = Callable[[int, str], None]
+CancelCallback = Callable[[], bool]
+
+
+class ImageGenerationProvider(Protocol):
+    @property
+    def capabilities(self) -> ProviderCapabilities:
+        ...
+
+    def generate(
+        self,
+        request: GenerationRequest,
+        output_dir: Path,
+        progress: ProgressCallback,
+        should_cancel: CancelCallback,
+    ) -> GenerationResult:
+        ...
+
+
+class MockImageGenerationProvider:
+    """Deterministic local provider used until real cloud providers are added."""
+
+    @property
+    def capabilities(self) -> ProviderCapabilities:
+        return ProviderCapabilities(
+            name="mock",
+            display_name="Mock local sem custo",
+            mock=True,
+            max_images=4,
+        )
+
+    def generate(
+        self,
+        request: GenerationRequest,
+        output_dir: Path,
+        progress: ProgressCallback,
+        should_cancel: CancelCallback,
+    ) -> GenerationResult:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        self._simulate_error_if_requested(request.simulate_error, "before")
+        quantity = max(1, min(request.quantity, self.capabilities.max_images))
+        width, height = request.resolution
+        base_seed = request.seed if request.seed is not None else abs(hash(request.final_prompt)) % 1_000_000
+        images: list[GenerationImage] = []
+
+        for index in range(quantity):
+            if should_cancel():
+                raise GenerationError(
+                    GenerationErrorCode.CANCELLED,
+                    "Geracao cancelada.",
+                    "Cancellation requested by user.",
+                )
+            percent = int(index / quantity * 70)
+            progress(percent, f"Gerando variacao {index + 1} de {quantity}...")
+            self._sleep_with_cancel(request.quality, should_cancel)
+            seed = base_seed + index * 9973
+            path = output_dir / f"movaura-ai-{seed}-{index + 1}.png"
+            self._render_mock_wallpaper(request, path, width, height, seed)
+            if QImage(str(path)).isNull():
+                raise GenerationError(
+                    GenerationErrorCode.INVALID_IMAGE,
+                    "A imagem gerada nao pode ser validada.",
+                    str(path),
+                )
+            images.append(
+                GenerationImage(
+                    path=path,
+                    width=width,
+                    height=height,
+                    seed=seed,
+                    prompt=request.final_prompt,
+                    metadata={"mock": True, "variation": index + 1},
+                )
+            )
+
+        self._simulate_error_if_requested(request.simulate_error, "after")
+        if not images:
+            raise GenerationError(
+                GenerationErrorCode.EMPTY_RESULT,
+                "O provedor nao retornou imagens.",
+            )
+        progress(100, "Geracao concluida.")
+        return GenerationResult(
+            provider_id=self.capabilities.name,
+            request=request,
+            images=images,
+            metadata={"mock": True},
+        )
+
+    @staticmethod
+    def _sleep_with_cancel(quality: str, should_cancel: CancelCallback) -> None:
+        duration = {"fast": 0.25, "recommended": 0.45, "max": 0.7}.get(quality, 0.45)
+        steps = max(2, int(duration / 0.05))
+        for _ in range(steps):
+            if should_cancel():
+                raise GenerationError(
+                    GenerationErrorCode.CANCELLED,
+                    "Geracao cancelada.",
+                    "Cancellation requested while waiting.",
+                )
+            time.sleep(duration / steps)
+
+    @staticmethod
+    def _simulate_error_if_requested(value: str, stage: str) -> None:
+        code = value.strip().lower()
+        if not code or code == "none":
+            return
+        mapping = {
+            "auth": (GenerationErrorCode.AUTH, "A chave do provedor foi recusada."),
+            "rate_limit": (GenerationErrorCode.RATE_LIMIT, "O limite de geracoes foi atingido."),
+            "timeout": (GenerationErrorCode.TIMEOUT, "O provedor demorou demais para responder."),
+            "unavailable": (GenerationErrorCode.PROVIDER_UNAVAILABLE, "O provedor esta indisponivel agora."),
+            "empty": (GenerationErrorCode.EMPTY_RESULT, "Nenhuma imagem foi retornada."),
+        }
+        if code in mapping and stage == "before":
+            error_code, message = mapping[code]
+            raise GenerationError(error_code, message, f"Mock simulated error: {code}")
+        if code == "invalid" and stage == "after":
+            raise GenerationError(
+                GenerationErrorCode.INVALID_IMAGE,
+                "A imagem retornada falhou na validacao.",
+                "Mock simulated invalid image.",
+            )
+
+    @staticmethod
+    def _render_mock_wallpaper(
+        request: GenerationRequest,
+        path: Path,
+        width: int,
+        height: int,
+        seed: int,
+    ) -> None:
+        style = style_by_id(request.style_id)
+        randomizer = random.Random(seed)
+        image = QImage(width, height, QImage.Format.Format_RGB32)
+        image.fill(QColor(style.palette[0]))
+        painter = QPainter(image)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
+
+        gradient = QLinearGradient(0, 0, width, height)
+        gradient.setColorAt(0.0, QColor(style.palette[0]))
+        gradient.setColorAt(0.52, QColor(style.palette[1]))
+        gradient.setColorAt(1.0, QColor(style.palette[2]))
+        painter.fillRect(0, 0, width, height, gradient)
+
+        for layer in range(28):
+            alpha = randomizer.randint(28, 120)
+            color = QColor(randomizer.choice(style.palette))
+            color.setAlpha(alpha)
+            painter.setBrush(color)
+            painter.setPen(Qt.PenStyle.NoPen)
+            size = randomizer.randint(max(24, width // 40), max(90, width // 8))
+            x = randomizer.randint(-size, width)
+            y = randomizer.randint(-size, height)
+            if layer % 3 == 0:
+                painter.drawEllipse(x, y, size, size)
+            else:
+                rect = QRectF(x, y, size * 1.8, size * 0.5)
+                painter.save()
+                painter.translate(rect.center())
+                painter.rotate(randomizer.randint(-35, 35))
+                painter.translate(-rect.center())
+                painter.drawRoundedRect(rect, 18, 18)
+                painter.restore()
+
+        safe_area = QRectF(width * 0.08, height * 0.74, width * 0.84, height * 0.18)
+        painter.setPen(QPen(QColor(255, 255, 255, 70), max(1, width // 650)))
+        painter.setBrush(QColor(0, 0, 0, 50))
+        painter.drawRoundedRect(safe_area, 18, 18)
+        painter.setPen(QColor(255, 255, 255, 190))
+        font = QFont("Segoe UI", max(12, min(24, width // 72)))
+        font.setWeight(QFont.Weight.DemiBold)
+        painter.setFont(font)
+        prompt = request.prompt.strip() or "Movaura AI"
+        if len(prompt) > 110:
+            prompt = prompt[:107].rstrip() + "..."
+        painter.drawText(
+            safe_area.adjusted(22, 14, -22, -14),
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter | Qt.TextFlag.TextWordWrap,
+            prompt,
+        )
+        painter.end()
+        image.save(str(path), "PNG")

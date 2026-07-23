@@ -1,0 +1,11 @@
+{
+  "wallpapers": [
+    {
+      "name": "Exemplo de vídeo",
+      "kind": "video",
+      "download_url": "https://seu-site.example/wallpapers/exemplo.mp4",
+      "sha256": "",
+      "description": "Substitua esta URL pelo arquivo hospedado."
+    }
+  ]
+}

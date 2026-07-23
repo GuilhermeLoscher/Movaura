@@ -1,0 +1,16 @@
+Movaura uses FFmpeg for optional video optimization.
+
+Current bundled build:
+- Provider/build project: BtbN/FFmpeg-Builds
+- Artifact family: ffmpeg-master-latest-win64-lgpl-shared.zip
+- License: LGPL shared build
+- FFmpeg project: https://ffmpeg.org/
+- Build project: https://github.com/BtbN/FFmpeg-Builds
+
+Commercial note:
+The bundled build must remain LGPL-clean for closed commercial distribution:
+no --enable-gpl, no --enable-nonfree, no libx264 and no libx265. Review
+`tools/ffmpeg/README.txt` before every public release.
+
+The Movaura application is not part of FFmpeg and FFmpeg is not owned by
+Guilherme Loscher (GL).

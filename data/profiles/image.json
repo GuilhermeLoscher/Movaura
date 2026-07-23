@@ -1,0 +1,16 @@
+{
+  "color": "#0078ff",
+  "experience_mode": "desktop-static",
+  "fps": 30,
+  "host_mode": "system-wallpaper",
+  "low_power_mode": true,
+  "media_path": "",
+  "native_surface": "preview",
+  "pause_when_fullscreen_app": false,
+  "plugins_enabled": true,
+  "renderer": "image",
+  "screen": "all",
+  "start_with_windows": false,
+  "tray_enabled": true,
+  "wallpaper_position": "fill"
+}

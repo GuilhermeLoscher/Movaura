@@ -1,0 +1,42 @@
+MOVAURA 0.9.0
+================
+
+Instalacao normal:
+
+Desenvolvido por Guilherme Loscher (GL).
+
+1. Execute Movaura-Setup-0.9.0.exe.
+2. Conclua o assistente de instalacao.
+3. Abra Movaura pelo menu Iniciar ou pelo atalho opcional da area de trabalho.
+
+Uso normal:
+
+- Escolha "Area de trabalho animada".
+- Escolha video, GIF, imagem, cor ou OpenGL.
+- Para video, GIF ou imagem, selecione o arquivo desejado.
+- Clique em "Iniciar".
+
+O wallpaper animado deve aparecer atras dos icones da area de trabalho.
+
+Biblioteca incluida:
+
+- Clique em "Biblioteca visual" no painel.
+- A pasta contem 20 imagens, 20 GIFs animados e 20 videos MP4 originais.
+- Use "Importar arquivos" ou "Importar pasta" para adicionar seus proprios wallpapers.
+- Marque favoritos para encontrar seus wallpapers preferidos rapidamente.
+- Organize wallpapers com tags e colecoes.
+- Use o editor por camadas para combinar fundo, efeitos e audio.
+
+Desempenho:
+
+- Economia: limita a animacao a 15 FPS.
+- Equilibrado: usa ate 30 FPS.
+- Qualidade: usa ate 60 FPS.
+- Ative a pausa em tela cheia para reduzir consumo durante jogos.
+
+Observacoes:
+
+- Requer Windows 11 x64.
+- Nao requer Python instalado na maquina.
+- O instalador inclui PyQt6 e os componentes nativos necessarios.
+- Use o botao "Parar" antes de desinstalar o Movaura.

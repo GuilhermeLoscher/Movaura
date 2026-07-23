@@ -1,0 +1,11 @@
+{
+  "wallpapers": [
+    {
+      "name": "Exemplo de vídeo",
+      "kind": "video",
+      "description": "Wallpaper publicado no catálogo próprio.",
+      "download_url": "https://seu-site.example/wallpapers/exemplo.mp4",
+      "sha256": "substitua-pelo-sha256-do-arquivo"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+Official FFmpeg website:
+https://ffmpeg.org/
+
+Official FFmpeg legal notes:
+https://ffmpeg.org/legal.html
+
+Bundled binary build project:
+https://github.com/BtbN/FFmpeg-Builds
+
+Bundled artifact family:
+ffmpeg-master-latest-win64-lgpl-shared.zip
+
+Commercial release policy:
+Use an LGPL FFmpeg build with no GPL/nonfree options enabled, keep exact source
+code/link and build configuration available, and mention FFmpeg in the
+application About/licensing text.

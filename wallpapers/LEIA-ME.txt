@@ -1,0 +1,6 @@
+MOVAURA - BIBLIOTECA ORIGINAL
+================================
+
+Esta pasta contem 20 imagens, 20 GIFs animados e 20 videos MP4.
+Todos os arquivos foram gerados originalmente para acompanhar o Movaura.
+Eles podem ser redistribuidos junto com o instalador do programa.

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Callable
 
 from PyQt6.QtCore import QSize, Qt, pyqtSignal
 from PyQt6.QtGui import QIcon, QPixmap
@@ -30,6 +31,7 @@ from PyQt6.QtWidgets import (
 )
 
 from core.ai_generation.models import GenerationError, GenerationImage, GenerationRequest, GenerationResult
+from core.ai_generation.paths import normalize_path
 from core.ai_generation.prompting import QUALITY_LABELS, RESOLUTIONS, STYLES, enhance_prompt, style_by_id
 from core.ai_generation.providers import MockImageGenerationProvider
 from core.ai_generation.queue import GenerationQueue
@@ -52,10 +54,12 @@ class AIGenerationPage(QWidget):
         settings: MovauraSettings,
         library: WallpaperLibrary,
         parent: QWidget | None = None,
+        monitor_resolution_provider: Callable[[], tuple[int, int] | None] | None = None,
     ) -> None:
         super().__init__(parent)
         self.settings = settings
         self.library = library
+        self.monitor_resolution_provider = monitor_resolution_provider
         self.storage = GenerationStorage()
         self.history = GenerationHistoryStore()
         self.provider = MockImageGenerationProvider()
@@ -344,6 +348,10 @@ class AIGenerationPage(QWidget):
     def _selected_resolution(self) -> tuple[int, int]:
         value = self.resolution_combo.currentData()
         if value == "monitor":
+            if self.monitor_resolution_provider:
+                resolution = self.monitor_resolution_provider()
+                if resolution:
+                    return max(320, int(resolution[0])), max(240, int(resolution[1]))
             screen = QApplication.primaryScreen()
             if screen:
                 size = screen.size()
@@ -369,6 +377,9 @@ class AIGenerationPage(QWidget):
             return
         seed = self._new_variation_seed(request.seed)
         self.seed_spin.setValue(seed)
+        source_image = ""
+        if self.provider.capabilities.supports_variations and self.selected_image:
+            source_image = str(self.selected_image.path)
         varied = GenerationRequest(
             prompt=request.prompt,
             enhanced_prompt=request.enhanced_prompt,
@@ -380,8 +391,8 @@ class AIGenerationPage(QWidget):
             quality=request.quality,
             seed=seed,
             provider_id=request.provider_id,
-            simulate_error=request.simulate_error,
-            source_image=str(self.selected_image.path) if self.selected_image else "",
+            simulate_error="",
+            source_image=source_image,
             metadata=dict(request.metadata),
         )
         self._start_generation(varied)
@@ -521,7 +532,7 @@ class AIGenerationPage(QWidget):
             return existing
         imported = self.library.import_files([self.selected_image.path])
         if imported:
-            self.library.update_details(imported[0], ["ia", "movaura", "mock"], "Criados com IA", "leve")
+            self.library.update_details(imported[0], ["ia", "movaura", self._provider_tag()], "Criados com IA", "leve")
             self.last_saved_library_path = imported[0].path
             return imported[0]
         QMessageBox.warning(self, "Criar com IA", "Nao foi possivel salvar o wallpaper na biblioteca.")
@@ -552,9 +563,13 @@ class AIGenerationPage(QWidget):
         if not ok or not name:
             return
         entries = self.playlists.entries(name)
-        if not any(Path(entry.path) == item.path for entry in entries):
+        if not any(normalize_path(entry.path) == normalize_path(item.path) for entry in entries):
             entries.append(PlaylistEntry(str(item.path), 60))
-            self.playlists.save(name, entries)
+            try:
+                self.playlists.save(name, entries)
+            except OSError as exc:
+                QMessageBox.warning(self, "Adicionar a playlist", f"Nao foi possivel salvar a playlist: {exc}")
+                return
         self.status_label.setText(f"Wallpaper adicionado a playlist {name}.")
 
     def _open_library(self) -> None:
@@ -570,7 +585,7 @@ class AIGenerationPage(QWidget):
             included=False,
             favorite=False,
             recent=False,
-            tags=("ia", "movaura", "mock"),
+            tags=("ia", "movaura", self._provider_tag()),
             collection="Criados com IA",
             resource_class="leve",
         )
@@ -578,16 +593,9 @@ class AIGenerationPage(QWidget):
     def _library_item_for_path(self, path: Path) -> WallpaperItem | None:
         if not path:
             return None
-        try:
-            target = path.resolve()
-        except OSError:
-            target = path
+        target = normalize_path(path)
         for item in self.library.items():
-            try:
-                current = item.path.resolve()
-            except OSError:
-                current = item.path
-            if current == target:
+            if normalize_path(item.path) == target:
                 return item
         return None
 
@@ -679,6 +687,11 @@ class AIGenerationPage(QWidget):
         request = self._request_from_form()
         self.enhanced_prompt_label.setText(f"Prompt final: {request.final_prompt or 'descreva o wallpaper acima.'}")
 
+    def _provider_tag(self) -> str:
+        raw = self.current_result.provider_id if self.current_result else self.provider.capabilities.name
+        cleaned = "".join(char.lower() if char.isalnum() else "-" for char in raw).strip("-")
+        return cleaned or "provedor"
+
     @staticmethod
     def _set_combo_data(combo: QComboBox, value: str) -> None:
         for index in range(combo.count()):
@@ -693,5 +706,5 @@ class AIGenerationPage(QWidget):
                 combo.setCurrentIndex(index)
                 return
 
-    def shutdown(self) -> None:
-        self.queue.shutdown()
+    def shutdown(self) -> bool:
+        return self.queue.shutdown()

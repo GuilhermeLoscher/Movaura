@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import errno
 import hashlib
+import logging
 import random
 import time
+import uuid
 from pathlib import Path
 from typing import Callable, Protocol
 
@@ -23,9 +25,17 @@ from core.ai_generation.prompting import style_by_id
 
 ProgressCallback = Callable[[int, str], None]
 CancelCallback = Callable[[], bool]
+logger = logging.getLogger(__name__)
 
 
 class ImageGenerationProvider(Protocol):
+    """Provider contract for image generation backends.
+
+    Real network providers must enforce their own request timeouts, regularly
+    honor ``should_cancel`` during long calls, and map provider/storage failures
+    to ``GenerationError`` instead of leaking technical exceptions to the UI.
+    """
+
     @property
     def capabilities(self) -> ProviderCapabilities:
         ...
@@ -74,8 +84,10 @@ class MockImageGenerationProvider:
             seed = base_seed + index * 9973
             path = output_dir / f"movaura-ai-{seed}-{index + 1}.png"
             self._simulate_error_if_requested(request.simulate_error, "during", path)
-            self._render_mock_wallpaper(request, path, width, height, seed)
-            if QImage(str(path)).isNull():
+            returned_invalid = self._write_invalid_provider_return(request.simulate_error, path)
+            if not returned_invalid:
+                self._render_mock_wallpaper(request, path, width, height, seed)
+            if not returned_invalid and QImage(str(path)).isNull():
                 raise GenerationError(
                     GenerationErrorCode.INVALID_IMAGE,
                     "A imagem gerada nao pode ser validada.",
@@ -156,18 +168,10 @@ class MockImageGenerationProvider:
             error_code, message = mapping[code]
             raise GenerationError(error_code, message, f"Mock simulated error: {code}")
         if stage == "during" and path:
-            if code == "invalid":
-                path.write_text("isto nao e uma imagem png", encoding="utf-8")
+            if code in {"invalid", "provider_error_invalid"}:
                 raise GenerationError(
                     GenerationErrorCode.INVALID_IMAGE,
-                    "A imagem retornada falhou na validacao.",
-                    str(path),
-                )
-            if code == "corrupt":
-                path.write_bytes(b"\x89PNG\r\n\x1a\ncorrompido")
-                raise GenerationError(
-                    GenerationErrorCode.INVALID_IMAGE,
-                    "A imagem retornada esta corrompida.",
+                    "O provedor informou que a imagem retornada e invalida.",
                     str(path),
                 )
             if code == "save_failure":
@@ -204,6 +208,17 @@ class MockImageGenerationProvider:
                 "A imagem retornada falhou na validacao.",
                 "Mock simulated invalid image.",
             )
+
+    @staticmethod
+    def _write_invalid_provider_return(value: str, path: Path) -> bool:
+        code = value.strip().lower()
+        if code == "returned_invalid_image":
+            path.write_text("isto nao e uma imagem png", encoding="utf-8")
+            return True
+        if code in {"corrupt", "returned_corrupt_image"}:
+            path.write_bytes(b"\x89PNG\r\n\x1a\ncorrompido")
+            return True
+        return False
 
     @staticmethod
     def _render_mock_wallpaper(
@@ -267,20 +282,38 @@ class MockImageGenerationProvider:
 
     @staticmethod
     def _save_png_atomic(image: QImage, path: Path) -> None:
-        temporary = path.with_suffix(f"{path.suffix}.tmp")
-        if temporary.exists():
-            temporary.unlink()
-        if not image.save(str(temporary), "PNG"):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = path.with_name(f".{path.name}.{uuid.uuid4().hex}.tmp")
+        try:
+            if not image.save(str(temporary), "PNG"):
+                raise GenerationError(
+                    GenerationErrorCode.SAVE_FAILED,
+                    "Nao foi possivel salvar a imagem gerada.",
+                    f"QImage.save returned false for {temporary}",
+                )
+            if QImage(str(temporary)).isNull():
+                raise GenerationError(
+                    GenerationErrorCode.INVALID_IMAGE,
+                    "A imagem gerada nao pode ser validada.",
+                    str(temporary),
+                )
+            temporary.replace(path)
+        except PermissionError as exc:
             raise GenerationError(
-                GenerationErrorCode.SAVE_FAILED,
-                "Nao foi possivel salvar a imagem gerada.",
-                f"QImage.save returned false for {temporary}",
+                GenerationErrorCode.PERMISSION_DENIED,
+                "Sem permissao para salvar a imagem gerada.",
+                str(exc),
+            ) from exc
+        except OSError as exc:
+            code = GenerationErrorCode.DISK_FULL if exc.errno == errno.ENOSPC else GenerationErrorCode.SAVE_FAILED
+            message = (
+                "Sem espaco suficiente para salvar a imagem gerada."
+                if code == GenerationErrorCode.DISK_FULL
+                else "Nao foi possivel salvar a imagem gerada."
             )
-        if QImage(str(temporary)).isNull():
-            temporary.unlink(missing_ok=True)
-            raise GenerationError(
-                GenerationErrorCode.INVALID_IMAGE,
-                "A imagem gerada nao pode ser validada.",
-                str(temporary),
-            )
-        temporary.replace(path)
+            raise GenerationError(code, message, str(exc)) from exc
+        finally:
+            try:
+                temporary.unlink(missing_ok=True)
+            except OSError as exc:
+                logger.warning("Could not remove temporary AI provider file %s: %s", temporary, exc)

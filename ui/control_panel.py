@@ -244,7 +244,12 @@ class ControlPanel(QWidget):
         settings_tab = QWidget()
         support_tab = QWidget()
         automation_tab = QWidget()
-        ai_tab = AIGenerationPage(self.settings, self.library, self)
+        ai_tab = AIGenerationPage(
+            self.settings,
+            self.library,
+            self,
+            monitor_resolution_provider=self._selected_monitor_resolution_for_ai,
+        )
         self.ai_generation_page = ai_tab
         tabs.addTab(quick_tab, "Início")
         tabs.addTab(wallpaper_tab, "Wallpaper")
@@ -553,6 +558,18 @@ class ControlPanel(QWidget):
             label = f"{monitor.index}: {monitor.name} ({monitor.width}x{monitor.height})"
             self.screen_combo.addItem(label, monitor.index)
             self.quick_screen_combo.addItem(label, monitor.index)
+
+    def _selected_monitor_resolution_for_ai(self) -> tuple[int, int] | None:
+        selected = self.screen_combo.currentData() if hasattr(self, "screen_combo") else self.settings.data.get("screen", "all")
+        monitors = self.monitor_manager.monitors()
+        if selected != "all":
+            for monitor in monitors:
+                if monitor.index == selected:
+                    return (monitor.width, monitor.height)
+        if monitors:
+            primary = next((monitor for monitor in monitors if monitor.primary), monitors[0])
+            return (primary.width, primary.height)
+        return None
 
     def _load_settings_to_form(self) -> None:
         self._set_combo_value(self.experience_combo, EXPERIENCE_MODES, self.settings.get_str("experience_mode"))
@@ -1185,7 +1202,9 @@ class ControlPanel(QWidget):
 
     def _quit(self) -> None:
         if hasattr(self, "ai_generation_page"):
-            self.ai_generation_page.shutdown()
+            if not self.ai_generation_page.shutdown():
+                self.status_label.setText("A IA ainda esta encerrando. Tente sair novamente em alguns segundos.")
+                return
         self._stop_wallpaper()
         self.settings.save()
         self.app.quit()
@@ -1198,7 +1217,10 @@ class ControlPanel(QWidget):
             event.ignore()
             return
         if hasattr(self, "ai_generation_page"):
-            self.ai_generation_page.shutdown()
+            if not self.ai_generation_page.shutdown():
+                self.status_label.setText("A IA ainda esta encerrando. Aguarde alguns segundos antes de fechar.")
+                event.ignore()
+                return
         self.settings.save()
         self.app.quit()
         super().closeEvent(event)

@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from collections import deque
 from pathlib import Path
 from threading import Event
 
@@ -50,7 +49,15 @@ class GenerationWorker(QObject):
             final_result = self.storage.post_process(result)
             if not final_result.images:
                 raise GenerationError(GenerationErrorCode.EMPTY_RESULT, "Nenhuma imagem valida foi gerada.")
-            self.history.add_result(final_result)
+            try:
+                self.history.add_result(final_result)
+            except Exception as exc:
+                self.storage.remove_result(final_result)
+                raise GenerationError(
+                    GenerationErrorCode.SAVE_FAILED,
+                    "Nao foi possivel salvar o historico da geracao.",
+                    f"{type(exc).__name__}: {exc}",
+                ) from exc
             self.state_changed.emit(GenerationState.COMPLETED.value, "Wallpaper gerado.")
             self.completed.emit(final_result)
         except GenerationError as exc:
@@ -95,7 +102,6 @@ class GenerationQueue(QObject):
         self.thread: QThread | None = None
         self.worker: GenerationWorker | None = None
         self.cancel_event: Event | None = None
-        self._pending: deque[GenerationRequest] = deque()
         self._shutting_down = False
 
     @property
@@ -106,9 +112,8 @@ class GenerationQueue(QObject):
         if self._shutting_down:
             return False
         if self.is_running:
-            self._pending.append(request)
-            self.state_changed.emit(GenerationState.QUEUED.value, "Geracao adicionada a fila.")
-            return True
+            self.state_changed.emit(GenerationState.QUEUED.value, "Aguarde a geracao atual terminar antes de iniciar outra.")
+            return False
         self._start_now(request)
         return True
 
@@ -117,18 +122,24 @@ class GenerationQueue(QObject):
             self.cancel_event.set()
         if self.worker:
             self.worker.cancel()
-        self._pending.clear()
 
-    def shutdown(self, timeout_ms: int = 5000) -> None:
+    def shutdown(self, timeout_ms: int = 5000, second_timeout_ms: int = 1500) -> bool:
         self._shutting_down = True
         self.cancel()
-        self._wait_for_thread(timeout_ms)
-        if self.worker:
-            self.worker.deleteLater()
-        self.worker = None
-        self.thread = None
-        self.cancel_event = None
-        self._pending.clear()
+        if not self.thread:
+            self._clear_refs()
+            return True
+        if self._wait_for_thread(timeout_ms):
+            self._clear_refs()
+            return True
+        self.state_changed.emit(
+            GenerationState.FAILED.value,
+            "A geracao ainda esta encerrando. Aguarde alguns segundos antes de fechar o Movaura.",
+        )
+        if second_timeout_ms > 0 and self._wait_for_thread(second_timeout_ms):
+            self._clear_refs()
+            return True
+        return False
 
     def _start_now(self, request: GenerationRequest) -> None:
         self.cancel_event = Event()
@@ -144,21 +155,31 @@ class GenerationQueue(QObject):
         self.worker.completed.connect(self._finish)
         self.worker.failed.connect(self._finish)
         self.worker.cancelled.connect(self._finish)
+        self.worker.completed.connect(self.worker.deleteLater)
+        self.worker.failed.connect(self.worker.deleteLater)
+        self.worker.cancelled.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
         self.state_changed.emit(GenerationState.QUEUED.value, "Geracao colocada na fila.")
         self.thread.start()
 
     def _finish(self, *_args: object) -> None:
-        self._wait_for_thread(3000)
-        if self.worker:
-            self.worker.deleteLater()
+        if self._wait_for_thread(3000):
+            self._clear_refs()
+            return
+        self.state_changed.emit(
+            GenerationState.FAILED.value,
+            "A thread de geracao nao encerrou dentro do tempo esperado.",
+        )
+
+    def _wait_for_thread(self, timeout_ms: int) -> bool:
+        if not self.thread:
+            return True
+        if not self.thread.isRunning():
+            return True
+        self.thread.quit()
+        return bool(self.thread.wait(timeout_ms))
+
+    def _clear_refs(self) -> None:
         self.worker = None
         self.thread = None
         self.cancel_event = None
-        if not self._shutting_down and self._pending:
-            self._start_now(self._pending.popleft())
-
-    def _wait_for_thread(self, timeout_ms: int) -> None:
-        if self.thread:
-            self.thread.quit()
-            self.thread.wait(timeout_ms)

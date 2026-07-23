@@ -199,11 +199,78 @@ def test_benchmark() -> None:
     assert result.profile in {"economy", "adaptive", "quality"}
 
 
+def test_catalog_source_resolution() -> None:
+    with TemporaryDirectory() as temp:
+        root = Path(temp)
+        package_root = root / "package"
+        catalog_dir = package_root / "data"
+        video = package_root / "wallpapers" / "videos" / "clip.mp4"
+        image = catalog_dir / "images" / "sample image.png"
+        gif = catalog_dir / "gifs" / "loop.gif"
+        video.parent.mkdir(parents=True)
+        image.parent.mkdir(parents=True)
+        gif.parent.mkdir(parents=True)
+        video.write_bytes(b"fake-video")
+        image.write_bytes(b"fake-image")
+        gif.write_bytes(b"fake-gif")
+
+        source = OnlineCatalog.resolve_source(
+            "wallpapers/videos/clip.mp4",
+            catalog_base=catalog_dir,
+            package_root=package_root,
+        )
+        assert source.kind == "file"
+        assert Path(source.value) == video.resolve(strict=False)
+
+        source = OnlineCatalog.resolve_source(
+            r"images\sample image.png",
+            catalog_base=catalog_dir,
+            package_root=package_root,
+        )
+        assert source.kind == "file"
+        assert Path(source.value) == image.resolve(strict=False)
+
+        manifest = catalog_dir / "catalog.json"
+        manifest.write_text(
+            json.dumps(
+                {
+                    "wallpapers": [
+                        {"name": "Local Video", "kind": "video", "download_url": "wallpapers/videos/clip.mp4"},
+                        {"name": "Local Image", "kind": "image", "download_url": "images/sample image.png"},
+                        {"name": "Local Gif", "kind": "gif", "download_url": "gifs/loop.gif"},
+                    ]
+                }
+            ),
+            encoding="utf-8",
+        )
+        items = OnlineCatalog().fetch(str(manifest))
+        assert len(items) == 3
+        assert all(item.catalog_base == catalog_dir for item in items)
+
+        remote = OnlineCatalog.resolve_source("https://example.com/wallpaper.mp4")
+        assert remote.kind == "url"
+        try:
+            OnlineCatalog.resolve_source("wallpapers/videos/missing.mp4", catalog_dir, package_root)
+        except FileNotFoundError as exc:
+            assert "Arquivo do catalogo nao encontrado" in str(exc)
+            assert "unknown url type" not in str(exc)
+        else:
+            raise AssertionError("missing relative catalog item should fail clearly")
+
+        try:
+            OnlineCatalog.resolve_source("../outside.mp4", catalog_dir, package_root)
+        except FileNotFoundError:
+            pass
+        else:
+            raise AssertionError("path traversal must not resolve outside catalog/package roots")
+
+
 def test_local_catalog() -> None:
     items = OnlineCatalog().fetch("")
     assert items
     downloaded = OnlineCatalog().download(items[0])
     assert downloaded.is_file()
+    assert WallpaperLibrary.kind_for_path(downloaded) == "image"
 
 
 def test_performance_snapshot() -> None:
@@ -250,6 +317,7 @@ def main() -> None:
     test_performance_snapshot()
     test_scene_layers_and_presets()
     test_benchmark()
+    test_catalog_source_resolution()
     test_local_catalog()
     test_panel()
     print("product_smoke_tests=ok")

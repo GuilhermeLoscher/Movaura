@@ -50,3 +50,4 @@ native_host_app/build/
 native_host_app/build-nmake/
 native_compositor_app/build/
 native_compositor_app/build-nmake/
+release/reports/

@@ -1,40 +1,46 @@
-# Movaura - materiais para Microsoft Store
+# Movaura - Checklist de submissao Microsoft Store
 
-## Nome
-Movaura
+## Status tecnico atual
 
-## Categoria sugerida
-Personalization / Personalizacao.
+- Standalone gerado em `dist/standalone/Movaura`.
+- MSIX nao assinado gerado em `release/msix/Movaura-0.9.0.0.msix`.
+- Validacao estrutural por `makeappx unpack`: aprovada.
+- Windows App Certification Kit encontrado, mas a execucao local exigiu elevacao administrativa.
+- Assinatura digital ainda precisa usar os dados/certificado reais do Partner Center.
 
-## Descricao curta
-Live wallpapers leves para Windows, com videos, imagens, efeitos, audio visualizer e perfis de desempenho.
+## Descricao curta sugerida
 
-## Descricao longa
-Movaura transforma a area de trabalho do Windows em um wallpaper vivo, com foco em fluidez e baixo consumo. O app permite escolher wallpapers de video, imagem, GIF e cenas com efeitos, aplicar por monitor, otimizar midias pesadas e pausar automaticamente em jogos ou aplicativos em tela cheia.
+Movaura transforma videos, imagens, GIFs e cenas com efeitos em wallpapers vivos para Windows, com perfis de desempenho, biblioteca local, criacao assistida e controle simples para usuarios iniciantes.
 
-Recursos principais:
-- Wallpapers de video, imagem, GIF e cenas por camadas.
-- Perfis Leve, Recomendado e Maxima qualidade.
-- Otimizacao inteligente de videos para reduzir CPU e RAM.
-- Suporte a multiplos monitores.
-- Pausa automatica em tela cheia, bateria ou alto consumo.
-- Biblioteca local com busca, favoritos, tags e miniaturas.
-- Pacotes .movaura para compartilhar cenas.
-- Diagnostico de suporte sem coleta externa automatica.
+## Descricao longa sugerida
 
-## Aviso claro sobre funcionamento
-Movaura usa um compositor grafico local para desenhar wallpapers animados na area de trabalho. Em algumas configuracoes do Windows Explorer, o app usa uma superficie de composicao propria para preservar estabilidade e desempenho. O usuario pode pausar, parar ou restaurar o wallpaper anterior a qualquer momento.
+Movaura e um aplicativo de live wallpaper para Windows focado em fluidez, baixo consumo e facilidade de uso. Escolha um wallpaper da biblioteca, importe seus proprios videos, imagens ou GIFs, crie cenas com camadas e efeitos, ajuste o perfil de desempenho e aplique na area de trabalho com poucos cliques.
 
-## Dependencias e componentes de terceiros
-O app inclui FFmpeg apenas para otimizacao opcional de videos. A versao comercial deve usar um build LGPL limpo, sem `--enable-gpl` e sem `--enable-nonfree`, com licencas incluidas em `licenses/ffmpeg`.
+O app inclui monitoramento de desempenho, perfis Leve/Recomendado/Maxima qualidade, otimizacao de videos com FFmpeg LGPL quando disponivel, suporte a multiplos monitores, pacotes de cena `.movaura`, controle de inicializacao e recuperacao automatica do compositor.
 
-## Screenshots necessarias
-1. Tela inicial com botoes Escolher, Pre-visualizar, Aplicar e Otimizar.
-2. Biblioteca com miniaturas, tags e favoritos.
-3. Editor por camadas.
-4. Aba Desempenho mostrando perfil e consumo.
-5. Wallpaper aplicado na area de trabalho.
-6. Suporte/diagnostico com mensagem simples.
+## Aviso funcional para certificacao
 
-## Notas para certificacao
-Ver `docs/CERTIFICATION_NOTES.md`.
+O Movaura usa compositor nativo e APIs de desktop do Windows para apresentar wallpapers animados. Em algumas configuracoes do Windows 11, o app usa uma janela/composicao segura e isolada quando o host de area de trabalho do Explorer nao permite renderizacao direta abaixo dos icones. O usuario pode pausar, parar ou restaurar o wallpaper pelo painel principal.
+
+## Politica de privacidade base
+
+O Movaura processa wallpapers, configuracoes e arquivos importados localmente no computador do usuario. O app nao envia wallpapers pessoais para servidores por padrao. Funcionalidades futuras de catalogo online, ativacao beta ou provedores reais de IA podem se comunicar com servicos externos e devem exibir aviso especifico, URL do provedor e politica de privacidade atualizada.
+
+## FFmpeg
+
+Para distribuicao comercial, usar somente build FFmpeg compativel com LGPL, sem `--enable-gpl` e sem `--enable-nonfree`. Manter no pacote:
+
+- `tools/ffmpeg/LICENSE.txt`
+- `tools/ffmpeg/README.txt`
+- `licenses/ffmpeg/NOTICE.txt`
+- `licenses/ffmpeg/README.txt`
+- `licenses/ffmpeg/SOURCE.txt`
+
+## Antes de enviar
+
+1. Assinar `release/msix/Movaura-0.9.0.0.msix` com `scripts/sign_msix.ps1` e certificado real.
+2. Instalar o MSIX assinado em uma maquina limpa.
+3. Rodar Windows App Certification Kit como administrador.
+4. Testar aplicar, pausar, parar, importar video/imagem/GIF e abrir biblioteca.
+5. Capturar screenshots finais da aba Inicio, Biblioteca, Criar com IA, Desempenho e wallpaper aplicado.
+6. Conferir identidade `PackageName`, `Publisher`, `PublisherDisplayName` e versao com os dados reservados no Partner Center.

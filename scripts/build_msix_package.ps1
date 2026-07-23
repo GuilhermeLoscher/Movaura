@@ -2,26 +2,57 @@ param(
     [string]$PackageName = "GuilhermeLoscher.Movaura",
     [string]$Publisher = "CN=Guilherme Loscher",
     [string]$PublisherDisplayName = "Guilherme Loscher",
-    [string]$Version = "0.9.0.0"
+    [string]$Version = "0.9.0.0",
+    [string]$StandalonePath = "",
+    [string]$PythonExe = ""
 )
 
 $ErrorActionPreference = "Stop"
 
 $root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$standalone = Join-Path $root "release\standalone-commercial\Movaura"
+if (-not $StandalonePath) {
+    $StandalonePath = Join-Path $root "dist\standalone\Movaura"
+}
+$standalone = [System.IO.Path]::GetFullPath($StandalonePath)
 $layout = Join-Path $root "release\msix\MovauraPackage"
 $outputDir = Join-Path $root "release\msix"
 $output = Join-Path $outputDir "Movaura-$Version.msix"
-$kit = "C:\Program Files (x86)\Windows Kits\10\App Certification Kit"
-$makeappx = Join-Path $kit "makeappx.exe"
-$python = Join-Path (Split-Path $root -Parent) ".build-venv\Scripts\python.exe"
+$kitCandidates = @(
+    "C:\Program Files (x86)\Windows Kits\10\App Certification Kit\makeappx.exe",
+    "C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\makeappx.exe",
+    "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\makeappx.exe"
+)
+$makeappx = $kitCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+
+function Resolve-BuildPython {
+    param([string]$Requested)
+    $candidates = @()
+    if ($Requested) { $candidates += $Requested }
+    if ($env:MOVAURA_BUILD_PYTHON) { $candidates += $env:MOVAURA_BUILD_PYTHON }
+    $candidates += Join-Path $root ".build-venv\Scripts\python.exe"
+    $candidates += Join-Path (Split-Path $root -Parent) ".build-venv\Scripts\python.exe"
+    $candidates += "python"
+    foreach ($candidate in $candidates) {
+        try {
+            $resolved = (Get-Command $candidate -ErrorAction Stop).Source
+            if ($resolved) { return $resolved }
+        } catch {
+            if (Test-Path -LiteralPath $candidate) { return $candidate }
+        }
+    }
+    throw "Python de build nao encontrado para gerar assets MSIX."
+}
 
 if (-not (Test-Path -LiteralPath $standalone)) {
-    throw "Standalone nao encontrado. Rode scripts\build_fixed_release.ps1 primeiro."
+    throw "Standalone nao encontrado: $standalone. Rode scripts\build_standalone.ps1 primeiro."
 }
-if (-not (Test-Path -LiteralPath $makeappx)) {
-    throw "makeappx.exe nao encontrado. Instale o Windows SDK/App Certification Kit."
+if (-not (Test-Path -LiteralPath (Join-Path $standalone "Movaura.exe"))) {
+    throw "Standalone invalido: Movaura.exe ausente em $standalone."
 }
+if (-not $makeappx) {
+    throw "makeappx.exe nao encontrado. Instale Windows SDK/App Certification Kit para gerar MSIX."
+}
+$python = Resolve-BuildPython $PythonExe
 
 if (Test-Path -LiteralPath $layout) {
     Remove-Item -LiteralPath $layout -Recurse -Force
@@ -32,12 +63,6 @@ New-Item -ItemType Directory -Path $outputDir -Force | Out-Null
 
 Get-ChildItem -LiteralPath $standalone -Force | ForEach-Object {
     Copy-Item -LiteralPath $_.FullName -Destination $layout -Recurse -Force
-}
-if (-not (Test-Path -LiteralPath $python)) {
-    $python = Join-Path $root ".build-venv\Scripts\python.exe"
-}
-if (-not (Test-Path -LiteralPath $python)) {
-    throw "Python de build nao encontrado para gerar assets MSIX."
 }
 & $python (Join-Path $root "scripts\prepare_msix_assets.py") (Join-Path $root "assets\movaura-logo.png") (Join-Path $layout "Assets")
 if ($LASTEXITCODE -ne 0) {
@@ -95,4 +120,4 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Get-Item -LiteralPath $output | Select-Object FullName, Length, LastWriteTime
-Write-Host "Pacote MSIX gerado sem assinatura local. Para Partner Center, ajuste Identity/Publisher com os dados reservados na conta da Microsoft Store."
+Write-Host "Pacote MSIX gerado sem assinatura local. Assine com scripts\sign_msix.ps1 e os dados reservados no Partner Center."

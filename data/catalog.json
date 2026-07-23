@@ -2,22 +2,10 @@
   "name": "Movaura Starter Catalog",
   "wallpapers": [
     {
-      "name": "Neon City",
-      "kind": "video",
-      "download_url": "wallpapers/videos/01-neon-city.mp4",
-      "description": "Vídeo leve original incluso no Movaura."
-    },
-    {
-      "name": "Cyber Rain",
-      "kind": "gif",
-      "download_url": "wallpapers/gifs/15-cyber-rain.gif",
-      "description": "GIF animado original para testar movimento com baixo consumo."
-    },
-    {
-      "name": "Celestial Bloom",
+      "name": "Movaura Sample",
       "kind": "image",
-      "download_url": "wallpapers/static/20-celestial-bloom.jpg",
-      "description": "Imagem estática original para aplicar sem compositor."
+      "download_url": "assets/movaura-logo.png",
+      "description": "Imagem local inclusa no Movaura para validar importacao e aplicacao sem internet."
     }
   ]
 }

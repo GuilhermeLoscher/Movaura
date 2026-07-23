@@ -1,16 +1,63 @@
+param(
+    [string]$PythonExe = ""
+)
+
 $ErrorActionPreference = "Stop"
 
 $root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-$python = Join-Path $root ".build-venv\Scripts\python.exe"
-if (-not (Test-Path -LiteralPath $python)) {
-    $python = Join-Path (Split-Path $root -Parent) ".build-venv\Scripts\python.exe"
-}
 $dist = Join-Path $root "dist\standalone"
 $work = Join-Path $root "build\pyinstaller"
+$reports = Join-Path $root "release\reports"
+$report = Join-Path $reports "standalone-validation.txt"
 
-if (-not (Test-Path -LiteralPath $python)) {
-    throw "Ambiente de build ausente. Crie .build-venv e instale PyInstaller, PyQt6 e pywin32."
+function Resolve-BuildPython {
+    param([string]$Requested)
+    $candidates = @()
+    if ($Requested) { $candidates += $Requested }
+    if ($env:MOVAURA_BUILD_PYTHON) { $candidates += $env:MOVAURA_BUILD_PYTHON }
+    $candidates += Join-Path $root ".build-venv\Scripts\python.exe"
+    $candidates += Join-Path (Split-Path $root -Parent) ".build-venv\Scripts\python.exe"
+    $candidates += "python"
+    foreach ($candidate in $candidates) {
+        try {
+            $resolved = (Get-Command $candidate -ErrorAction Stop).Source
+            if ($resolved) { return $resolved }
+        } catch {
+            if (Test-Path -LiteralPath $candidate) { return $candidate }
+        }
+    }
+    throw "Python de build nao encontrado. Informe -PythonExe ou configure MOVAURA_BUILD_PYTHON."
 }
+
+function Invoke-ExeChecked {
+    param([string]$Label, [string]$ExePath, [string[]]$Arguments)
+    Write-Host "[Movaura build] $Label"
+    $process = Start-Process -FilePath $ExePath -ArgumentList $Arguments -Wait -PassThru -NoNewWindow
+    if ($process.ExitCode -ne 0) {
+        throw "$Label falhou com codigo $($process.ExitCode)"
+    }
+}
+function Invoke-Checked {
+    param([string]$Label, [scriptblock]$Command)
+    Write-Host "[Movaura build] $Label"
+    & $Command
+    if ($LASTEXITCODE -ne 0) {
+        throw "$Label falhou com codigo $LASTEXITCODE"
+    }
+}
+
+$python = Resolve-BuildPython $PythonExe
+New-Item -ItemType Directory -Path $reports -Force | Out-Null
+"Movaura standalone validation - $(Get-Date -Format o)" | Set-Content -LiteralPath $report -Encoding UTF8
+"Python: $python" | Add-Content -LiteralPath $report -Encoding UTF8
+
+Invoke-Checked "compileall" { & $python -m compileall -q app.py core renderers ui plugins scripts }
+Invoke-Checked "product smoke tests" {
+    $env:QT_QPA_PLATFORM = "offscreen"
+    $env:PYTHONDONTWRITEBYTECODE = "1"
+    & $python scripts\run_product_smoke_tests.py
+}
+Invoke-Checked "self-test dev" { & $python app.py --self-test }
 
 foreach ($path in @($dist, $work)) {
     $resolved = [System.IO.Path]::GetFullPath($path)
@@ -32,7 +79,7 @@ $tools = Join-Path $root "tools"
 $catalogManifest = Join-Path $root "data\catalog.json"
 $licenses = Join-Path $root "licenses"
 
-foreach ($path in @($nativeCompositor, $nativeHost, $nativeProbe, $plugins, $wallpapers, $assets)) {
+foreach ($path in @($nativeCompositor, $nativeHost, $nativeProbe, $plugins, $wallpapers, $assets, $catalogManifest)) {
     if (-not (Test-Path -LiteralPath $path)) {
         throw "Recurso obrigatorio ausente: $path"
     }
@@ -54,13 +101,11 @@ $pyinstallerArgs = @(
     "--add-binary", "$nativeHost;native_host\bin",
     "--add-binary", "$nativeProbe;native_host_app\bin",
     "--add-data", "$plugins;plugins",
-    "--add-data", "$assets;assets"
+    "--add-data", "$assets;assets",
+    "--add-data", "$catalogManifest;data"
 )
 if (Test-Path -LiteralPath $licenses) {
     $pyinstallerArgs += @("--add-data", "$licenses;licenses")
-}
-if (Test-Path -LiteralPath $catalogManifest) {
-    $pyinstallerArgs += @("--add-data", "$catalogManifest;data")
 }
 if (Test-Path -LiteralPath (Join-Path $tools "ffmpeg\bin\ffmpeg.exe")) {
     $ffmpegRoot = Join-Path $tools "ffmpeg"
@@ -77,14 +122,13 @@ if (Test-Path -LiteralPath (Join-Path $tools "ffmpeg\bin\ffmpeg.exe")) {
             $pyinstallerArgs += @("--add-data", "$licensePath;tools\ffmpeg")
         }
     }
+    "FFmpeg: LGPL check passed" | Add-Content -LiteralPath $report -Encoding UTF8
+} else {
+    "FFmpeg: not bundled" | Add-Content -LiteralPath $report -Encoding UTF8
 }
 $pyinstallerArgs += (Join-Path $root "app.py")
 
-& $python @pyinstallerArgs
-
-if ($LASTEXITCODE -ne 0) {
-    throw "PyInstaller encerrou com codigo $LASTEXITCODE"
-}
+Invoke-Checked "PyInstaller" { & $python @pyinstallerArgs }
 
 $applicationRoot = Join-Path $dist "Movaura"
 $application = Join-Path $applicationRoot "Movaura.exe"
@@ -92,6 +136,31 @@ if (-not (Test-Path -LiteralPath $application)) {
     throw "Executavel autocontido nao foi criado: $application"
 }
 
-Copy-Item -LiteralPath $wallpapers -Destination $applicationRoot -Recurse
+Copy-Item -LiteralPath $wallpapers -Destination $applicationRoot -Recurse -Force
+Invoke-ExeChecked "self-test standalone" $application @("--self-test")
 
-Get-Item -LiteralPath $application | Select-Object FullName, Length, LastWriteTime
+$copyWithSpacesRoot = Join-Path $root "build\Path With Spaces\Movaura"
+if (Test-Path -LiteralPath $copyWithSpacesRoot) {
+    Remove-Item -LiteralPath $copyWithSpacesRoot -Recurse -Force
+}
+New-Item -ItemType Directory -Path (Split-Path $copyWithSpacesRoot -Parent) -Force | Out-Null
+Copy-Item -LiteralPath $applicationRoot -Destination $copyWithSpacesRoot -Recurse -Force
+Invoke-ExeChecked "self-test standalone path with spaces" (Join-Path $copyWithSpacesRoot "Movaura.exe") @("--self-test")
+for ($attempt = 1; $attempt -le 5; $attempt++) {
+    try {
+        Remove-Item -LiteralPath $copyWithSpacesRoot -Recurse -Force -ErrorAction Stop
+        break
+    } catch {
+        if ($attempt -eq 5) {
+            Write-Warning "Nao foi possivel limpar a copia temporaria de teste: $copyWithSpacesRoot"
+        } else {
+            Start-Sleep -Milliseconds (250 * $attempt)
+        }
+    }
+}
+$item = Get-Item -LiteralPath $application
+"Standalone: $($item.FullName)" | Add-Content -LiteralPath $report -Encoding UTF8
+"Size: $($item.Length)" | Add-Content -LiteralPath $report -Encoding UTF8
+"Validation: ok" | Add-Content -LiteralPath $report -Encoding UTF8
+$item | Select-Object FullName, Length, LastWriteTime
+Write-Host "Relatorio: $report"

@@ -53,6 +53,7 @@ New-Item -ItemType Directory -Path $reports -Force | Out-Null
 "Python: $python" | Add-Content -LiteralPath $report -Encoding UTF8
 
 Invoke-Checked "compileall" { & $python -m compileall -q app.py core renderers ui plugins scripts }
+Invoke-Checked "Qt binding source residue check" { & $python scripts\check_no_pyqt_artifacts.py app.py core renderers ui plugins scripts requirements.txt README.md LEIA-ME-PRIMEIRO.txt native_host\README.md .github }
 Invoke-Checked "product smoke tests" {
     $env:QT_QPA_PLATFORM = "offscreen"
     $env:PYTHONDONTWRITEBYTECODE = "1"
@@ -159,6 +160,7 @@ if (-not (Test-Path -LiteralPath $application)) {
 
 Copy-Item -LiteralPath $wallpapers -Destination $applicationRoot -Recurse -Force
 Invoke-ExeChecked "self-test standalone" $application @("--self-test")
+Invoke-Checked "Qt binding standalone artifact check" { & $python scripts\check_no_pyqt_artifacts.py --artifact $applicationRoot }
 
 $copyWithSpacesRoot = Join-Path $root "build\Path With Spaces\Movaura"
 if (Test-Path -LiteralPath $copyWithSpacesRoot) {

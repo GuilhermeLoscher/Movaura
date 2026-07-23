@@ -37,6 +37,9 @@ jobs:
       - name: Run product self-test
         run: python app.py --self-test
 
+      - name: Check Qt binding source residue
+        run: python scripts/check_no_pyqt_artifacts.py app.py core renderers ui plugins scripts requirements.txt README.md LEIA-ME-PRIMEIRO.txt native_host/README.md .github
+
       - name: Build standalone
         shell: pwsh
         run: ./scripts/build_standalone.ps1 -PythonExe python
@@ -44,6 +47,9 @@ jobs:
       - name: Run standalone self-test
         shell: pwsh
         run: ./dist/standalone/Movaura/Movaura.exe --self-test
+
+      - name: Check standalone Qt binding residue
+        run: python scripts/check_no_pyqt_artifacts.py --artifact dist/standalone/Movaura
 
       - name: Build unsigned MSIX
         shell: pwsh

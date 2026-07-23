@@ -31,7 +31,7 @@ ai_generation_tests=ok
 
 ## Pending
 
-- GitHub Actions CI run after push.
+- GitHub Actions CI run for the PR/final branch commit.
 - Human manual test checklist.
 - Partner Center real identity build/signing.
 - Professional legal review for final commercial distribution.

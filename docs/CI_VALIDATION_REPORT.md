@@ -71,4 +71,6 @@ Local workflow edits are prepared. Local standalone/MSIX/WACK validation passed 
 
 GitHub-hosted CI result is not yet known until the branch is pushed and the workflow runs.
 
-Status: `READY FOR PARTNER CENTER IDENTITY`, not Store-ready.
+Status before GitHub Actions verification: `READY FOR CI REVIEW`, not Store-ready.
+
+The local package is ready for the Partner Center identity step only after GitHub Actions is green and CI artifacts are reviewed.

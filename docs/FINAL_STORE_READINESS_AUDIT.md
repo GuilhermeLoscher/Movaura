@@ -1,6 +1,6 @@
 # Final Store readiness audit
 
-Status: `READY FOR PARTNER CENTER IDENTITY`
+Status: `READY FOR CI REVIEW`
 
 Movaura is not marked as ready for Microsoft Store submission yet.
 
@@ -27,6 +27,6 @@ Movaura is not marked as ready for Microsoft Store submission yet.
 
 ## Final status
 
-`READY FOR PARTNER CENTER IDENTITY`
+`READY FOR CI REVIEW`
 
-This means the local technical package is validated enough to prepare the Partner Center identity/signing step. It is not yet `READY FOR MANUAL STORE SUBMISSION`.
+This means the local technical package passed, but the branch still needs GitHub Actions CI evidence for the final commit before it can return to `READY FOR PARTNER CENTER IDENTITY`.

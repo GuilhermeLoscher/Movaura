@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import logging
+import unicodedata
 from pathlib import Path
 from threading import Thread
 
-from PySide6.QtCore import QObject, QUrl, QSize, Qt, Signal
-from PySide6.QtGui import QAction, QDesktopServices, QIcon, QPixmap
+from PySide6.QtCore import QObject, QTimer, QUrl, QSize, Qt, Signal
+from PySide6.QtGui import QAction, QColor, QDesktopServices, QIcon, QPainter, QPixmap
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -25,7 +26,7 @@ from PySide6.QtWidgets import (
 
 from core.media_analyzer import analyze_media
 from core.wallpaper_library import LIBRARY_CATEGORIES, WallpaperItem, WallpaperLibrary
-from core.thumbnail_cache import ThumbnailCache, image_dimensions
+from core.thumbnail_cache import ThumbnailCache
 
 LOGGER = logging.getLogger(__name__)
 
@@ -54,6 +55,7 @@ SORTS = (
     "Usados recentemente",
     "Favoritos primeiro",
 )
+MAX_RENDERED_ITEMS = 160
 
 
 class ImportSignals(QObject):
@@ -70,11 +72,15 @@ class LibraryDialog(QDialog):
         self.library = library
         self.initial_path = initial_path
         self.thumbnails = ThumbnailCache(self)
-        self.thumbnails.ready.connect(lambda _: self.refresh())
+        self.thumbnails.ready.connect(self._thumbnail_ready)
         self.import_signals = ImportSignals(self)
         self.import_signals.completed.connect(self._import_finished)
         self.import_signals.failed.connect(self._import_failed)
         self.importing = False
+        self.refresh_timer = QTimer(self)
+        self.refresh_timer.setSingleShot(True)
+        self.refresh_timer.timeout.connect(self.refresh)
+        self._placeholder_icons: dict[str, QIcon] = {}
         self.setWindowTitle("Biblioteca de wallpapers")
         self.resize(940, 650)
         self.setAcceptDrops(True)
@@ -139,7 +145,7 @@ class LibraryDialog(QDialog):
         footer.addWidget(self.choose_button)
         root.addLayout(footer)
 
-        self.search_edit.textChanged.connect(self.refresh)
+        self.search_edit.textChanged.connect(self._schedule_refresh)
         self.filter_combo.currentTextChanged.connect(self.refresh)
         self.sort_combo.currentTextChanged.connect(self.refresh)
         self.clear_search_button.clicked.connect(self.search_edit.clear)
@@ -161,8 +167,13 @@ class LibraryDialog(QDialog):
         self._set_combo_text(self.filter_combo, str(state.get("filter", "Todos")))
         self._set_combo_text(self.sort_combo, str(state.get("sort", "Nome A-Z")))
 
+    def _schedule_refresh(self) -> None:
+        self.refresh_timer.start(160)
+
     def refresh(self) -> None:
-        search = self.search_edit.text().strip().lower()
+        previous_path = self._selected_path()
+        scroll_position = self.list_widget.verticalScrollBar().value()
+        search = self._normalize_search(self.search_edit.text())
         current_filter = FILTERS[self.filter_combo.currentText()]
         self.library.update_ui_state(
             search=self.search_edit.text().strip(),
@@ -171,6 +182,7 @@ class LibraryDialog(QDialog):
         )
         self.list_widget.clear()
         wallpapers = self._sorted_items(self.library.items())
+        matched = 0
         for wallpaper in wallpapers:
             searchable = " ".join(
                 (
@@ -182,7 +194,8 @@ class LibraryDialog(QDialog):
                     wallpaper.collection,
                     *wallpaper.tags,
                 )
-            ).lower()
+            )
+            searchable = self._normalize_search(searchable)
             if search and search not in searchable:
                 continue
             if current_filter == "favorite" and not wallpaper.favorite:
@@ -202,6 +215,9 @@ class LibraryDialog(QDialog):
                     pass
                 elif wallpaper.kind != current_filter:
                     continue
+            matched += 1
+            if self.list_widget.count() >= MAX_RENDERED_ITEMS:
+                continue
             item = QListWidgetItem(self._label(wallpaper))
             item.setData(Qt.ItemDataRole.UserRole, wallpaper)
             item.setToolTip(self._details_text(wallpaper))
@@ -210,12 +226,28 @@ class LibraryDialog(QDialog):
             if self.initial_path and wallpaper.path.resolve() == self.initial_path.resolve():
                 self.list_widget.setCurrentItem(item)
                 self.list_widget.scrollToItem(item)
+            elif previous_path and self._same_path(wallpaper.path, previous_path):
+                self.list_widget.setCurrentItem(item)
         stats = self.library.stats()
         self.summary_label.setText(
             f"{stats['total']} arquivos | {stats['favorites']} favoritos | "
             f"{stats['personal']} importados"
         )
+        if self.list_widget.count() == 0:
+            if stats["total"]:
+                self.empty_label.setText("Nenhum wallpaper corresponde aos filtros atuais.")
+                self.status_label.setText("Ajuste a busca ou clique em Limpar para ver todos.")
+            else:
+                self.empty_label.setText("Sua biblioteca esta vazia. Importe arquivos ou arraste wallpapers para ca.")
+                self.status_label.setText("Formatos aceitos: MP4, WebM, GIF, PNG, JPG, BMP e WebP.")
+        elif matched > self.list_widget.count():
+            self.status_label.setText(
+                f"Mostrando {self.list_widget.count()} de {matched} resultado(s). Refine a busca para ver menos itens."
+            )
+        else:
+            self.status_label.setText("Biblioteca pronta.")
         self.empty_label.setVisible(self.list_widget.count() == 0)
+        self.list_widget.verticalScrollBar().setValue(scroll_position)
         self._selection_changed()
 
     def _sorted_items(self, wallpapers: list[WallpaperItem]) -> list[WallpaperItem]:
@@ -421,9 +453,22 @@ class LibraryDialog(QDialog):
         delete_action.setEnabled(not wallpaper.included)
         menu.exec(self.list_widget.mapToGlobal(position))
 
+    def _thumbnail_ready(self, path: str) -> None:
+        ready_path = Path(path)
+        for index in range(self.list_widget.count()):
+            item = self.list_widget.item(index)
+            wallpaper = item.data(Qt.ItemDataRole.UserRole)
+            if wallpaper and self._same_path(wallpaper.path, ready_path):
+                item.setIcon(self._icon(wallpaper))
+                return
+
     def _selected(self) -> WallpaperItem | None:
         items = self.list_widget.selectedItems()
         return items[0].data(Qt.ItemDataRole.UserRole) if items else None
+
+    def _selected_path(self) -> Path | None:
+        wallpaper = self._selected()
+        return wallpaper.path if wallpaper else None
 
     def dragEnterEvent(self, event) -> None:
         if self._supported_drop_paths(event):
@@ -498,13 +543,35 @@ class LibraryDialog(QDialog):
             if not pixmap.isNull():
                 return QIcon(pixmap.scaled(190, 108))
             self.thumbnails.request_video(wallpaper.path)
-        return QFileIconProvider().icon(QFileIconProvider.IconType.File)
+        return self._placeholder_icon(wallpaper.kind)
+
+    def _placeholder_icon(self, kind: str) -> QIcon:
+        cached = self._placeholder_icons.get(kind)
+        if cached:
+            return cached
+        colors = {
+            "image": (QColor("#e0f2fe"), QColor("#0284c7")),
+            "gif": (QColor("#fef3c7"), QColor("#d97706")),
+            "video": (QColor("#e0e7ff"), QColor("#4f46e5")),
+        }
+        background, accent = colors.get(kind, (QColor("#f3f4f6"), QColor("#6b7280")))
+        pixmap = QPixmap(190, 108)
+        pixmap.fill(background)
+        painter = QPainter(pixmap)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setBrush(accent)
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.drawRoundedRect(72, 31, 46, 46, 8, 8)
+        painter.end()
+        icon = QIcon(pixmap)
+        self._placeholder_icons[kind] = icon
+        return icon
 
     def _details_text(self, wallpaper: WallpaperItem) -> str:
         size_mb = wallpaper.path.stat().st_size / (1024 * 1024)
-        dimensions = image_dimensions(wallpaper.path)
         metadata = self.thumbnails.metadata(wallpaper.path)
-        if not dimensions and metadata.get("width") and metadata.get("height"):
+        dimensions = None
+        if metadata.get("width") and metadata.get("height"):
             dimensions = int(metadata["width"]), int(metadata["height"])
         resolution = f"{dimensions[0]}x{dimensions[1]}" if dimensions else "resolucao pendente"
         duration_ms = int(metadata.get("duration_ms", 0))
@@ -537,3 +604,16 @@ class LibraryDialog(QDialog):
         index = combo.findText(text)
         if index >= 0:
             combo.setCurrentIndex(index)
+
+    @staticmethod
+    def _same_path(first: Path, second: Path) -> bool:
+        try:
+            return first.resolve() == second.resolve()
+        except OSError:
+            return str(first).lower() == str(second).lower()
+
+    @staticmethod
+    def _normalize_search(value: str) -> str:
+        normalized = unicodedata.normalize("NFKD", value)
+        without_marks = "".join(character for character in normalized if not unicodedata.combining(character))
+        return " ".join(without_marks.casefold().split())

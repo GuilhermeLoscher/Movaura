@@ -76,11 +76,23 @@ class WallpaperLibrary:
     def import_files(self, paths: list[Path]) -> list[WallpaperItem]:
         with self._metadata_lock:
             imported: list[WallpaperItem] = []
+            changed = False
+            known_items = self.items()
+            signature_index = {
+                item.source_hash: item
+                for item in known_items
+                if item.source_hash
+            }
+            path_index = {self._key(item.path): item for item in known_items}
+            name_size_index: dict[tuple[str, int], list[WallpaperItem]] = {}
+            for item in known_items:
+                name_size_index.setdefault((item.path.name.lower(), item.size_bytes), []).append(item)
             for source in paths:
                 kind = self.kind_for_path(source)
                 if not kind or not source.is_file():
                     continue
-                existing = self.find_duplicate(source)
+                signature = self.file_digest(source)
+                existing = self._find_duplicate_from_indexes(source, signature, path_index, signature_index, name_size_index)
                 if existing:
                     imported.append(existing)
                     continue
@@ -90,35 +102,43 @@ class WallpaperLibrary:
                 shutil.copy2(source, destination)
                 analysis = analyze_media(destination)
                 category = self.category_for(destination, analysis.tags)
-                signature = self.file_digest(destination)
-                imported.append(
-                    WallpaperItem(
-                        kind=kind,
-                        path=destination,
-                        name=destination.stem.replace("-", " ").title(),
-                        included=False,
-                        favorite=False,
-                        recent=False,
-                        tags=analysis.tags,
-                        collection="Importados",
-                        resource_class=analysis.resource_class,
-                        category=category,
-                        file_name=destination.name,
-                        extension=destination.suffix.lower(),
-                        size_bytes=self._safe_size(destination),
-                        modified_at=self._safe_mtime(destination),
-                        imported_at=self._safe_mtime(destination),
-                        source_hash=signature,
-                    )
+                signature = signature or self.file_digest(destination)
+                item = WallpaperItem(
+                    kind=kind,
+                    path=destination,
+                    name=destination.stem.replace("-", " ").title(),
+                    included=False,
+                    favorite=False,
+                    recent=False,
+                    tags=analysis.tags,
+                    collection="Importados",
+                    resource_class=analysis.resource_class,
+                    category=category,
+                    file_name=destination.name,
+                    extension=destination.suffix.lower(),
+                    size_bytes=self._safe_size(destination),
+                    modified_at=self._safe_mtime(destination),
+                    imported_at=self._safe_mtime(destination),
+                    source_hash=signature,
                 )
+                imported.append(item)
                 self.update_details(
-                    imported[-1],
+                    item,
                     list(analysis.tags),
                     "Importados",
                     analysis.resource_class,
                     category,
                     signature,
+                    save=False,
                 )
+                known_items.append(item)
+                path_index[self._key(item.path)] = item
+                name_size_index.setdefault((item.path.name.lower(), item.size_bytes), []).append(item)
+                if signature:
+                    signature_index[signature] = item
+                changed = True
+            if changed:
+                self._save_metadata()
             return imported
 
     def import_folder(self, folder: Path) -> list[WallpaperItem]:
@@ -215,6 +235,7 @@ class WallpaperLibrary:
         resource_class: str | None = None,
         category: str | None = None,
         source_hash: str | None = None,
+        save: bool = True,
     ) -> None:
         with self._metadata_lock:
             key = self._key(item.path)
@@ -245,7 +266,8 @@ class WallpaperLibrary:
             elif isinstance(previous, dict) and previous.get("source_hash"):
                 payload["source_hash"] = str(previous["source_hash"])
             self._metadata.setdefault("details", {})[key] = payload
-            self._save_metadata()
+            if save:
+                self._save_metadata()
 
     def ui_state(self) -> dict[str, str]:
         state = self._metadata.get("ui", {})
@@ -257,30 +279,48 @@ class WallpaperLibrary:
             if not isinstance(state, dict):
                 state = {}
                 self._metadata["ui"] = state
+            changed = False
             for key, value in values.items():
-                state[str(key)] = str(value)
-            self._save_metadata()
+                clean_key = str(key)
+                clean_value = str(value)
+                if state.get(clean_key) != clean_value:
+                    state[clean_key] = clean_value
+                    changed = True
+            if changed:
+                self._save_metadata()
 
     def find_duplicate(self, source: Path) -> WallpaperItem | None:
         digest = self.file_digest(source)
         if not digest:
             return None
-        for item in self.items():
-            if self._same_file(source, item.path):
+        items = self.items()
+        signature_index = {item.source_hash: item for item in items if item.source_hash}
+        path_index = {self._key(item.path): item for item in items}
+        name_size_index: dict[tuple[str, int], list[WallpaperItem]] = {}
+        for item in items:
+            name_size_index.setdefault((item.path.name.lower(), item.size_bytes), []).append(item)
+        return self._find_duplicate_from_indexes(source, digest, path_index, signature_index, name_size_index)
+
+    def _find_duplicate_from_indexes(
+        self,
+        source: Path,
+        digest: str,
+        path_index: dict[str, WallpaperItem],
+        signature_index: dict[str, WallpaperItem],
+        name_size_index: dict[tuple[str, int], list[WallpaperItem]],
+    ) -> WallpaperItem | None:
+        if not digest:
+            return None
+        same_path = path_index.get(self._key(source))
+        if same_path:
+            return same_path
+        indexed = signature_index.get(digest)
+        if indexed and self._same_content(source, indexed.path):
+            return indexed
+        size = self._safe_size(source)
+        for item in name_size_index.get((source.name.lower(), size), []):
+            if self.file_digest(item.path) == digest and self._same_content(source, item.path):
                 return item
-            details = self._metadata.get("details", {}).get(self._key(item.path), {})
-            if (
-                isinstance(details, dict)
-                and details.get("source_hash") == digest
-                and self._same_content(source, item.path)
-            ):
-                return item
-            try:
-                if item.path.name == source.name and item.path.stat().st_size == source.stat().st_size:
-                    if self.file_digest(item.path) == digest and self._same_content(source, item.path):
-                        return item
-            except OSError:
-                continue
         return None
 
     def collections(self) -> list[str]:

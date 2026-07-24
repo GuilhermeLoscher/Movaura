@@ -446,7 +446,16 @@ def test_library_dialog_filters_drag_and_cache() -> None:
         dialog.search_edit.setText(".png")
         dialog.refresh()
         assert dialog.list_widget.count() == 1
-        assert library.ui_state()["search"] == ".png"
+        dialog.search_edit.setText("acao")
+        library.update_details(imported[0], ["ação", "neon"], "Unicode")
+        dialog.refresh()
+        assert dialog.list_widget.count() == 1
+        dialog.list_widget.setCurrentRow(0)
+        selected_before = dialog._selected()
+        dialog.refresh()
+        assert dialog._selected() and selected_before
+        assert dialog._selected().path == selected_before.path
+        assert library.ui_state()["search"] == "acao"
         assert library.ui_state()["filter"] == "Anime"
         assert library.ui_state()["sort"] == "Favoritos primeiro"
 

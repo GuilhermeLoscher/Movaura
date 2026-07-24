@@ -191,12 +191,15 @@ def environment_snapshot() -> dict[str, object]:
 def classify_qt_file(path: Path) -> dict[str, str]:
     name = path.name
     lower = name.lower()
-    license_name = "LGPL-3.0-or-commercial (Qt/PySide distribution; verify module-specific notices)"
-    gpl_only = "No evidence found in local package metadata; verify against official Qt module documentation."
-    decision = "KEEP - collected by PyInstaller or runtime dependency; legal review required."
+    license_name = "LGPL-3.0-or-commercial"
+    gpl_only = "NO - treated as LGPL-available based on Qt/PySide6 open-source licensing, unless module-specific documentation says otherwise."
+    decision = "KEEP - LGPL obligations and third-party notices still require legal review."
+    lgpl_available = "YES - Qt/PySide6 open-source distribution permits LGPLv3 where module-specific documentation does not restrict it."
     if "virtualkeyboard" in lower:
-        decision = "REVIEW - Qt Virtual Keyboard has module-specific licensing; verify commercial/GPL/LGPL availability before release."
-        gpl_only = "PENDING - module-specific verification required."
+        license_name = "Commercial-or-GPL-3.0-only for open-source users"
+        lgpl_available = "NO - official Qt Virtual Keyboard documentation lists commercial and GPLv3 licensing, not LGPL."
+        decision = "BLOCKER - remove from redistributable artifact or obtain commercial Qt rights before release."
+        gpl_only = "YES - GPLv3-only under open-source terms."
     if lower.endswith(".dll") and lower.startswith("qt6"):
         module = name.removesuffix(".dll")
     else:
@@ -204,7 +207,7 @@ def classify_qt_file(path: Path) -> dict[str, str]:
     return {
         "module": module,
         "license": license_name,
-        "lgpl_available": "PENDING OFFICIAL VERIFICATION",
+        "lgpl_available": lgpl_available,
         "gpl_only": gpl_only,
         "decision": decision,
     }

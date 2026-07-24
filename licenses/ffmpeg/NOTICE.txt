@@ -1,16 +1,11 @@
-Movaura uses FFmpeg for optional video optimization.
+Movaura bundles FFmpeg for local wallpaper media decoding/inspection.
 
-Current bundled build:
-- Provider/build project: BtbN/FFmpeg-Builds
-- Artifact family: ffmpeg-master-latest-win64-lgpl-shared.zip
-- License: LGPL shared build
-- FFmpeg project: https://ffmpeg.org/
-- Build project: https://github.com/BtbN/FFmpeg-Builds
-
-Commercial note:
-The bundled build must remain LGPL-clean for closed commercial distribution:
-no --enable-gpl, no --enable-nonfree, no libx264 and no libx265. Review
-`tools/ffmpeg/README.txt` before every public release.
-
-The Movaura application is not part of FFmpeg and FFmpeg is not owned by
-Guilherme Loscher (GL).
+Provider: BtbN/FFmpeg-Builds
+Release tag: autobuild-2026-06-30-13-34
+Artifact: ffmpeg-N-125365-g9a01c1cb6a-win64-lgpl-shared.zip
+Artifact URL: https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-06-30-13-34/ffmpeg-N-125365-g9a01c1cb6a-win64-lgpl-shared.zip
+Artifact SHA-256: 52d25fc4711078112ba622d07601f183371af43e2d93cbb6e5eab3e1c05387cb
+FFmpeg version: N-125365-g9a01c1cb6a-20260630
+FFmpeg commit: 9a01c1cb6a
+License posture: LGPL shared build candidate; no --enable-gpl, --enable-nonfree, libx264 or libx265 detected in the build configuration.
+Legal review remains required before commercial publication.

@@ -3,9 +3,9 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "Movaura technical SBOM",
-  "documentNamespace": "https://movaura.local/spdx/20260724135752",
+  "documentNamespace": "https://movaura.local/spdx/20260724143903",
   "creationInfo": {
-    "created": "2026-07-24T13:57:52Z",
+    "created": "2026-07-24T14:39:03Z",
     "creators": [
       "Tool: Movaura license compliance scripts"
     ]

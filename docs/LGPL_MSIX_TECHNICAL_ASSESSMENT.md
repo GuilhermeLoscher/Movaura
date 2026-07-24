@@ -1,25 +1,22 @@
 # LGPL and MSIX technical assessment
 
-Status: OWNER DECISION REQUIRED.
+Status: READY FOR PROFESSIONAL LEGAL REVIEW
 
-This is a technical assessment, not legal advice. MSIX packages are installed into protected app package locations and are signature-bound. That can complicate the user's ability to replace LGPL libraries with modified versions without rebuilding/repackaging the application.
+This is a technical assessment, not legal advice. MSIX packages are installed into protected package locations and are signature-bound. That can complicate the user ability to replace LGPL libraries without rebuilding or repackaging. The app should not load DLLs from writable or untrusted paths as a workaround because that creates DLL search-order and tampering risk.
 
-Options for owner/legal review:
+## Real technical checks performed
 
-1. Qt Community/LGPLv3: keep DLLs separate, provide notices/source/rebuild materials, and have counsel confirm the MSIX replacement/relink strategy.
-2. Qt commercial license: obtain and keep proof of license coverage for distributed Qt modules.
-3. Framework replacement: analyze only if Qt obligations cannot be satisfied.
+- Confirmed standalone Qt/PySide6 files are physically distributed as separate DLL/plugin files, not statically linked into `Movaura.exe`.
+- Removed detected Qt Virtual Keyboard files from the local standalone artifact and added a build-time guard to fail if they are collected again.
+- Added official GPL/LGPL license texts to the local license payload.
+- Updated CI validation to fail on missing FFmpeg lock fields, floating FFmpeg artifact URLs, missing required license texts, and GPL-only Qt VirtualKeyboard artifacts.
 
-Security constraints: do not load DLLs from the current directory, global PATH, user-writable untrusted folders, or unsigned paths.
+## Owner/legal decision still required
 
-## Official sources checked
+1. Use Qt/PySide6 under LGPLv3 with a documented source/rebuild/repackage path and notices.
+2. Or obtain a Qt commercial license and preserve proof of coverage for all distributed modules.
+3. Confirm whether MSIX distribution plus supplied rebuild/repackage materials satisfies LGPLv3 for the target distribution model.
 
-- Qt licensing: https://doc.qt.io/qt-6/licensing.html
-- Qt for Python commercial distribution guidance: https://doc.qt.io/qtforpython-6.10/commercial/index.html
-- Microsoft MSIX package signing: https://learn.microsoft.com/en-us/windows/msix/package/signing-package-overview
-- Microsoft MSIX package identity/runtime context: https://learn.microsoft.com/en-us/windows/msix/detect-package-identity
+## Security decision
 
-## Technical conclusion
-
-No secure implementation was added to allow loading replacement Qt DLLs from user-writable locations. That would increase DLL search-order and tampering risk.
-For a Store/MSIX commercial release, the owner must choose either a legally reviewed LGPLv3 compliance strategy with reproducible rebuild/repackage materials, or a Qt commercial license path.
+No code was added to load replacement Qt DLLs from current directory, PATH, or user-writable folders. That keeps the package safer, but means the LGPL replacement/relink path must be handled by documented rebuild/repackage materials or commercial licensing.

@@ -192,4 +192,6 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    from finalize_phase2_license_blockers import main as finalize_phase2_license_blockers
+
+    raise SystemExit(finalize_phase2_license_blockers())

@@ -1,35 +1,43 @@
 # Final license audit
 
-Status: NOT READY - LICENSE BLOCKERS
+Status: READY FOR PROFESSIONAL LEGAL REVIEW
 
-This is a technical compliance preparation report, not legal advice.
+This is a technical compliance preparation report, not legal advice. It must not be treated as approval for commercial release.
 
-## Blockers
+## What was resolved
 
-- FFmpeg immutable archive/source lock is pending.
-- FFmpeg external libraries require official per-library review.
-- Qt module licensing still requires official module-by-module confirmation.
-- LGPLv3 and MSIX replacement/relink strategy requires owner/legal decision.
-- Patent/codecs review requires territory-specific legal review.
+- FFmpeg no longer depends on a floating `latest` artifact in the compliance lock.
+- FFmpeg is pinned to a retained BtbN monthly release with immutable tag URL and archive SHA-256.
+- FFmpeg binary hashes are recorded in `third_party/ffmpeg/LOCK.json` and `docs/FFMPEG_BUILD_LOCK.md`.
+- FFmpeg source and provider source URLs/SHA-256 are recorded without vendoring large source archives into Git.
+- Every enabled `--enable-lib*` flag has a technical license classification or legal-review classification.
+- Qt/PySide6 artifact inventory was regenerated after removing Qt Virtual Keyboard from the local artifact.
+- The build script now excludes Qt Virtual Keyboard and fails if it reappears.
+- Official GPL/LGPL license texts were added for Qt/PySide6/Shiboken6 review packages.
+
+## Still requiring professional review
+
+- LGPLv3 compliance strategy for MSIX and standalone distribution.
+- Codec and patent review by sale/distribution territory.
+- Final third-party notice wording and EULA/privacy alignment.
+- Owner decision on whether to use Qt commercial licensing or LGPLv3 compliance materials.
 
 ## Evidence
 
-- `release/compliance/`
-- `docs/audit-evidence/movaura-beta-baseline.json`
 - `third_party/ffmpeg/LOCK.json`
+- `docs/FFMPEG_BUILD_LOCK.md`
+- `docs/FFMPEG_EXTERNAL_LIBRARY_MATRIX.md`
+- `docs/QT_MODULE_LICENSE_MATRIX.md`
+- `docs/LGPL_MSIX_TECHNICAL_ASSESSMENT.md`
 - `THIRD_PARTY_NOTICES.txt`
+- `release/compliance/`
 
 ## Official sources checked
 
+- BtbN FFmpeg-Builds README/release retention and variants: https://github.com/BtbN/FFmpeg-Builds
+- BtbN pinned release: https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2026-06-30-13-34
+- FFmpeg legal/license documentation: https://ffmpeg.org/legal.html
 - Qt licensing: https://doc.qt.io/qt-6/licensing.html
 - Qt for Python commercial use: https://doc.qt.io/qtforpython-6.10/commercial/index.html
-- FFmpeg legal/license documentation: https://ffmpeg.org/legal.html
-- FFmpeg license documentation snapshot: https://ffmpeg.org/doxygen/7.0/md_LICENSE.html
-- MSIX package signing: https://learn.microsoft.com/en-us/windows/msix/package/signing-package-overview
-- MSIX package identity/runtime context: https://learn.microsoft.com/en-us/windows/msix/detect-package-identity
-- PyInstaller license: https://pyinstaller.org/en/stable/license.html
-
-## License text blocker
-
-The local PySide6 wheels did not expose full LGPL/GPL text files under names such as `LGPL*.txt` or `GPL*.txt` during this audit.
-Existing short notices must not be treated as complete license texts. Full official license texts and Qt third-party notices remain required before commercial publication.
+- Qt Virtual Keyboard licensing: https://doc.qt.io/qt-6/qtvirtualkeyboard-index.html
+- GNU GPL/LGPL license texts: https://www.gnu.org/licenses/

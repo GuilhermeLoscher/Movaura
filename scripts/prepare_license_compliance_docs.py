@@ -391,6 +391,10 @@ def main() -> int:
     notices_docs()
     sbom()
     final_docs(command_results)
+    from finalize_phase2_license_blockers import main as finalize_phase2_license_blockers
+
+    finalize_phase2_license_blockers()
+    run_script("audit_qt_modules.py")
     write_json(RELEASE_COMPLIANCE / "reports" / "license-compliance-prep-results.json", command_results)
     print("license_compliance_docs=generated")
     return 0

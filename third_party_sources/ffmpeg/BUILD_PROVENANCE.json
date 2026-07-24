@@ -1,5 +1,14 @@
 {
-  "status": "PENDING",
-  "reason": "Current FFmpeg binary is not locked to an immutable source/archive provenance.",
-  "created_at_utc": "2026-07-24T13:57:52.856348+00:00"
+  "status": "READY FOR PROFESSIONAL LEGAL REVIEW",
+  "provider": "BtbN/FFmpeg-Builds",
+  "provider_release_tag": "autobuild-2026-06-30-13-34",
+  "provider_commit": "7a83528ea3431e9eca982a712bc3a7cd0789d5d0",
+  "artifact_name": "ffmpeg-N-125365-g9a01c1cb6a-win64-lgpl-shared.zip",
+  "artifact_url": "https://github.com/BtbN/FFmpeg-Builds/releases/download/autobuild-2026-06-30-13-34/ffmpeg-N-125365-g9a01c1cb6a-win64-lgpl-shared.zip",
+  "archive_sha256": "52d25fc4711078112ba622d07601f183371af43e2d93cbb6e5eab3e1c05387cb",
+  "ffmpeg_source_url": "https://github.com/FFmpeg/FFmpeg/archive/9a01c1cb6a.zip",
+  "ffmpeg_source_archive_sha256": "8ca7287b2659c2309ad5060caad5b9ae4ef51f1b54ed5a30e0bfc815ee1c376d",
+  "provider_source_url": "https://github.com/BtbN/FFmpeg-Builds/archive/7a83528ea3431e9eca982a712bc3a7cd0789d5d0.zip",
+  "provider_source_archive_sha256": "14e560e13dea71189bd317be0b6c3fe5ba42b74c5a73a6b5952ddf44d5225e99",
+  "created_at_utc": "2026-07-24T14:39:03.644923+00:00"
 }

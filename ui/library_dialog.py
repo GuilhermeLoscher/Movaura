@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6.QtCore import QSize, Qt, Signal
-from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtCore import QUrl, QSize, Qt, Signal
+from PySide6.QtGui import QAction, QDesktopServices, QIcon, QPixmap
 from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QListWidget,
     QListWidgetItem,
+    QMenu,
     QMessageBox,
     QPushButton,
     QInputDialog,
@@ -27,9 +28,14 @@ from core.thumbnail_cache import ThumbnailCache, image_dimensions
 
 FILTERS = {
     "Todos": "",
-    "Imagens": "image",
-    "GIFs": "gif",
+    "Anime": "category:Anime",
+    "Carros": "category:Carros",
+    "Cyberpunk": "category:Cyberpunk",
+    "Natureza": "category:Natureza",
     "Videos": "video",
+    "GIFs": "gif",
+    "Outros": "category:Outros",
+    "Imagens": "image",
     "Favoritos": "favorite",
     "Recentes": "recent",
     "Importados": "personal",
@@ -55,6 +61,7 @@ class LibraryDialog(QDialog):
         self.resize(940, 650)
         self.setAcceptDrops(True)
         self._build_ui()
+        self._load_ui_state()
         self.refresh()
 
     def _build_ui(self) -> None:
@@ -82,6 +89,8 @@ class LibraryDialog(QDialog):
         self.list_widget.setIconSize(QSize(190, 108))
         self.list_widget.setGridSize(QSize(220, 155))
         self.list_widget.setWordWrap(True)
+        self.list_widget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.list_widget.setStyleSheet("QListWidget::item { padding: 6px; } QListWidget::item:selected { background: #dbeafe; }")
         root.addWidget(self.list_widget, 1)
 
         footer = QHBoxLayout()
@@ -114,10 +123,22 @@ class LibraryDialog(QDialog):
         self.choose_button.clicked.connect(self._choose_selected)
         self.list_widget.itemDoubleClicked.connect(lambda _: self._choose_selected())
         self.list_widget.itemSelectionChanged.connect(self._selection_changed)
+        self.list_widget.customContextMenuRequested.connect(self._open_context_menu)
+
+    def _load_ui_state(self) -> None:
+        state = self.library.ui_state()
+        self.search_edit.setText(str(state.get("search", "")))
+        self._set_combo_text(self.filter_combo, str(state.get("filter", "Todos")))
+        self._set_combo_text(self.sort_combo, str(state.get("sort", "Nome")))
 
     def refresh(self) -> None:
         search = self.search_edit.text().strip().lower()
         current_filter = FILTERS[self.filter_combo.currentText()]
+        self.library.update_ui_state(
+            search=self.search_edit.text().strip(),
+            filter=self.filter_combo.currentText(),
+            sort=self.sort_combo.currentText(),
+        )
         self.list_widget.clear()
         wallpapers = self.library.items()
         if self.sort_combo.currentText() == "Recentes primeiro":
@@ -138,8 +159,12 @@ class LibraryDialog(QDialog):
                 continue
             if current_filter == "4k" and "4k" not in wallpaper.tags:
                 continue
+            if current_filter.startswith("category:") and wallpaper.category != current_filter.split(":", 1)[1]:
+                continue
             if current_filter and current_filter not in {"favorite", "personal", "recent", "leve", "medio", "pesado", "4k"}:
-                if wallpaper.kind != current_filter:
+                if current_filter.startswith("category:"):
+                    pass
+                elif wallpaper.kind != current_filter:
                     continue
             item = QListWidgetItem(self._label(wallpaper))
             item.setData(Qt.ItemDataRole.UserRole, wallpaper)
@@ -160,7 +185,7 @@ class LibraryDialog(QDialog):
         folder = QFileDialog.getExistingDirectory(self, "Importar pasta de wallpapers", str(Path.home()))
         if not folder:
             return
-        imported = self.library.import_folder(Path(folder))
+        imported = self.import_paths([Path(folder)])
         self.refresh()
         QMessageBox.information(self, "Importacao concluida", self._import_message(imported))
 
@@ -173,13 +198,25 @@ class LibraryDialog(QDialog):
         )
         if not paths:
             return
-        imported = self.library.import_files([Path(path) for path in paths])
+        imported = self.import_paths([Path(path) for path in paths])
         self.refresh()
         QMessageBox.information(
             self,
             "Importacao concluida",
             self._import_message(imported),
         )
+
+    def import_paths(self, paths: list[Path]) -> list[WallpaperItem]:
+        imported: list[WallpaperItem] = []
+        for path in paths:
+            try:
+                if path.is_dir():
+                    imported.extend(self.library.import_folder(path))
+                elif path.is_file() and self.library.kind_for_path(path):
+                    imported.extend(self.library.import_files([path]))
+            except OSError:
+                continue
+        return imported
 
     def _toggle_favorite(self) -> None:
         wallpaper = self._selected()
@@ -221,6 +258,25 @@ class LibraryDialog(QDialog):
             self.library.remove_personal(wallpaper)
             self.refresh()
 
+    def _rename_selected(self) -> None:
+        wallpaper = self._selected()
+        if not wallpaper or wallpaper.included:
+            return
+        name, ok = QInputDialog.getText(self, "Renomear wallpaper", "Novo nome", text=wallpaper.path.stem)
+        if not ok:
+            return
+        renamed = self.library.rename_personal(wallpaper, name)
+        if not renamed:
+            QMessageBox.warning(self, "Renomear wallpaper", "Nao foi possivel renomear este wallpaper.")
+            return
+        self.initial_path = renamed.path
+        self.refresh()
+
+    def _open_selected_folder(self) -> None:
+        wallpaper = self._selected()
+        if wallpaper:
+            QDesktopServices.openUrl(QUrl.fromLocalFile(str(wallpaper.path.parent)))
+
     def _choose_selected(self) -> None:
         wallpaper = self._selected()
         if wallpaper:
@@ -244,23 +300,49 @@ class LibraryDialog(QDialog):
         if wallpaper:
             self.favorite_button.setText("Desfavoritar" if wallpaper.favorite else "Favoritar")
 
+    def _open_context_menu(self, position) -> None:
+        item = self.list_widget.itemAt(position)
+        if item:
+            self.list_widget.setCurrentItem(item)
+        wallpaper = self._selected()
+        if not wallpaper:
+            return
+        menu = QMenu(self)
+        apply_action = QAction("Aplicar", self)
+        favorite_action = QAction("Remover favorito" if wallpaper.favorite else "Favoritar", self)
+        folder_action = QAction("Abrir pasta", self)
+        rename_action = QAction("Renomear", self)
+        delete_action = QAction("Excluir", self)
+        preview_action = QAction("Pre-visualizar", self)
+        apply_action.triggered.connect(self._choose_selected)
+        preview_action.triggered.connect(self._preview_selected)
+        favorite_action.triggered.connect(self._toggle_favorite)
+        folder_action.triggered.connect(self._open_selected_folder)
+        rename_action.triggered.connect(self._rename_selected)
+        delete_action.triggered.connect(self._remove_selected)
+        menu.addAction(apply_action)
+        menu.addAction(preview_action)
+        menu.addSeparator()
+        menu.addAction(favorite_action)
+        menu.addAction(folder_action)
+        menu.addSeparator()
+        menu.addAction(rename_action)
+        menu.addAction(delete_action)
+        rename_action.setEnabled(not wallpaper.included)
+        delete_action.setEnabled(not wallpaper.included)
+        menu.exec(self.list_widget.mapToGlobal(position))
+
     def _selected(self) -> WallpaperItem | None:
         items = self.list_widget.selectedItems()
         return items[0].data(Qt.ItemDataRole.UserRole) if items else None
 
     def dragEnterEvent(self, event) -> None:
-        if event.mimeData().hasUrls():
+        if self._supported_drop_paths(event):
             event.acceptProposedAction()
 
     def dropEvent(self, event) -> None:
-        paths = [
-            Path(url.toLocalFile())
-            for url in event.mimeData().urls()
-            if url.isLocalFile()
-        ]
-        imported = self.library.import_files([path for path in paths if path.is_file()])
-        for folder in [path for path in paths if path.is_dir()]:
-            imported.extend(self.library.import_folder(folder))
+        paths = self._supported_drop_paths(event)
+        imported = self.import_paths(paths)
         self.refresh()
         if imported:
             QMessageBox.information(
@@ -270,13 +352,25 @@ class LibraryDialog(QDialog):
             )
         event.acceptProposedAction()
 
+    def _supported_drop_paths(self, event) -> list[Path]:
+        if not event.mimeData().hasUrls():
+            return []
+        paths: list[Path] = []
+        for url in event.mimeData().urls():
+            if not url.isLocalFile():
+                continue
+            path = Path(url.toLocalFile())
+            if path.is_dir() or (path.is_file() and self.library.kind_for_path(path)):
+                paths.append(path)
+        return paths
+
     @staticmethod
     def _label(wallpaper: WallpaperItem) -> str:
         favorite = " ★" if wallpaper.favorite else ""
         source = "incluido" if wallpaper.included else "importado"
         collection = f" | {wallpaper.collection}" if wallpaper.collection else ""
         resource = {"leve": "Leve", "medio": "Medio", "pesado": "Pesado"}.get(wallpaper.resource_class, "Leve")
-        return f"{wallpaper.name}{favorite}\n{source}{collection} | {resource}"
+        return f"{wallpaper.name}{favorite}\n{wallpaper.category} | {source}{collection} | {resource}"
 
     def _icon(self, wallpaper: WallpaperItem) -> QIcon:
         if wallpaper.kind in {"image", "gif"}:
@@ -322,7 +416,7 @@ class LibraryDialog(QDialog):
         duration = f" | {duration_ms / 1000:.1f}s" if duration_ms else ""
         tags = f"\nTags: {', '.join(wallpaper.tags)}" if wallpaper.tags else ""
         resource = {"leve": "Leve", "medio": "Medio", "pesado": "Pesado"}.get(wallpaper.resource_class, "Leve")
-        return f"{wallpaper.path}\n{resource} | {resolution}{duration} | {size_mb:.1f} MB{tags}"
+        return f"{wallpaper.path}\n{wallpaper.category} | {resource} | {resolution}{duration} | {size_mb:.1f} MB{tags}"
 
     @staticmethod
     def _import_message(imported: list[WallpaperItem]) -> str:
@@ -338,3 +432,9 @@ class LibraryDialog(QDialog):
         analysis = analyze_media(imported[0].path)
         lines.append(f"Primeiro arquivo: {analysis.user_summary}.")
         return "\n".join(lines)
+
+    @staticmethod
+    def _set_combo_text(combo: QComboBox, text: str) -> None:
+        index = combo.findText(text)
+        if index >= 0:
+            combo.setCurrentIndex(index)

@@ -9,7 +9,7 @@ from tempfile import TemporaryDirectory
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PySide6.QtCore import QRect
+from PySide6.QtCore import QRect, QUrl
 from PySide6.QtGui import QImage
 from PySide6.QtWidgets import QApplication
 
@@ -27,6 +27,7 @@ from core.settings import MovauraSettings
 from core.startup_manager import StartupManager
 from core.update_checker import UpdateChecker, UpdateResult
 from core.wallpaper_library import WallpaperLibrary
+from core.thumbnail_cache import ThumbnailCache
 from ui.control_panel import ControlPanel
 from ui.library_dialog import LibraryDialog
 from ui.pages.explore_page import ExplorePage
@@ -200,13 +201,23 @@ def test_library_recents() -> None:
         imported = library.import_files([source])
         assert imported
         item = imported[0]
+        duplicate = library.import_files([source])
+        assert duplicate and duplicate[0].path == item.path
+        assert len(library.items()) == 1
         library.mark_recent(item)
         library.update_details(item, ["anime", " neon "], "Colecao teste")
         assert any(current.path == item.path and current.recent for current in library.items())
         current = next(current for current in library.items() if current.path == item.path)
         assert current.tags == ("anime", "neon")
         assert current.collection == "Colecao teste"
+        assert current.category == "Anime"
         assert current.resource_class in {"leve", "medio", "pesado"}
+        renamed = library.rename_personal(current, "Novo Nome Seguro")
+        assert renamed
+        assert renamed.path.name == "Novo Nome Seguro.png"
+        assert not current.path.exists()
+        library.update_ui_state(search="anime", filter="Anime", sort="Favoritos primeiro")
+        assert library.ui_state()["filter"] == "Anime"
 
 
 def test_media_analyzer() -> None:
@@ -382,6 +393,70 @@ def test_explore_local_import_flow() -> None:
         page.close()
 
 
+class FakeMimeData:
+    def __init__(self, urls: list[QUrl]) -> None:
+        self._urls = urls
+
+    def hasUrls(self) -> bool:
+        return bool(self._urls)
+
+    def urls(self) -> list[QUrl]:
+        return self._urls
+
+
+class FakeDropEvent:
+    def __init__(self, urls: list[QUrl]) -> None:
+        self._mime = FakeMimeData(urls)
+
+    def mimeData(self) -> FakeMimeData:
+        return self._mime
+
+
+def test_library_dialog_filters_drag_and_cache() -> None:
+    app = QApplication.instance() or QApplication([])
+    with TemporaryDirectory() as temp:
+        root = Path(temp)
+        image = QImage(80, 45, QImage.Format.Format_RGB32)
+        image.fill(0x00AA88)
+        anime = root / "anime-neon.png"
+        invalid = root / "notes.txt"
+        assert image.save(str(anime))
+        invalid.write_text("ignore", encoding="utf-8")
+
+        library = WallpaperLibrary()
+        library.included_root = root / "included"
+        library.personal_root = root / "personal"
+        library.personal_root.mkdir(parents=True, exist_ok=True)
+        library.metadata_path = root / "library.json"
+        library._metadata = {"favorites": [], "recent": [], "details": {}, "ui": {}}
+        dialog = LibraryDialog(library)
+
+        imported = dialog.import_paths([anime, invalid])
+        assert len(imported) == 1
+        dialog.search_edit.setText("anime")
+        dialog.filter_combo.setCurrentText("Anime")
+        dialog.sort_combo.setCurrentText("Favoritos primeiro")
+        dialog.refresh()
+        assert dialog.list_widget.count() == 1
+        assert library.ui_state()["search"] == "anime"
+        assert library.ui_state()["filter"] == "Anime"
+        assert library.ui_state()["sort"] == "Favoritos primeiro"
+
+        supported = dialog._supported_drop_paths(
+            FakeDropEvent(
+                [
+                    QUrl.fromLocalFile(str(anime)),
+                    QUrl.fromLocalFile(str(invalid)),
+                    QUrl("https://example.com/wallpaper.png"),
+                ]
+            )
+        )
+        assert supported == [anime]
+        cache = ThumbnailCache(dialog)
+        assert cache.cached_path(imported[0].path) == cache.cached_path(imported[0].path)
+        dialog.close()
+
+
 def test_performance_snapshot() -> None:
     snapshot = PerformanceMonitor().sample(set())
     assert snapshot.average_cpu_percent == 0.0
@@ -410,7 +485,7 @@ def test_panel() -> None:
         assert panel.auto_cpu_spin.value() >= 5
         assert panel.auto_memory_spin.value() >= 64
         assert panel.performance_combo.count() == 3
-        assert library.filter_combo.count() == 11
+        assert library.filter_combo.count() == 16
         assert library.sort_combo.count() == 3
         assert editor.effect.count() == 9
         assert editor.layer_list.count() >= 2
@@ -438,6 +513,7 @@ def main() -> None:
     test_explore_external_urls()
     test_explore_page_without_api_key()
     test_explore_local_import_flow()
+    test_library_dialog_filters_drag_and_cache()
     test_panel()
     print("product_smoke_tests=ok")
 

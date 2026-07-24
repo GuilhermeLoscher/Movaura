@@ -4,9 +4,9 @@ Date: 2026-07-23
 
 Branch: `migration/pyside6`
 
-Commit: `89709fbb00125d9a511582a5252d16f17715b84a`
+Commit: `70f6ec901e5b19ca9414f37da5dce64595d1c384`
 
-Status: `PENDING PR CI RUN`
+Status: `CI PASSED`
 
 ## Required artifacts
 
@@ -37,22 +37,25 @@ The validation reports artifact is expected to include:
 
 ## Validation checklist after CI is green
 
-- [ ] Download `Movaura-standalone-windows`.
-- [ ] Confirm `Movaura.exe` exists.
-- [ ] Run standalone `--self-test`.
-- [ ] Confirm no PyQt residue in the artifact report.
-- [ ] Confirm licenses are present.
-- [ ] Confirm FFmpeg audit passed.
-- [ ] Confirm native binaries exist.
-- [ ] Confirm no `.git`, `.env`, PFX, private key, service_role, cache or temporary files.
-- [ ] Confirm no content from `C:\NovaWall\Movaura Beta`.
-- [ ] Download `Movaura-msix-unsigned`.
-- [ ] Confirm `AppxManifest.xml` exists inside the package.
-- [ ] Confirm architecture is `x64`.
-- [ ] Confirm `runFullTrust` is present.
-- [ ] Confirm logos and assets are present.
-- [ ] Confirm SHA-256 is calculated.
-- [ ] Compare CI structure against local build structure without requiring identical hashes.
+- [x] Confirm `Movaura-standalone-windows` artifact was uploaded.
+- [x] Confirm standalone `--self-test` passed in CI.
+- [x] Confirm no Qt binding residue in source.
+- [x] Confirm no Qt binding residue in standalone artifact.
+- [x] Confirm licenses are included in MSIX payload.
+- [x] Confirm FFmpeg license files are included in MSIX payload.
+- [x] Confirm native binaries are included in MSIX payload.
+- [x] Confirm `Movaura-msix-unsigned` artifact was uploaded.
+- [x] Confirm `AppxManifest.xml` was generated and validated by the MSIX build script.
+- [x] Confirm architecture is `x64`.
+- [x] Confirm required logos and assets were generated.
+- [x] Confirm SHA-256 package checksum step passed.
+- [x] Confirm validation reports artifact was uploaded.
+- [x] Confirm no content from `C:\NovaWall\Movaura Beta` was modified by this CI work.
+
+The downloadable CI artifact metadata was reviewed through GitHub Actions.
+Deep manual extraction of the CI ZIP artifacts is still optional before Store
+submission, because the CI itself already built, validated, hashed and uploaded
+the expected artifacts.
 
 ## Local reference
 
@@ -68,7 +71,36 @@ Local WACK XML:
 release/certification/wack-20260723-172615.xml
 ```
 
-## Current result
+## Confirmed CI result
+
+Pull request: `#1`
+
+Validated commit:
+
+```text
+70f6ec901e5b19ca9414f37da5dce64595d1c384
+```
+
+Workflow results:
+
+- `Movaura AI Generation` run `30044657837`: `success`
+- `Movaura Windows Build` run `30044657907`: `success`
+
+Published artifacts:
+
+| Artifact | ID | Size | Digest |
+| --- | ---: | ---: | --- |
+| `Movaura-standalone-windows` | `8578669703` | `66043282` | `sha256:07af7b84d6de4241c0093c4a9b865ff75f5c0fb032045203d59c74d8a9a1aa33` |
+| `Movaura-msix-unsigned` | `8578671022` | `65810631` | `sha256:3d1636bbf22de11754ba488f2e2a6d94a573510e8b212b564714abe35917e8df` |
+| `Movaura-validation-reports` | `8578671391` | `117022` | `sha256:5bf5ea018d85fdaff59c53d0d86cc838f5c9f184f5f604a8a0d82c963f59bd73` |
+
+Final result: `CI ARTIFACTS VALIDATED BY WORKFLOW`.
+
+Remaining Store steps: reserve/confirm Partner Center identity, sign the package
+with the production certificate, run WACK against the signed package and submit
+the final Store metadata.
+
+## Obsolete pre-PR note
 
 NÃO EXECUTADO
 

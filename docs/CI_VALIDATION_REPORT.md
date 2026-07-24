@@ -67,12 +67,40 @@ Expected reports:
 
 ## Current status
 
-Local workflow edits are prepared. Local standalone/MSIX/WACK validation passed after the final audit changes.
+GitHub Actions passed on pull request `#1` after the final CI fixes.
 
-GitHub-hosted CI result is not yet known until the branch is pushed and the workflow runs.
+Validated commit:
 
-PR creation through the GitHub connector was attempted after pushing commit `89709fbb00125d9a511582a5252d16f17715b84a`, but GitHub returned `403 Resource not accessible by integration`. Manual PR creation is required with the body in `docs/PULL_REQUEST_DESCRIPTION.md`.
+```text
+70f6ec901e5b19ca9414f37da5dce64595d1c384
+```
 
-Status before GitHub Actions verification: `READY FOR CI REVIEW`, not Store-ready.
+Workflow results:
 
-The local package is ready for the Partner Center identity step only after GitHub Actions is green and CI artifacts are reviewed.
+- `Movaura AI Generation` run `30044657837`: `success`
+- `Movaura Windows Build` run `30044657907`: `success`
+
+The Windows build completed all required steps:
+
+- Compile Python sources.
+- Check text encoding.
+- Run AI generation tests.
+- Run product smoke tests.
+- Run product self-test.
+- Check Qt binding source residue.
+- Build standalone.
+- Run standalone self-test.
+- Check standalone artifact Qt binding residue.
+- Build unsigned MSIX.
+- Generate package checksums.
+- Upload standalone, MSIX and validation report artifacts.
+
+Published CI artifacts:
+
+- `Movaura-standalone-windows`
+- `Movaura-msix-unsigned`
+- `Movaura-validation-reports`
+
+Status after GitHub Actions verification: `CI PASSED`.
+
+The package remains ready for the Partner Center identity/signing/publication step. Store submission still requires the reserved Microsoft Store identity, final signing, Partner Center metadata and final WACK execution against the signed package.

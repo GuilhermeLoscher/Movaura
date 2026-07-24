@@ -4,6 +4,7 @@ import json
 import shutil
 import hashlib
 import re
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -13,6 +14,23 @@ from core.runtime_paths import app_root, data_root
 
 
 SUPPORTED_EXTENSIONS = MEDIA_EXTENSIONS
+LIBRARY_CATEGORIES = (
+    "Anime",
+    "Carros",
+    "Cyberpunk",
+    "Natureza",
+    "Minimalista",
+    "Sci-Fi",
+    "Abstrato",
+    "Fantasia",
+    "Espaco",
+    "Cidades",
+    "Gaming",
+    "Escuro",
+    "Claro",
+    "Tecnologia",
+    "Outros",
+)
 
 
 @dataclass(frozen=True)
@@ -27,6 +45,13 @@ class WallpaperItem:
     collection: str = ""
     resource_class: str = "leve"
     category: str = "Outros"
+    file_name: str = ""
+    extension: str = ""
+    size_bytes: int = 0
+    modified_at: float = 0.0
+    imported_at: float = 0.0
+    last_used_at: float = 0.0
+    source_hash: str = ""
 
 
 class WallpaperLibrary:
@@ -59,6 +84,7 @@ class WallpaperLibrary:
             shutil.copy2(source, destination)
             analysis = analyze_media(destination)
             category = self.category_for(destination, analysis.tags)
+            signature = self.file_digest(destination)
             imported.append(
                 WallpaperItem(
                     kind=kind,
@@ -71,6 +97,12 @@ class WallpaperLibrary:
                     collection="Importados",
                     resource_class=analysis.resource_class,
                     category=category,
+                    file_name=destination.name,
+                    extension=destination.suffix.lower(),
+                    size_bytes=self._safe_size(destination),
+                    modified_at=self._safe_mtime(destination),
+                    imported_at=self._safe_mtime(destination),
+                    source_hash=signature,
                 )
             )
             self.update_details(
@@ -79,7 +111,7 @@ class WallpaperLibrary:
                 "Importados",
                 analysis.resource_class,
                 category,
-                self.file_digest(destination),
+                signature,
             )
         return imported
 
@@ -151,6 +183,9 @@ class WallpaperLibrary:
         key = self._key(item.path)
         recent = [current for current in self._metadata["recent"] if current != key]
         self._metadata["recent"] = [key, *recent][:20]
+        details = self._metadata.setdefault("details", {}).setdefault(key, {})
+        if isinstance(details, dict):
+            details["last_used_at"] = time.time()
         self._save_metadata()
 
     def recent_rank(self, item: WallpaperItem) -> int:
@@ -180,9 +215,22 @@ class WallpaperLibrary:
             "collection": collection.strip()[:80],
             "resource_class": clean_resource,
             "category": clean_category,
+            "file_name": item.path.name,
+            "extension": item.path.suffix.lower(),
+            "size_bytes": self._safe_size(item.path),
+            "modified_at": self._safe_mtime(item.path),
         }
+        previous = self._metadata.get("details", {}).get(key, {})
+        if isinstance(previous, dict):
+            payload["imported_at"] = float(previous.get("imported_at", 0.0) or self._safe_mtime(item.path))
+            payload["last_used_at"] = float(previous.get("last_used_at", 0.0) or 0.0)
+        else:
+            payload["imported_at"] = self._safe_mtime(item.path)
+            payload["last_used_at"] = 0.0
         if source_hash:
             payload["source_hash"] = source_hash
+        elif isinstance(previous, dict) and previous.get("source_hash"):
+            payload["source_hash"] = str(previous["source_hash"])
         self._metadata.setdefault("details", {})[key] = payload
         self._save_metadata()
 
@@ -257,6 +305,16 @@ class WallpaperLibrary:
             ("Carros", ("carro", "carros", "car", "cars", "automotive", "vehicle")),
             ("Cyberpunk", ("cyberpunk", "neon", "futurista", "future")),
             ("Natureza", ("natureza", "nature", "forest", "floresta", "water", "ocean", "mountain")),
+            ("Minimalista", ("minimal", "minimalista", "clean")),
+            ("Sci-Fi", ("sci-fi", "scifi", "space station", "spaceship")),
+            ("Abstrato", ("abstract", "abstrato", "shape", "gradient")),
+            ("Fantasia", ("fantasia", "fantasy", "dragon", "magic")),
+            ("Espaco", ("espaco", "space", "galaxy", "planet", "cosmos")),
+            ("Cidades", ("cidade", "cidades", "city", "urban", "skyline")),
+            ("Gaming", ("game", "gaming", "gamer", "rpg", "fps")),
+            ("Escuro", ("dark", "escuro", "black", "noir")),
+            ("Claro", ("light", "claro", "white", "bright")),
+            ("Tecnologia", ("tech", "tecnologia", "circuit", "digital")),
         )
         for category, markers in mapping:
             if any(marker in haystack for marker in markers):
@@ -291,12 +349,23 @@ class WallpaperLibrary:
                         category = self._clean_category(
                             str(details.get("category", "") or self.category_for(path, tags))
                         )
+                        imported_at = float(details.get("imported_at", 0.0) or 0.0)
+                        last_used_at = float(details.get("last_used_at", 0.0) or 0.0)
+                        source_hash = str(details.get("source_hash", "") or "")
                     else:
                         analysis = analyze_media(path)
                         tags = analysis.tags
                         collection = ""
                         resource_class = analysis.resource_class
                         category = self.category_for(path, tags)
+                        imported_at = 0.0
+                        last_used_at = 0.0
+                        source_hash = ""
+                    file_name = path.name
+                    extension = path.suffix.lower()
+                    size_bytes = self._safe_size(path)
+                    modified_at = self._safe_mtime(path)
+                    imported_at = imported_at or modified_at
                     items.append(
                         WallpaperItem(
                             kind=kind,
@@ -309,6 +378,13 @@ class WallpaperLibrary:
                             collection=collection,
                             resource_class=resource_class,
                             category=category,
+                            file_name=file_name,
+                            extension=extension,
+                            size_bytes=size_bytes,
+                            modified_at=modified_at,
+                            imported_at=imported_at,
+                            last_used_at=last_used_at,
+                            source_hash=source_hash,
                         )
                     )
         return items
@@ -354,18 +430,20 @@ class WallpaperLibrary:
     @staticmethod
     def file_digest(path: Path) -> str:
         try:
+            size = path.stat().st_size
             digest = hashlib.sha256()
             with path.open("rb") as file:
-                while chunk := file.read(1024 * 1024):
-                    digest.update(chunk)
-            return digest.hexdigest()
+                digest.update(file.read(1024 * 1024))
+                if size > 2 * 1024 * 1024:
+                    file.seek(max(0, size - 1024 * 1024))
+                    digest.update(file.read(1024 * 1024))
+            return f"{size}:{digest.hexdigest()}"
         except OSError:
             return ""
 
     @staticmethod
     def _clean_category(value: str) -> str:
-        allowed = {"Anime", "Carros", "Cyberpunk", "Natureza", "Outros"}
-        return value if value in allowed else "Outros"
+        return value if value in LIBRARY_CATEGORIES else "Outros"
 
     @staticmethod
     def _safe_stem(value: str) -> str:
@@ -386,3 +464,17 @@ class WallpaperLibrary:
             return True
         except (OSError, ValueError):
             return False
+
+    @staticmethod
+    def _safe_size(path: Path) -> int:
+        try:
+            return path.stat().st_size
+        except OSError:
+            return 0
+
+    @staticmethod
+    def _safe_mtime(path: Path) -> float:
+        try:
+            return path.stat().st_mtime
+        except OSError:
+            return 0.0

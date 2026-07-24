@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import logging
 from pathlib import Path
+from threading import Thread
 
-from PySide6.QtCore import QUrl, QSize, Qt, Signal
+from PySide6.QtCore import QObject, QUrl, QSize, Qt, Signal
 from PySide6.QtGui import QAction, QDesktopServices, QIcon, QPixmap
 from PySide6.QtWidgets import (
     QComboBox,
@@ -22,29 +24,41 @@ from PySide6.QtWidgets import (
 )
 
 from core.media_analyzer import analyze_media
-from core.wallpaper_library import WallpaperItem, WallpaperLibrary
+from core.wallpaper_library import LIBRARY_CATEGORIES, WallpaperItem, WallpaperLibrary
 from core.thumbnail_cache import ThumbnailCache, image_dimensions
+
+LOGGER = logging.getLogger(__name__)
 
 
 FILTERS = {
     "Todos": "",
-    "Anime": "category:Anime",
-    "Carros": "category:Carros",
-    "Cyberpunk": "category:Cyberpunk",
-    "Natureza": "category:Natureza",
-    "Videos": "video",
-    "GIFs": "gif",
-    "Outros": "category:Outros",
-    "Imagens": "image",
     "Favoritos": "favorite",
     "Recentes": "recent",
+    "Imagens": "image",
+    "GIFs": "gif",
+    "Videos": "video",
+    **{category: f"category:{category}" for category in LIBRARY_CATEGORIES},
     "Importados": "personal",
     "Leves": "leve",
     "Medios": "medio",
     "Pesados": "pesado",
     "4K": "4k",
 }
-SORTS = ("Nome", "Recentes primeiro", "Favoritos primeiro")
+SORTS = (
+    "Nome A-Z",
+    "Nome Z-A",
+    "Mais recentes",
+    "Mais antigos",
+    "Maior tamanho",
+    "Menor tamanho",
+    "Usados recentemente",
+    "Favoritos primeiro",
+)
+
+
+class ImportSignals(QObject):
+    completed = Signal(object, str)
+    failed = Signal(str)
 
 
 class LibraryDialog(QDialog):
@@ -57,6 +71,10 @@ class LibraryDialog(QDialog):
         self.initial_path = initial_path
         self.thumbnails = ThumbnailCache(self)
         self.thumbnails.ready.connect(lambda _: self.refresh())
+        self.import_signals = ImportSignals(self)
+        self.import_signals.completed.connect(self._import_finished)
+        self.import_signals.failed.connect(self._import_failed)
+        self.importing = False
         self.setWindowTitle("Biblioteca de wallpapers")
         self.resize(940, 650)
         self.setAcceptDrops(True)
@@ -75,7 +93,9 @@ class LibraryDialog(QDialog):
         self.sort_combo.addItems(SORTS)
         self.import_button = QPushButton("Importar arquivos")
         self.import_folder_button = QPushButton("Importar pasta")
+        self.clear_search_button = QPushButton("Limpar")
         toolbar.addWidget(self.search_edit, 1)
+        toolbar.addWidget(self.clear_search_button)
         toolbar.addWidget(self.filter_combo)
         toolbar.addWidget(self.sort_combo)
         toolbar.addWidget(self.import_button)
@@ -92,6 +112,14 @@ class LibraryDialog(QDialog):
         self.list_widget.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.list_widget.setStyleSheet("QListWidget::item { padding: 6px; } QListWidget::item:selected { background: #dbeafe; }")
         root.addWidget(self.list_widget, 1)
+        self.empty_label = QLabel("Nenhum wallpaper encontrado. Importe arquivos ou ajuste a busca.")
+        self.empty_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.empty_label.setStyleSheet("padding: 10px; color: #666;")
+        self.empty_label.hide()
+        root.addWidget(self.empty_label)
+        self.status_label = QLabel("Arraste arquivos aqui ou use Importar arquivos.")
+        self.status_label.setStyleSheet("color: #555;")
+        root.addWidget(self.status_label)
 
         footer = QHBoxLayout()
         self.summary_label = QLabel()
@@ -113,6 +141,7 @@ class LibraryDialog(QDialog):
         self.search_edit.textChanged.connect(self.refresh)
         self.filter_combo.currentTextChanged.connect(self.refresh)
         self.sort_combo.currentTextChanged.connect(self.refresh)
+        self.clear_search_button.clicked.connect(self.search_edit.clear)
         self.import_button.clicked.connect(self._import_files)
         self.import_folder_button.clicked.connect(self._import_folder)
         self.favorite_button.clicked.connect(self._toggle_favorite)
@@ -129,7 +158,7 @@ class LibraryDialog(QDialog):
         state = self.library.ui_state()
         self.search_edit.setText(str(state.get("search", "")))
         self._set_combo_text(self.filter_combo, str(state.get("filter", "Todos")))
-        self._set_combo_text(self.sort_combo, str(state.get("sort", "Nome")))
+        self._set_combo_text(self.sort_combo, str(state.get("sort", "Nome A-Z")))
 
     def refresh(self) -> None:
         search = self.search_edit.text().strip().lower()
@@ -140,13 +169,19 @@ class LibraryDialog(QDialog):
             sort=self.sort_combo.currentText(),
         )
         self.list_widget.clear()
-        wallpapers = self.library.items()
-        if self.sort_combo.currentText() == "Recentes primeiro":
-            wallpapers.sort(key=lambda item: (self.library.recent_rank(item), item.name.lower()))
-        elif self.sort_combo.currentText() == "Favoritos primeiro":
-            wallpapers.sort(key=lambda item: (not item.favorite, item.name.lower()))
+        wallpapers = self._sorted_items(self.library.items())
         for wallpaper in wallpapers:
-            searchable = " ".join((wallpaper.name, wallpaper.collection, *wallpaper.tags)).lower()
+            searchable = " ".join(
+                (
+                    wallpaper.name,
+                    wallpaper.file_name,
+                    wallpaper.extension,
+                    wallpaper.kind,
+                    wallpaper.category,
+                    wallpaper.collection,
+                    *wallpaper.tags,
+                )
+            ).lower()
             if search and search not in searchable:
                 continue
             if current_filter == "favorite" and not wallpaper.favorite:
@@ -179,15 +214,32 @@ class LibraryDialog(QDialog):
             f"{stats['total']} arquivos | {stats['favorites']} favoritos | "
             f"{stats['personal']} importados"
         )
+        self.empty_label.setVisible(self.list_widget.count() == 0)
         self._selection_changed()
+
+    def _sorted_items(self, wallpapers: list[WallpaperItem]) -> list[WallpaperItem]:
+        selected = self.sort_combo.currentText()
+        if selected == "Nome Z-A":
+            return sorted(wallpapers, key=lambda item: item.name.lower(), reverse=True)
+        if selected == "Mais recentes":
+            return sorted(wallpapers, key=lambda item: (item.imported_at, item.modified_at, item.name.lower()), reverse=True)
+        if selected == "Mais antigos":
+            return sorted(wallpapers, key=lambda item: (item.imported_at, item.modified_at, item.name.lower()))
+        if selected == "Maior tamanho":
+            return sorted(wallpapers, key=lambda item: (item.size_bytes, item.name.lower()), reverse=True)
+        if selected == "Menor tamanho":
+            return sorted(wallpapers, key=lambda item: (item.size_bytes, item.name.lower()))
+        if selected == "Usados recentemente":
+            return sorted(wallpapers, key=lambda item: (item.last_used_at, -self.library.recent_rank(item)), reverse=True)
+        if selected == "Favoritos primeiro":
+            return sorted(wallpapers, key=lambda item: (not item.favorite, item.name.lower()))
+        return sorted(wallpapers, key=lambda item: item.name.lower())
 
     def _import_folder(self) -> None:
         folder = QFileDialog.getExistingDirectory(self, "Importar pasta de wallpapers", str(Path.home()))
         if not folder:
             return
-        imported = self.import_paths([Path(folder)])
-        self.refresh()
-        QMessageBox.information(self, "Importacao concluida", self._import_message(imported))
+        self._start_import([Path(folder)], "Importando pasta...")
 
     def _import_files(self) -> None:
         paths, _ = QFileDialog.getOpenFileNames(
@@ -198,18 +250,54 @@ class LibraryDialog(QDialog):
         )
         if not paths:
             return
-        imported = self.import_paths([Path(path) for path in paths])
+        self._start_import([Path(path) for path in paths], "Importando arquivos...")
+
+    def _start_import(self, paths: list[Path], message: str) -> None:
+        if self.importing:
+            self.status_label.setText("Uma importacao ja esta em andamento.")
+            return
+        self.importing = True
+        self._set_import_busy(True)
+        self.status_label.setText(message)
+
+        def run() -> None:
+            try:
+                imported = self.import_paths(paths)
+            except Exception:
+                LOGGER.exception("Falha inesperada ao importar wallpapers.")
+                self.import_signals.failed.emit("Nao foi possivel importar os wallpapers selecionados.")
+                return
+            self.import_signals.completed.emit(imported, self._import_message(imported))
+
+        Thread(target=run, daemon=True).start()
+
+    def _import_finished(self, imported: object, message: str) -> None:
+        self.importing = False
+        self._set_import_busy(False)
         self.refresh()
-        QMessageBox.information(
-            self,
-            "Importacao concluida",
-            self._import_message(imported),
-        )
+        self.status_label.setText(message)
+        if imported:
+            QMessageBox.information(self, "Importacao concluida", message)
+
+    def _import_failed(self, message: str) -> None:
+        self.importing = False
+        self._set_import_busy(False)
+        self.status_label.setText(message)
+        QMessageBox.warning(self, "Importacao", message)
+
+    def _set_import_busy(self, busy: bool) -> None:
+        self.import_button.setEnabled(not busy)
+        self.import_folder_button.setEnabled(not busy)
 
     def import_paths(self, paths: list[Path]) -> list[WallpaperItem]:
         imported: list[WallpaperItem] = []
+        seen: set[str] = set()
         for path in paths:
             try:
+                key = str(path.resolve()).lower()
+                if key in seen:
+                    continue
+                seen.add(key)
                 if path.is_dir():
                     imported.extend(self.library.import_folder(path))
                 elif path.is_file() and self.library.kind_for_path(path):
@@ -342,6 +430,10 @@ class LibraryDialog(QDialog):
 
     def dropEvent(self, event) -> None:
         paths = self._supported_drop_paths(event)
+        if paths:
+            self._start_import(paths, f"Importando {len(paths)} item(ns) arrastado(s)...")
+            event.acceptProposedAction()
+            return
         imported = self.import_paths(paths)
         self.refresh()
         if imported:

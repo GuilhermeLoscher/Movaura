@@ -211,6 +211,10 @@ def test_library_recents() -> None:
         assert current.tags == ("anime", "neon")
         assert current.collection == "Colecao teste"
         assert current.category == "Anime"
+        assert current.file_name == "smoke-wallpaper.png"
+        assert current.extension == ".png"
+        assert current.size_bytes > 0
+        assert current.source_hash
         assert current.resource_class in {"leve", "medio", "pesado"}
         renamed = library.rename_personal(current, "Novo Nome Seguro")
         assert renamed
@@ -438,7 +442,10 @@ def test_library_dialog_filters_drag_and_cache() -> None:
         dialog.sort_combo.setCurrentText("Favoritos primeiro")
         dialog.refresh()
         assert dialog.list_widget.count() == 1
-        assert library.ui_state()["search"] == "anime"
+        dialog.search_edit.setText(".png")
+        dialog.refresh()
+        assert dialog.list_widget.count() == 1
+        assert library.ui_state()["search"] == ".png"
         assert library.ui_state()["filter"] == "Anime"
         assert library.ui_state()["sort"] == "Favoritos primeiro"
 
@@ -485,8 +492,8 @@ def test_panel() -> None:
         assert panel.auto_cpu_spin.value() >= 5
         assert panel.auto_memory_spin.value() >= 64
         assert panel.performance_combo.count() == 3
-        assert library.filter_combo.count() == 16
-        assert library.sort_combo.count() == 3
+        assert library.filter_combo.count() == 26
+        assert library.sort_combo.count() == 8
         assert editor.effect.count() == 9
         assert editor.layer_list.count() >= 2
         assert editor.intensity.value() == settings.get_int("effect_intensity")

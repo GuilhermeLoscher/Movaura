@@ -1,18 +1,13 @@
-# Revisao FFmpeg LGPL - Movaura
+# FFmpeg LGPL review
 
-## Build escolhido
-Fonte: BtbN/FFmpeg-Builds, artefato `ffmpeg-master-latest-win64-lgpl-shared.zip`.
+Status: READY FOR PROFESSIONAL LEGAL REVIEW
 
-Motivo: build Windows x64 compartilhado identificado como LGPL, sem x264/x265 e sem opcoes GPL/nonfree na configuracao reportada por `ffmpeg -version`.
+Movaura uses a pinned BtbN LGPL shared build candidate for local media handling.
 
-## Validacao feita
-O comando `ffmpeg.exe -version` deve mostrar:
-- ausencia de `--enable-gpl`;
-- ausencia de `--enable-nonfree`;
-- `--disable-libx264`;
-- `--disable-libx265`;
-- `--enable-shared`;
-- `--disable-static`.
+- Provider release: https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2026-06-30-13-34
+- Artifact: ffmpeg-N-125365-g9a01c1cb6a-win64-lgpl-shared.zip
+- Artifact SHA-256: 52d25fc4711078112ba622d07601f183371af43e2d93cbb6e5eab3e1c05387cb
+- FFmpeg commit: 9a01c1cb6a
 
-## Observacao juridica
-Isto nao substitui revisao juridica profissional. Antes da venda final, mantenha a versao exata, licencas, fonte/link e configuracao dentro de `licenses/ffmpeg`.
+The build configuration does not include `--enable-gpl`, `--enable-nonfree`, `--enable-libx264`, `--enable-libx265`, or `--enable-libfdk-aac`.
+External libraries and codec/patent obligations remain subject to professional review.

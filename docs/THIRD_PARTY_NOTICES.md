@@ -1,54 +1,27 @@
-# Third-party notices - Movaura
+# Third-party notices
 
-Last updated: 2026-07-23.
+Status: READY FOR PROFESSIONAL LEGAL REVIEW. This notice summarizes technical inventory and must be reviewed against official license texts before publication.
 
-This document summarizes third-party components redistributed or expected in the Movaura standalone/MSIX build. It is a technical compliance aid, not legal advice.
+Movaura includes third-party runtime components. The complete audit evidence is under `release/compliance/` and the human review documents are under `docs/`.
 
-## PySide6 / Qt for Python
+## Qt / PySide6 / Shiboken6
 
-- Package: PySide6 6.10.0, PySide6_Essentials 6.10.0, PySide6_Addons 6.10.0.
-- License declared by wheel metadata: LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only.
-- Official docs: https://doc.qt.io/qtforpython-6
-- Source: https://code.qt.io/cgit/pyside/pyside-setup.git/
-- Distribution method: dynamic DLLs and Python extension modules collected by PyInstaller.
-- Movaura does not intentionally statically link Qt.
-
-## Qt runtime
-
-- Version: Qt 6.10.0 runtime files bundled by PySide6 wheels.
-- License: module-dependent; Qt documents LGPLv3/GPLv3/commercial options and GPL-only modules separately.
-- Official licensing page: https://doc.qt.io/qt-6/licensing.html
-- LGPL obligations overview: https://www.qt.io/development/open-source-lgpl-obligations
-- Distribution note: Qt DLLs are separate files inside `_internal/PySide6` in the standalone build, allowing replacement/debugging review consistent with LGPL planning.
-
-## shiboken6
-
-- Package: shiboken6 6.10.0.
-- License declared by wheel metadata: LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only.
-- Official docs: https://doc.qt.io/qtforpython/shiboken6
-- Source: https://code.qt.io/cgit/pyside/pyside-setup.git/
-
-## Python runtime
-
-- Runtime: Python 3.12.x bundled by PyInstaller.
-- License: Python Software Foundation License.
-- Official license docs: https://docs.python.org/3/license.html
-
-## pywin32
-
-- Package: pywin32 311.
-- Project: https://github.com/mhammond/pywin32
-- Used for Win32 desktop integration.
+- PySide6 6.10.0 / Qt runtime modules are distributed as dynamic files in the standalone artifact.
+- Official GPL/LGPL texts are included under `licenses/qt`, `licenses/pyside6`, and `licenses/shiboken6`.
+- Qt Virtual Keyboard was removed from the local artifact and is guarded against re-collection because official Qt documentation lists it as commercial/GPLv3 for open-source users.
+- See `docs/QT_MODULE_LICENSE_MATRIX.md` and `docs/LGPL_MSIX_TECHNICAL_ASSESSMENT.md`.
 
 ## FFmpeg
 
-- FFmpeg is used for optional video optimization.
-- See `licenses/ffmpeg/` and `docs/FFMPEG_LGPL_REVIEW.md`.
-- Commercial builds must continue using LGPL-clean FFmpeg without `--enable-gpl` or `--enable-nonfree`.
+- FFmpeg is bundled for local video decoding/inspection/optimization.
+- Provider: BtbN/FFmpeg-Builds.
+- Release tag: autobuild-2026-06-30-13-34.
+- Artifact: ffmpeg-N-125365-g9a01c1cb6a-win64-lgpl-shared.zip.
+- Artifact SHA-256: 52d25fc4711078112ba622d07601f183371af43e2d93cbb6e5eab3e1c05387cb.
+- FFmpeg source URL/SHA and provider source URL/SHA are recorded in `third_party/ffmpeg/LOCK.json`.
+- See `docs/FFMPEG_BUILD_LOCK.md` and `docs/FFMPEG_EXTERNAL_LIBRARY_MATRIX.md`.
 
-## LGPL planning notes
+## Python runtime and packages
 
-- Qt/PySide6 libraries are distributed dynamically, not statically linked by project code.
-- License notices are included under `licenses/` and are packaged by `scripts/build_standalone.ps1`.
-- A final commercial release should keep exact component versions, source links, license texts/notices, and a replacement/debugging policy for LGPL components.
-- This project should receive professional legal review before paid distribution.
+- Python/PyInstaller/Pillow/pywin32 and related package notices are inventoried under `licenses/` and `release/compliance/python/`.
+- See `docs/PYTHON_DEPENDENCY_LICENSE_MATRIX.md` and `docs/THIRD_PARTY_COMPONENTS_LOCK.md`.

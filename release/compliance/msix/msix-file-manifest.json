@@ -1,0 +1,2036 @@
+[
+  {
+    "path": "Movaura-0.9.0.0.msix",
+    "size": 195252710,
+    "mtime_utc": "2026-07-24T14:37:22.109006+00:00",
+    "sha256": ""
+  },
+  {
+    "path": "Movaura-TestCertificate.cer",
+    "size": 780,
+    "mtime_utc": "2026-07-23T19:36:59.719739+00:00",
+    "sha256": "c07f5b96e5f6de0b32eae6ad14f93455be58407fe808556099a866f0ed9b0d8e"
+  },
+  {
+    "path": "MovauraPackage/_internal/_bz2.pyd",
+    "size": 73216,
+    "mtime_utc": "2026-07-24T14:36:15.659900+00:00",
+    "sha256": "969b76222584b7ad1da3e8e1a4bc45f1f892dc47f2996e883dde5feb398a91a8"
+  },
+  {
+    "path": "MovauraPackage/_internal/_ctypes.pyd",
+    "size": 116224,
+    "mtime_utc": "2026-07-24T14:36:15.662519+00:00",
+    "sha256": "7282d8f2b41cd565e8df0e87a42c79accaa7fedc133137552d49dfbc006f34c8"
+  },
+  {
+    "path": "MovauraPackage/_internal/_decimal.pyd",
+    "size": 246272,
+    "mtime_utc": "2026-07-24T14:36:15.662519+00:00",
+    "sha256": "fcdc8bc61ee2dac17fbb9a8eea45242e22a34d1a71abac9bee7f732dc3f8b79f"
+  },
+  {
+    "path": "MovauraPackage/_internal/_hashlib.pyd",
+    "size": 54784,
+    "mtime_utc": "2026-07-24T14:36:15.662519+00:00",
+    "sha256": "f0a3f3c8ced4be5efc3cb47e4de8320a0c59852b52310e1cb0541a56b0cc42ba"
+  },
+  {
+    "path": "MovauraPackage/_internal/_lzma.pyd",
+    "size": 152576,
+    "mtime_utc": "2026-07-24T14:36:15.662519+00:00",
+    "sha256": "fc151659d1083706c7cc76d459b8cb9393d3b37897bba398928f410791f38f9b"
+  },
+  {
+    "path": "MovauraPackage/_internal/_socket.pyd",
+    "size": 71680,
+    "mtime_utc": "2026-07-24T14:36:15.662519+00:00",
+    "sha256": "762e124059728986555e815698fb9ce0cf3c50e84adb6ba0df4a96d324079a93"
+  },
+  {
+    "path": "MovauraPackage/_internal/_ssl.pyd",
+    "size": 164864,
+    "mtime_utc": "2026-07-24T14:36:15.669112+00:00",
+    "sha256": "31bed7c9c6e8e997e9cf92ec40d250269c80e8a0d2216be3b5afefd26f038c5e"
+  },
+  {
+    "path": "MovauraPackage/_internal/_uuid.pyd",
+    "size": 13824,
+    "mtime_utc": "2026-07-24T14:36:15.669112+00:00",
+    "sha256": "dc53e95f037f17c5665fb4aa729e273e3c6dc49017f3df7f8d7ecb631e04495c"
+  },
+  {
+    "path": "MovauraPackage/_internal/_wmi.pyd",
+    "size": 25600,
+    "mtime_utc": "2026-07-24T14:36:15.669112+00:00",
+    "sha256": "7399862a3be13b981553b7fa2e1a64b2f8cda92c15c5966faf81a514d36210f1"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-console-l1-1-0.dll",
+    "size": 22952,
+    "mtime_utc": "2026-07-24T14:36:15.669112+00:00",
+    "sha256": "56a3c8ec50eedef1f5024696ef928cb2a0f5d8b40c8a122cba412944dae81c46"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-datetime-l1-1-0.dll",
+    "size": 22968,
+    "mtime_utc": "2026-07-24T14:36:15.675161+00:00",
+    "sha256": "e91b155e01b98aa4466b94da39e04c379f2fd392c154e7b6d80c05e0476f0552"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-debug-l1-1-0.dll",
+    "size": 22968,
+    "mtime_utc": "2026-07-24T14:36:15.675161+00:00",
+    "sha256": "2117e4953f5ec36adff21a416db5ff5f9ff27ea5f70b71b2e7d87897979b34e1"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-errorhandling-l1-1-0.dll",
+    "size": 22968,
+    "mtime_utc": "2026-07-24T14:36:15.675161+00:00",
+    "sha256": "ce83855b81333be8ca07a70700bff553dfb94869637dfe529bc8ef64094032be"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-fibers-l1-1-0.dll",
+    "size": 22992,
+    "mtime_utc": "2026-07-24T14:36:15.675161+00:00",
+    "sha256": "5fae6d3fa0df3ac9a0171654062b6518b56bc586ab03d8a05e9cd4a112628934"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-file-l1-1-0.dll",
+    "size": 27048,
+    "mtime_utc": "2026-07-24T14:36:15.680436+00:00",
+    "sha256": "be54476a0d4394d8ca6a5943b6425569403a1a7e939cf9b4948319b450022b45"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-file-l1-2-0.dll",
+    "size": 22968,
+    "mtime_utc": "2026-07-24T14:36:15.680436+00:00",
+    "sha256": "87cd5dac0ad2c7f6d64a51c58bc6fb9f2b207fe4966dcf47dd83728b0e439a75"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-file-l2-1-0.dll",
+    "size": 20960,
+    "mtime_utc": "2026-07-24T14:36:15.682451+00:00",
+    "sha256": "f957a4c261506484b53534a9be8931c02ec1a349b3f431a858f8215cecfec3f7"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-handle-l1-1-0.dll",
+    "size": 22968,
+    "mtime_utc": "2026-07-24T14:36:15.682451+00:00",
+    "sha256": "5ae3a6e15f6a47f78b59f8a24334ffc88e8de05664c4c04d6243921ecba16325"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-heap-l1-1-0.dll",
+    "size": 22952,
+    "mtime_utc": "2026-07-24T14:36:15.682451+00:00",
+    "sha256": "5f8dca9ec0204453ad8e31b8f36226fef8342c36d3a07b15bcece301bc7f24cd"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-interlocked-l1-1-0.dll",
+    "size": 22984,
+    "mtime_utc": "2026-07-24T14:36:15.682451+00:00",
+    "sha256": "bdad0c627f722de797917a9ebbb02acc0669c44326f64ba5fc1f8d6c2d978128"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-libraryloader-l1-1-0.dll",
+    "size": 22952,
+    "mtime_utc": "2026-07-24T14:36:15.682451+00:00",
+    "sha256": "b17a00e4640a1d5a91c1b1ddf0465ba04ffc2ac5404e37d02b56ba7d2fabbced"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-localization-l1-2-0.dll",
+    "size": 22968,
+    "mtime_utc": "2026-07-24T14:36:15.689140+00:00",
+    "sha256": "4b5c4d32550d6ec0715c6cf651e9c1bbccb01bffa72e082a0ae04251800d43a1"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-memory-l1-1-0.dll",
+    "size": 22968,
+    "mtime_utc": "2026-07-24T14:36:15.691204+00:00",
+    "sha256": "47817a21044295a18907f13cd9f2705f9a21579f80fa6d3f7bf22e00607189fe"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-namedpipe-l1-1-0.dll",
+    "size": 22976,
+    "mtime_utc": "2026-07-24T14:36:15.693204+00:00",
+    "sha256": "64896c2ca9b8da6c6c327602000f1f6d95e49e6f8df06929176a319cc2aa985e"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-processenvironment-l1-1-0.dll",
+    "size": 22984,
+    "mtime_utc": "2026-07-24T14:36:15.694210+00:00",
+    "sha256": "8df2ab621406d2905a330df3955db715965c2c097061345ad94dafab1b04ef00"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-processthreads-l1-1-0.dll",
+    "size": 22976,
+    "mtime_utc": "2026-07-24T14:36:15.696203+00:00",
+    "sha256": "a0299f1564ea8aeeff67226b6d2f9b9802aab877c9b89c82d50377ca2a12dba9"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-processthreads-l1-1-1.dll",
+    "size": 22976,
+    "mtime_utc": "2026-07-24T14:36:15.697203+00:00",
+    "sha256": "fe33f48a34243481782742168b24f344485527327534f7e05c60ba5420715387"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-profile-l1-1-0.dll",
+    "size": 22952,
+    "mtime_utc": "2026-07-24T14:36:15.698205+00:00",
+    "sha256": "2f506ccb47a0513d16b3dece9ed1a0459b796fdb96e40d8967dc84e7d4e36954"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-rtlsupport-l1-1-0.dll",
+    "size": 22992,
+    "mtime_utc": "2026-07-24T14:36:15.699205+00:00",
+    "sha256": "4335d1e4051cc16aee5745b1ae9027e1e710f41972faefc57c065f2166209853"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-string-l1-1-0.dll",
+    "size": 22984,
+    "mtime_utc": "2026-07-24T14:36:15.700204+00:00",
+    "sha256": "4c8b4993badf3d843f57638b5f82e98769d3c7e0bd524d999ec2c720013a2fdf"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-synch-l1-1-0.dll",
+    "size": 22976,
+    "mtime_utc": "2026-07-24T14:36:15.702205+00:00",
+    "sha256": "a7e2c7177f10d6d35ed2cc79ce71eb979ba69a348f19237121ddac7d61103ebe"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-synch-l1-2-0.dll",
+    "size": 22968,
+    "mtime_utc": "2026-07-24T14:36:15.702205+00:00",
+    "sha256": "6ff6a5b89c6ccc33a8f99fef4abb83b760c3d6e5be20d4805d95720f67b86876"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-sysinfo-l1-1-0.dll",
+    "size": 22952,
+    "mtime_utc": "2026-07-24T14:36:15.703204+00:00",
+    "sha256": "881b7e57388edbf8a167bc7e7714286e9fed54b981479fa540c218aab049a81e"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-timezone-l1-1-0.dll",
+    "size": 22968,
+    "mtime_utc": "2026-07-24T14:36:15.705205+00:00",
+    "sha256": "c886fd30abe580e0bdb29b9e3cb50872159d1c62bcf03355b28850176f1258aa"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-core-util-l1-1-0.dll",
+    "size": 22992,
+    "mtime_utc": "2026-07-24T14:36:15.706206+00:00",
+    "sha256": "26a32ca4e6a5f853a371f1fff7c4b7cd90288f4364921fbd4b11cbff697767a2"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-crt-conio-l1-1-0.dll",
+    "size": 22984,
+    "mtime_utc": "2026-07-24T14:36:15.707211+00:00",
+    "sha256": "988e14fa33743956ca182c1ef033c09427d60f2b0132803b8548e28ca0378b7c"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-crt-convert-l1-1-0.dll",
+    "size": 27088,
+    "mtime_utc": "2026-07-24T14:36:15.709226+00:00",
+    "sha256": "fa445d728c70db47340907cf12dff8893fd249b738594a1825248211b8ec0dca"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-crt-environment-l1-1-0.dll",
+    "size": 22984,
+    "mtime_utc": "2026-07-24T14:36:15.709226+00:00",
+    "sha256": "e2e562ec0ab4be342962e7e885cba380c3143bcbf83fcaff9269f26b2b448e24"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-crt-filesystem-l1-1-0.dll",
+    "size": 22952,
+    "mtime_utc": "2026-07-24T14:36:15.709226+00:00",
+    "sha256": "f4a1f0ad4fde3752cf7dc6f3058e4c502546aad9029c8bd78ae1ee4cbe37922a"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-crt-heap-l1-1-0.dll",
+    "size": 22952,
+    "mtime_utc": "2026-07-24T14:36:15.709226+00:00",
+    "sha256": "998294783016c09345cb2dd0f18163fb9bf469edb4954b1408e99f673c60d9f7"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-crt-locale-l1-1-0.dll",
+    "size": 22976,
+    "mtime_utc": "2026-07-24T14:36:15.709226+00:00",
+    "sha256": "2376c1ef50f84a2b0e49e66c0e4c2b24e0c48a4d85450fc74ce77ff02f58fea5"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-crt-math-l1-1-0.dll",
+    "size": 31168,
+    "mtime_utc": "2026-07-24T14:36:15.714421+00:00",
+    "sha256": "9e1441afa2e6b3cb88c234fd43755fb2716d7266944239e93a8b3722f44ba792"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-crt-multibyte-l1-1-0.dll",
+    "size": 31160,
+    "mtime_utc": "2026-07-24T14:36:15.714421+00:00",
+    "sha256": "f3a64a3e24775d0e9408fd85289b413d780fe5835685fe6736c54221aca0cb4d"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-crt-private-l1-1-0.dll",
+    "size": 76216,
+    "mtime_utc": "2026-07-24T14:36:15.716430+00:00",
+    "sha256": "98f7d945c15e261c940219f8261a8e2f85fa83b3740ed08a5afe9e54fe894802"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-crt-process-l1-1-0.dll",
+    "size": 22976,
+    "mtime_utc": "2026-07-24T14:36:15.716430+00:00",
+    "sha256": "df4a913f1708ccc03b9f41f69cf563a9c57bebaba18262fbc377584a2c2bbb9c"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-crt-runtime-l1-1-0.dll",
+    "size": 27048,
+    "mtime_utc": "2026-07-24T14:36:15.718522+00:00",
+    "sha256": "3e95f9a63c2c742c43138b731966d4cfa6c922bdcff3e2958fe24e4bdf6e5461"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-crt-stdio-l1-1-0.dll",
+    "size": 27064,
+    "mtime_utc": "2026-07-24T14:36:15.718522+00:00",
+    "sha256": "21a5efa2bdf4a89e06b7dad84aa990412e054bac9befd198c05dd6add93b8430"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-crt-string-l1-1-0.dll",
+    "size": 27048,
+    "mtime_utc": "2026-07-24T14:36:15.720531+00:00",
+    "sha256": "05a910f254a8eae65c0f032ec7740afacb8439f87a64d53f9b8ebd66304b3b68"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-crt-time-l1-1-0.dll",
+    "size": 22976,
+    "mtime_utc": "2026-07-24T14:36:15.720531+00:00",
+    "sha256": "4a90e5b2f3fb45b6a92581a39d3b62948a588a360d449554d8cae1a40b009114"
+  },
+  {
+    "path": "MovauraPackage/_internal/api-ms-win-crt-utility-l1-1-0.dll",
+    "size": 22952,
+    "mtime_utc": "2026-07-24T14:36:15.720531+00:00",
+    "sha256": "88ce66919d551efa7a0430f1188b558c41532c363258c1f07a05e2b67d603208"
+  },
+  {
+    "path": "MovauraPackage/_internal/assets/movaura-logo.png",
+    "size": 539580,
+    "mtime_utc": "2026-07-24T14:36:15.724908+00:00",
+    "sha256": "91c1760950bca209a2221cfecdd078edd52882b1384051c187abb85008b5304b"
+  },
+  {
+    "path": "MovauraPackage/_internal/assets/movaura.exe.manifest",
+    "size": 1119,
+    "mtime_utc": "2026-07-24T14:36:15.724908+00:00",
+    "sha256": "d0cbe31f6140797e00ce89d215a6ec88b1f570e39384f73fd9ce372700103a6d"
+  },
+  {
+    "path": "MovauraPackage/_internal/assets/movaura.ico",
+    "size": 67025,
+    "mtime_utc": "2026-07-24T14:36:15.724908+00:00",
+    "sha256": "18990c0f55c957acecbd53875d95215e273e949f84a885d98ca82ea3bfb9216b"
+  },
+  {
+    "path": "MovauraPackage/_internal/avcodec-63.dll",
+    "size": 70567424,
+    "mtime_utc": "2026-07-24T14:36:15.782572+00:00",
+    "sha256": "d4f475d7a5d9218def1010b019ba5ebc020cb3e795d58e655f1c114bcf11b2ea"
+  },
+  {
+    "path": "MovauraPackage/_internal/avdevice-63.dll",
+    "size": 3698688,
+    "mtime_utc": "2026-07-24T14:36:15.786593+00:00",
+    "sha256": "da768f25c28877cb046a50c4192da7cf6779571dd402d73c0f5244df0947d55d"
+  },
+  {
+    "path": "MovauraPackage/_internal/avfilter-12.dll",
+    "size": 29554176,
+    "mtime_utc": "2026-07-24T14:36:15.814099+00:00",
+    "sha256": "1f046e83e2e2aecbe03711870401d70626e0fd48f93fdd21db092e2c42ca7087"
+  },
+  {
+    "path": "MovauraPackage/_internal/avformat-63.dll",
+    "size": 21782016,
+    "mtime_utc": "2026-07-24T14:36:15.830915+00:00",
+    "sha256": "9bf009456e78533dc6aa3d3591acb3fab45baf4e90da773f5947c129289ecaf3"
+  },
+  {
+    "path": "MovauraPackage/_internal/avutil-61.dll",
+    "size": 2943488,
+    "mtime_utc": "2026-07-24T14:36:15.834939+00:00",
+    "sha256": "3d92328446598f490e77ba7ece29c3efc42603f47b451020b4d624b2c3faa70b"
+  },
+  {
+    "path": "MovauraPackage/_internal/base_library.zip",
+    "size": 1333490,
+    "mtime_utc": "2026-07-24T14:36:15.868874+00:00",
+    "sha256": "9606878fdd2e0a31aa9d66b998a08b52407769719f7d62254490c55a362c4fb9"
+  },
+  {
+    "path": "MovauraPackage/_internal/data/catalog.json",
+    "size": 295,
+    "mtime_utc": "2026-07-24T14:36:15.870883+00:00",
+    "sha256": "53891f8bb8733bf879e0dad99985d7f30d071fcb2e3cc2479f86392eb2355f8d"
+  },
+  {
+    "path": "MovauraPackage/_internal/libcrypto-3-x64.dll",
+    "size": 7976960,
+    "mtime_utc": "2026-07-24T14:36:15.872893+00:00",
+    "sha256": "e3575b8d13adfa7693ca7f8b7e4f94f24df33c8d64085972e28c213e225ddcb0"
+  },
+  {
+    "path": "MovauraPackage/_internal/libffi-8.dll",
+    "size": 28160,
+    "mtime_utc": "2026-07-24T14:36:15.872893+00:00",
+    "sha256": "1163e242ec38a0de598ba7956353987c7167c0c6d5000625c3b3fc6e75669206"
+  },
+  {
+    "path": "MovauraPackage/_internal/libssl-3-x64.dll",
+    "size": 1579008,
+    "mtime_utc": "2026-07-24T14:36:15.880218+00:00",
+    "sha256": "28143bcd23fb00b7fabd66fdfba23a68640862f1fb1582d6ec581419afd206be"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/altgraph/LICENSE",
+    "size": 1002,
+    "mtime_utc": "2026-07-24T14:36:15.882865+00:00",
+    "sha256": "6c194d6db0c64d45535d10c95142b9b0cda7b7dcc7f1ddee302b3d536f3dbe46"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/altgraph/SOURCE.txt",
+    "size": 77,
+    "mtime_utc": "2026-07-24T14:36:15.882865+00:00",
+    "sha256": "7fcd41e664123a82b4ac2af98cf9b07e37c0ca07edf8411d065e34717c71eeaa"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/ffmpeg/BUILD_CONFIGURATION.txt",
+    "size": 1940,
+    "mtime_utc": "2026-07-24T14:36:15.882865+00:00",
+    "sha256": "b9ac9118f3f19b6ab48117738b065219d7003aa8f9bda67214197a8cce7157c5"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/ffmpeg/LICENSE.txt",
+    "size": 7651,
+    "mtime_utc": "2026-07-24T14:36:15.882865+00:00",
+    "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/ffmpeg/NOTICE.txt",
+    "size": 711,
+    "mtime_utc": "2026-07-24T14:36:15.882865+00:00",
+    "sha256": "744d550175f0ab7551e967ee302b88e6d9c44bebbc27850f5b8dc0e666a7310d"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/ffmpeg/README.txt",
+    "size": 637,
+    "mtime_utc": "2026-07-24T14:36:15.890511+00:00",
+    "sha256": "a409b480b5696272b7a86b6156e190396fcc34f9da99179d036d02f290519caf"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/ffmpeg/SOURCE.txt",
+    "size": 679,
+    "mtime_utc": "2026-07-24T14:36:15.890511+00:00",
+    "sha256": "3dca560289c883a249ee7da7694a009ad7b479d2abd6b55eb41d37e8490c591c"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/packaging/LICENSE",
+    "size": 197,
+    "mtime_utc": "2026-07-24T14:36:15.890511+00:00",
+    "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/packaging/LICENSE.APACHE",
+    "size": 10174,
+    "mtime_utc": "2026-07-24T14:36:15.890511+00:00",
+    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/packaging/LICENSE.BSD",
+    "size": 1344,
+    "mtime_utc": "2026-07-24T14:36:15.890511+00:00",
+    "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/packaging/SOURCE.txt",
+    "size": 86,
+    "mtime_utc": "2026-07-24T14:36:15.890511+00:00",
+    "sha256": "79c1c756c10458b68c3f36c58d2d0c43e7bfaf8d443fcb28a99c1c3233270d9b"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pefile/LICENSE",
+    "size": 1083,
+    "mtime_utc": "2026-07-24T14:36:15.890511+00:00",
+    "sha256": "b44409c067c6da52bfb54bb6624fb11a7b52157c3a13ae1400232f8196e86ad3"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pefile/SOURCE.txt",
+    "size": 83,
+    "mtime_utc": "2026-07-24T14:36:15.890511+00:00",
+    "sha256": "c8481e02137936e4c2a2112fae90eb6f5d07df05525128d46ac3507a4833316e"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pillow/LICENSE",
+    "size": 78014,
+    "mtime_utc": "2026-07-24T14:36:15.890511+00:00",
+    "sha256": "75bb81b58f9b39786eeb2e56a1eb829aae501042d49e1dc766ca187b6ce9656f"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pillow/SOURCE.txt",
+    "size": 122,
+    "mtime_utc": "2026-07-24T14:36:15.898717+00:00",
+    "sha256": "fe19ab1b0b67e051fb4c7e597d51a547faae95e8174eefeee44caa1b17ebb520"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyinstaller-hooks-contrib/LICENSE",
+    "size": 27666,
+    "mtime_utc": "2026-07-24T14:36:15.898717+00:00",
+    "sha256": "91d0baaff00773038e72c0a1fc9d5d2d38706b7a2b9c04f34296608f931b9cd0"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyinstaller-hooks-contrib/SOURCE.txt",
+    "size": 119,
+    "mtime_utc": "2026-07-24T14:36:15.902163+00:00",
+    "sha256": "283f4f948f54851125335fab7d847181fe32f182ad95640cb20ed17a40014cb5"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyinstaller/COPYING.txt",
+    "size": 32138,
+    "mtime_utc": "2026-07-24T14:36:15.902163+00:00",
+    "sha256": "dcf75fdb959db1e3b41c0f8505069d2ece781b5ec6b3d0a4d30975cfc6580245"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyinstaller/SOURCE.txt",
+    "size": 82,
+    "mtime_utc": "2026-07-24T14:36:15.902163+00:00",
+    "sha256": "8633032a61bd3b14ed3b914f1c12023c80613e89a602fab9006ac99ffff3477e"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyside6-addons/LicenseRef-Qt-Commercial.txt",
+    "size": 470,
+    "mtime_utc": "2026-07-24T14:36:15.902163+00:00",
+    "sha256": "4f54763ac0fe2abd8f7f8d8fe370a94a08ebf84786aa0b91045bd6628deb08a3"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyside6-addons/SOURCE.txt",
+    "size": 80,
+    "mtime_utc": "2026-07-24T14:36:15.902163+00:00",
+    "sha256": "ed1d976c78c1de8c0056891d72dda5afeeee687bba9b2317740bbd35d4b5a52e"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyside6-essentials/LicenseRef-Qt-Commercial.txt",
+    "size": 470,
+    "mtime_utc": "2026-07-24T14:36:15.902163+00:00",
+    "sha256": "4f54763ac0fe2abd8f7f8d8fe370a94a08ebf84786aa0b91045bd6628deb08a3"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyside6-essentials/SOURCE.txt",
+    "size": 84,
+    "mtime_utc": "2026-07-24T14:36:15.902163+00:00",
+    "sha256": "d5336d19711feb50a02225c673202aaa9dfeba959144a1ca8d9a6f41d1bb4697"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyside6/GPL-2.0.txt",
+    "size": 17984,
+    "mtime_utc": "2026-07-24T14:36:15.902163+00:00",
+    "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyside6/GPL-3.0.txt",
+    "size": 35149,
+    "mtime_utc": "2026-07-24T14:36:15.902163+00:00",
+    "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyside6/LGPL-2.1.txt",
+    "size": 26419,
+    "mtime_utc": "2026-07-24T14:36:15.902163+00:00",
+    "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyside6/LGPL-3.0-NOTICE.txt",
+    "size": 199,
+    "mtime_utc": "2026-07-24T14:36:15.902163+00:00",
+    "sha256": "5eeb0693bf1d832e6f98ca6393d8e4fa2f02a137f27204145fba2bd7999b6de4"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyside6/LGPL-3.0.txt",
+    "size": 7652,
+    "mtime_utc": "2026-07-24T14:36:15.914706+00:00",
+    "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyside6/LicenseRef-Qt-Commercial.txt",
+    "size": 470,
+    "mtime_utc": "2026-07-24T14:36:15.915117+00:00",
+    "sha256": "4f54763ac0fe2abd8f7f8d8fe370a94a08ebf84786aa0b91045bd6628deb08a3"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyside6/NOTICE.txt",
+    "size": 369,
+    "mtime_utc": "2026-07-24T14:36:15.917119+00:00",
+    "sha256": "422a1927e23315660b6dfa07e1509d57711031ef1bc8dc7dc99b8d8cf7f2d975"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pyside6/SOURCE.txt",
+    "size": 73,
+    "mtime_utc": "2026-07-24T14:36:15.917119+00:00",
+    "sha256": "4edb23d26db6159577272e40078dfff8d5f0c352b2b7929ed880bd7b2b601471"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/python/NOTICE.txt",
+    "size": 411,
+    "mtime_utc": "2026-07-24T14:36:15.918116+00:00",
+    "sha256": "e4ea288402c24d8bf27ca77657024a19c2f6e55ca26dbc0e1e51f1902d74ed29"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/python/SOURCE.txt",
+    "size": 40,
+    "mtime_utc": "2026-07-24T14:36:15.919117+00:00",
+    "sha256": "dcef8fad3c37fb2f8c619bb7f7b41f9b2a97be418b5b07f21abbd6350e8939fa"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pywin32-ctypes/LICENSE.txt",
+    "size": 1644,
+    "mtime_utc": "2026-07-24T14:36:15.920116+00:00",
+    "sha256": "dfa83b3e2709adfcdb838d9ad55823ca674abb780e60563d9dd9544ccbf785e9"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pywin32-ctypes/SOURCE.txt",
+    "size": 94,
+    "mtime_utc": "2026-07-24T14:36:15.921121+00:00",
+    "sha256": "44b5db0d4dda242aeedff2362be80d170c478e06c12b0b5612f7c6ce48a67874"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pywin32/license.txt",
+    "size": 1569,
+    "mtime_utc": "2026-07-24T14:36:15.925117+00:00",
+    "sha256": "c3bdfa1152a9b9d404ddc90b817e1b6945803879ac53a14d2dde30d677f883bd"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pywin32/NOTICE.txt",
+    "size": 400,
+    "mtime_utc": "2026-07-24T14:36:15.923122+00:00",
+    "sha256": "a58c929cf8a314febb0f48a7e25c1a87dda344c044d26a4db879611ac3d28269"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/pywin32/SOURCE.txt",
+    "size": 87,
+    "mtime_utc": "2026-07-24T14:36:15.924129+00:00",
+    "sha256": "d546297cdbb37d729698b672ae7bfef38fa5f68491e899746c67ab65d946a06f"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/qt/GPL-2.0.txt",
+    "size": 17984,
+    "mtime_utc": "2026-07-24T14:36:15.926121+00:00",
+    "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/qt/GPL-3.0.txt",
+    "size": 35149,
+    "mtime_utc": "2026-07-24T14:36:15.928118+00:00",
+    "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/qt/LGPL-2.1.txt",
+    "size": 26419,
+    "mtime_utc": "2026-07-24T14:36:15.928118+00:00",
+    "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/qt/LGPL-3.0-NOTICE.txt",
+    "size": 277,
+    "mtime_utc": "2026-07-24T14:36:15.930365+00:00",
+    "sha256": "b3ce23cb64d59959a9ff9038953464132675e97a22055ddc002e45ffd58515cf"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/qt/LGPL-3.0.txt",
+    "size": 7652,
+    "mtime_utc": "2026-07-24T14:36:15.930365+00:00",
+    "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/qt/NOTICE.txt",
+    "size": 446,
+    "mtime_utc": "2026-07-24T14:36:15.930365+00:00",
+    "sha256": "54da61cc5f46f408d28b438e90ac382a994c339d3ef3a14249b74d137b4191d7"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/qt/SOURCE.txt",
+    "size": 39,
+    "mtime_utc": "2026-07-24T14:36:15.932827+00:00",
+    "sha256": "9a1bfac43bc32980be9f1b3d20979f541cdf2efb53ad887135be81489cc48ca6"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/shiboken6/GPL-2.0.txt",
+    "size": 17984,
+    "mtime_utc": "2026-07-24T14:36:15.932827+00:00",
+    "sha256": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/shiboken6/GPL-3.0.txt",
+    "size": 35149,
+    "mtime_utc": "2026-07-24T14:36:15.934836+00:00",
+    "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/shiboken6/LGPL-2.1.txt",
+    "size": 26419,
+    "mtime_utc": "2026-07-24T14:36:15.934836+00:00",
+    "sha256": "20e50fe7aae3e56378ebf0417d9de904f55a0e61e4df315333e632a4d3555d95"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/shiboken6/LGPL-3.0.txt",
+    "size": 7652,
+    "mtime_utc": "2026-07-24T14:36:15.936843+00:00",
+    "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/shiboken6/LicenseRef-Qt-Commercial.txt",
+    "size": 470,
+    "mtime_utc": "2026-07-24T14:36:15.938854+00:00",
+    "sha256": "4f54763ac0fe2abd8f7f8d8fe370a94a08ebf84786aa0b91045bd6628deb08a3"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/shiboken6/NOTICE.txt",
+    "size": 389,
+    "mtime_utc": "2026-07-24T14:36:15.938854+00:00",
+    "sha256": "cbbc05881c303b10da6d34a0d59906879b52332ba73706f708ef31f3038204ed"
+  },
+  {
+    "path": "MovauraPackage/_internal/licenses/shiboken6/SOURCE.txt",
+    "size": 75,
+    "mtime_utc": "2026-07-24T14:36:15.938854+00:00",
+    "sha256": "0ff0a27578626c1bc8670fb3593f9a6c09b0a7c49e635b6927b0eb7eeed6e5c9"
+  },
+  {
+    "path": "MovauraPackage/_internal/native_compositor_app/bin/movaura_native_compositor.exe",
+    "size": 3033088,
+    "mtime_utc": "2026-07-24T14:36:15.943819+00:00",
+    "sha256": "baea7ae21a40801922ec29c1b21a36301b96615d7c68f368dbf1101b33002611"
+  },
+  {
+    "path": "MovauraPackage/_internal/native_host/bin/movaura_native_host.dll",
+    "size": 1279488,
+    "mtime_utc": "2026-07-24T14:36:15.943819+00:00",
+    "sha256": "7506e0f5ba549aa2d480369c3d6a170fb8c515cbd5f07d7a6d2c82c42153ba98"
+  },
+  {
+    "path": "MovauraPackage/_internal/native_host_app/bin/movaura_host_probe.exe",
+    "size": 2656768,
+    "mtime_utc": "2026-07-24T14:36:15.951052+00:00",
+    "sha256": "9da50912de82f95c671f0ccc761279fe4bb1bf81dbdcc38820521955a8b502c7"
+  },
+  {
+    "path": "MovauraPackage/_internal/plugins/sample_pulse/plugin.py",
+    "size": 844,
+    "mtime_utc": "2026-07-24T14:36:15.951052+00:00",
+    "sha256": "a0f4145ced46cf2d1ceb6cb0c18d8d978249098febec9525ba5533564c3bed0f"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/avcodec-61.dll",
+    "size": 13919968,
+    "mtime_utc": "2026-07-24T14:36:15.424245+00:00",
+    "sha256": "5d02f566bfc7116aa2e758191ac60728a6b085f52f0c9df6b0449c3e39fc1eff"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/avformat-61.dll",
+    "size": 2642656,
+    "mtime_utc": "2026-07-24T14:36:15.431170+00:00",
+    "sha256": "9c9aad9c40ff2c8894b2d677c495aabe21a824b2df92e8dc1d77b8e508ff9bfb"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/avutil-59.dll",
+    "size": 1199328,
+    "mtime_utc": "2026-07-24T14:36:15.433177+00:00",
+    "sha256": "92e7a65f6ead544506276a9af38ce1ffabfce1691a81d0eab2ab5098576fbe82"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/MSVCP140.dll",
+    "size": 550112,
+    "mtime_utc": "2026-07-24T14:36:15.337230+00:00",
+    "sha256": "ff8a3047798a1757330c0ff2cf66c2fdfc4aaef95043d3dc00483f8925b7cea4"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/MSVCP140_1.dll",
+    "size": 28384,
+    "mtime_utc": "2026-07-24T14:36:15.339992+00:00",
+    "sha256": "10bae850a88d38b5103f583b1f2f7af2f2b146ce92b5cd23636b866f4204e5e1"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/MSVCP140_2.dll",
+    "size": 272608,
+    "mtime_utc": "2026-07-24T14:36:15.339992+00:00",
+    "sha256": "c86a181fcf3953d238fab7ecd9c2a82107383ba3b72a36b5e5bfeb703c531a4c"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/opengl32sw.dll",
+    "size": 20640480,
+    "mtime_utc": "2026-07-24T14:36:15.442118+00:00",
+    "sha256": "4bfc2129fba57da6b77552fb73d659b4d7cec0fb2b9da7555196ee8ac31b45c4"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/generic/qtuiotouchplugin.dll",
+    "size": 103136,
+    "mtime_utc": "2026-07-24T14:36:15.442118+00:00",
+    "sha256": "17c5f0c2fcd4a09da8520ca62137068bbc65c9b1911da2b9d0bee07697f810e9"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/iconengines/qsvgicon.dll",
+    "size": 72416,
+    "mtime_utc": "2026-07-24T14:36:15.442118+00:00",
+    "sha256": "2f938c548aef4986fce2c2e663c45d1f9fc52843b67bdd1aafb955f39570c3e1"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/imageformats/qgif.dll",
+    "size": 48352,
+    "mtime_utc": "2026-07-24T14:36:15.442118+00:00",
+    "sha256": "c089124cf71af5a4c6868b0448b9c4d2690e973755aacc07e22f3f202e414c20"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/imageformats/qicns.dll",
+    "size": 56544,
+    "mtime_utc": "2026-07-24T14:36:15.442118+00:00",
+    "sha256": "1fe9c8948ba3e54d9f2bed55cab531d509c716319f801177649be6456d5c6ceb"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/imageformats/qico.dll",
+    "size": 46816,
+    "mtime_utc": "2026-07-24T14:36:15.442118+00:00",
+    "sha256": "33bd8b2c3e59541806cd1a8a8b8323d619ddd3e0dd07038429215362e7a92630"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/imageformats/qjpeg.dll",
+    "size": 578272,
+    "mtime_utc": "2026-07-24T14:36:15.442118+00:00",
+    "sha256": "08a82c59b6127de708df446f8b46b4571e3044bbac3e2f8b8b13f4875e051518"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/imageformats/qpdf.dll",
+    "size": 43232,
+    "mtime_utc": "2026-07-24T14:36:15.456226+00:00",
+    "sha256": "65e3a2b9a77f28fab357d085097a550750ca27fa3fc6e049bb8b0dfe40ac16b4"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/imageformats/qsvg.dll",
+    "size": 39648,
+    "mtime_utc": "2026-07-24T14:36:15.458235+00:00",
+    "sha256": "59d8aa665513108c46c517e874f312fc0851d1645dcdebea2771e0e4dc69fd5d"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/imageformats/qtga.dll",
+    "size": 39136,
+    "mtime_utc": "2026-07-24T14:36:15.458235+00:00",
+    "sha256": "f30551c3f5001641540fcec45192d8cfef201e42b94ff47c39b3ce84ce5b479c"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/imageformats/qtiff.dll",
+    "size": 442592,
+    "mtime_utc": "2026-07-24T14:36:15.458235+00:00",
+    "sha256": "940145c9aad82d99c06e804fa7a5ccfd763203f7307e68a5cf464d625720abcb"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/imageformats/qwbmp.dll",
+    "size": 37600,
+    "mtime_utc": "2026-07-24T14:36:15.458235+00:00",
+    "sha256": "646e760b11217f0ef1b1b9bfdfb377b7eba270369ab39c4bf955278531c9dfd4"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/imageformats/qwebp.dll",
+    "size": 562912,
+    "mtime_utc": "2026-07-24T14:36:15.458235+00:00",
+    "sha256": "230dc55d3521953d74659141fe06d9c3f1813555507142a73e745becb7413892"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/multimedia/ffmpegmediaplugin.dll",
+    "size": 632544,
+    "mtime_utc": "2026-07-24T14:36:15.464279+00:00",
+    "sha256": "75c70afaa74659b4686869d536cb0ca19414ddb2e895ee59a421c55370268fab"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/multimedia/windowsmediaplugin.dll",
+    "size": 288992,
+    "mtime_utc": "2026-07-24T14:36:15.464279+00:00",
+    "sha256": "cd3e1ddbcf2735c5df4a0be2ce2e3f1521635eb5922f09900d1d1127cca7daef"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/networkinformation/qnetworklistmanager.dll",
+    "size": 71904,
+    "mtime_utc": "2026-07-24T14:36:15.466287+00:00",
+    "sha256": "c35d1cc71894bbfc1bfebc1e58ea44ee39c5f03365f6413e1c9a7da9c01f5448"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/platforms/qdirect2d.dll",
+    "size": 1079008,
+    "mtime_utc": "2026-07-24T14:36:15.470293+00:00",
+    "sha256": "2465439563b82e2032e511203c7ab5456167c89ecaefbcf7e5df24ec9c2e2194"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/platforms/qminimal.dll",
+    "size": 62176,
+    "mtime_utc": "2026-07-24T14:36:15.472035+00:00",
+    "sha256": "fd3c540ff3f8c668f2eff399375326062b4050e7d8e8933f9aea0d52a1aa2ec8"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/platforms/qoffscreen.dll",
+    "size": 114400,
+    "mtime_utc": "2026-07-24T14:36:15.472035+00:00",
+    "sha256": "e4ad3e81d0bbdab0dca617060f51cf9303dfb456e8f9d8aaf75786d3a19a8a3d"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/platforms/qwindows.dll",
+    "size": 997088,
+    "mtime_utc": "2026-07-24T14:36:15.475211+00:00",
+    "sha256": "55fdb6d1fb328d9c9b6c284d9a1e7c3e97eb774b45a64ae2ccd57b090863a305"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/styles/qmodernwindowsstyle.dll",
+    "size": 224992,
+    "mtime_utc": "2026-07-24T14:36:15.475211+00:00",
+    "sha256": "4c4d1e221ba2384360ce34e735910470a03a64f9ed41440e6895d5d7d9a811e1"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/tls/qcertonlybackend.dll",
+    "size": 103136,
+    "mtime_utc": "2026-07-24T14:36:15.475211+00:00",
+    "sha256": "2b49cb5369b4f06e241be226f192242d99b40b8bd371d78bf5eab17e5fa93dd7"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/tls/qopensslbackend.dll",
+    "size": 315616,
+    "mtime_utc": "2026-07-24T14:36:15.475211+00:00",
+    "sha256": "440878c3887289eac86fbeafb85094af09546894f2e7c1b30f08330a8370ebeb"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/plugins/tls/qschannelbackend.dll",
+    "size": 259808,
+    "mtime_utc": "2026-07-24T14:36:15.475211+00:00",
+    "sha256": "0e4f0bc8aecd31d5f2a7255b38fc5b538edea8ff70907f751d7da77586b76501"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/pyside6.abi3.dll",
+    "size": 260320,
+    "mtime_utc": "2026-07-24T14:36:15.482738+00:00",
+    "sha256": "e9fbf3fbd8b97f9dee645ece52789643e7472537cd035d07c0aacab3bc6e6047"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/Qt6Core.dll",
+    "size": 10107104,
+    "mtime_utc": "2026-07-24T14:36:15.347489+00:00",
+    "sha256": "35039e568fefe592098dca5b5b79d1e907687f9769e6b797be323b023218b2ee"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/Qt6Gui.dll",
+    "size": 9446112,
+    "mtime_utc": "2026-07-24T14:36:15.353415+00:00",
+    "sha256": "79c426ba4debf971c3dc38b38192cbcc5d536b2a92299d6d82cf946643beb397"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/Qt6Multimedia.dll",
+    "size": 1227488,
+    "mtime_utc": "2026-07-24T14:36:15.353415+00:00",
+    "sha256": "916110a3003c1c1a6ba212217629622595c99cae28153fb0eb41142ab3f70523"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/Qt6MultimediaWidgets.dll",
+    "size": 62176,
+    "mtime_utc": "2026-07-24T14:36:15.353415+00:00",
+    "sha256": "b4cc85ad36ca7c49096cc70353953c14c2a8237e8f2d4d5f0ca1f8591b8b96df"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/Qt6Network.dll",
+    "size": 1741024,
+    "mtime_utc": "2026-07-24T14:36:15.353415+00:00",
+    "sha256": "9ec562e4a338e3bdee306877f9b10130fba412e3eaddd15215cb6f7dfcc21083"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/Qt6OpenGL.dll",
+    "size": 1976544,
+    "mtime_utc": "2026-07-24T14:36:15.362260+00:00",
+    "sha256": "b615617c057ae70d0ac68333f3b1d74579fe385bc7fc083957545e14611c9b3a"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/Qt6OpenGLWidgets.dll",
+    "size": 65248,
+    "mtime_utc": "2026-07-24T14:36:15.362260+00:00",
+    "sha256": "4aa34c33e642d76e823f039b2d3428c49abbeb69b36f2f8f8e985cdffceec637"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/Qt6Pdf.dll",
+    "size": 5524704,
+    "mtime_utc": "2026-07-24T14:36:15.370308+00:00",
+    "sha256": "7e0d11e23888ba7b3b7209dc118b66895679f8fda136b0eda8c52d9464f91f79"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/Qt6Qml.dll",
+    "size": 5308128,
+    "mtime_utc": "2026-07-24T14:36:15.375301+00:00",
+    "sha256": "31c55986eff1d3134df2c9ad4a21acc7b39215ce210fb657e8b87cd369c06c26"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/Qt6QmlMeta.dll",
+    "size": 155872,
+    "mtime_utc": "2026-07-24T14:36:15.376300+00:00",
+    "sha256": "16dada7343075bb4013f6dfbfa7892ebd0b5d3990f0b35801e8886ca851eb39a"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/Qt6QmlModels.dll",
+    "size": 979168,
+    "mtime_utc": "2026-07-24T14:36:15.377362+00:00",
+    "sha256": "9dd8312e9141d311143c32d334961c5675f373abc73fce16c898cfff4586b5fd"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/Qt6QmlWorkerScript.dll",
+    "size": 77024,
+    "mtime_utc": "2026-07-24T14:36:15.379302+00:00",
+    "sha256": "e60f02d65fd404fb7e8f4e570894e14c3e1e2b9883a517dc68f495cfc4826039"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/Qt6Quick.dll",
+    "size": 6477024,
+    "mtime_utc": "2026-07-24T14:36:15.383339+00:00",
+    "sha256": "373d77cbf476620a7633305c8ada64789f8e15f1466d74f5c9541aed033f895f"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/Qt6Svg.dll",
+    "size": 623328,
+    "mtime_utc": "2026-07-24T14:36:15.384309+00:00",
+    "sha256": "e15b52e3d7e0a2cd84d6cdf4150d880264e29b1fe9805dc23992657fd2058fb3"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/Qt6Widgets.dll",
+    "size": 6558944,
+    "mtime_utc": "2026-07-24T14:36:15.391304+00:00",
+    "sha256": "4d68fdd9853b1885e009343e90bb771ffb2faa4eb8de4369d518aab725fd954c"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/QtCore.pyd",
+    "size": 3265760,
+    "mtime_utc": "2026-07-24T14:36:15.394302+00:00",
+    "sha256": "c9d7bac7b90833160945fa0d69a4ce87a804b5ca257b40dbf189c852efb12a6d"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/QtGui.pyd",
+    "size": 3867872,
+    "mtime_utc": "2026-07-24T14:36:15.396302+00:00",
+    "sha256": "97612d89bc8a10389751fa96542a49a7b290ac598cb4e6310d0d9afcfc99bed9"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/QtMultimedia.pyd",
+    "size": 568544,
+    "mtime_utc": "2026-07-24T14:36:15.396302+00:00",
+    "sha256": "c1ec760508822b4ecaf0ddb453e8c76ca7d89617b6c23c183f48d9113f38ad97"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/QtMultimediaWidgets.pyd",
+    "size": 142048,
+    "mtime_utc": "2026-07-24T14:36:15.396302+00:00",
+    "sha256": "0e16d8b997d36ca19f92c7d189895ebe85d9173aab05ad24252bf0a3591ef0aa"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/QtNetwork.pyd",
+    "size": 1000160,
+    "mtime_utc": "2026-07-24T14:36:15.396302+00:00",
+    "sha256": "53f1c164055bdee206ead2c1ca8bcbed1a4dd70a1258d7e058f867eeacdfe318"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/QtOpenGL.pyd",
+    "size": 8763104,
+    "mtime_utc": "2026-07-24T14:36:15.408371+00:00",
+    "sha256": "2defa71c251033d4440ad5fe42b6802f2f2fc4ad3c5e4498e8d95c331830cce4"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/QtOpenGLWidgets.pyd",
+    "size": 122592,
+    "mtime_utc": "2026-07-24T14:36:15.408371+00:00",
+    "sha256": "71a55852dc7c073f5336972046ada17813303550712939ef0d1aaad397a2d58d"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/QtWidgets.pyd",
+    "size": 4804320,
+    "mtime_utc": "2026-07-24T14:36:15.414495+00:00",
+    "sha256": "4391acb242eb77c5e6d86cf486374612f0ef47cabbbe2dc3f2f8dedddeaeb3fa"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/swresample-5.dll",
+    "size": 248032,
+    "mtime_utc": "2026-07-24T14:36:15.482738+00:00",
+    "sha256": "7d6dede2e7212dd25b04459e7a8d9f328b17fa47aa0b414cf0db4419070569dc"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/swscale-8.dll",
+    "size": 753376,
+    "mtime_utc": "2026-07-24T14:36:15.482738+00:00",
+    "sha256": "b42ce981f6884c74c458196db073a7dc0f5804849a1500560b034ffa7028cdc0"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_ar.qm",
+    "size": 104,
+    "mtime_utc": "2026-07-24T14:36:15.488116+00:00",
+    "sha256": "b11333c520ccd8e375cde20985df402d586a1a95e0796313bbeb9f717d4db22e"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_bg.qm",
+    "size": 91,
+    "mtime_utc": "2026-07-24T14:36:15.490128+00:00",
+    "sha256": "1e22ee126ec9f76031d880285a907b3a0c4510392319ff700dcdee964abbb1ad"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_ca.qm",
+    "size": 91,
+    "mtime_utc": "2026-07-24T14:36:15.490128+00:00",
+    "sha256": "17ab2623c7f6e8def44b3dbcb517544185817d65f1298ddb10ef71136f232bdc"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_cs.qm",
+    "size": 95,
+    "mtime_utc": "2026-07-24T14:36:15.490128+00:00",
+    "sha256": "c585918fb1d4821a054ea40bdcf279f275ca76c88a5793f433dac6a611ac7e8f"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_da.qm",
+    "size": 91,
+    "mtime_utc": "2026-07-24T14:36:15.490128+00:00",
+    "sha256": "f6773c672acb73fdef6e092060d69d1e5dfee840012bac912d1e92de28714386"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_de.qm",
+    "size": 91,
+    "mtime_utc": "2026-07-24T14:36:15.490128+00:00",
+    "sha256": "0401c316aa3b50a172eb44a4ff1ec384924073beec7c928ef888ec48e4612688"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_en.qm",
+    "size": 33,
+    "mtime_utc": "2026-07-24T14:36:15.490128+00:00",
+    "sha256": "494ac9a2b2cb2fdeced353f4a9f898ed8dcf616e9bc667438c62681e3f7f79cf"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_es.qm",
+    "size": 91,
+    "mtime_utc": "2026-07-24T14:36:15.497146+00:00",
+    "sha256": "648ed4519bc45d7a4779479a7626ea16cf9aa23e93a0b178546cc47bea0591ab"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_fa.qm",
+    "size": 84,
+    "mtime_utc": "2026-07-24T14:36:15.497146+00:00",
+    "sha256": "3f4c989c6b2990d80cc6299408214b31698923b52f154483b3371875de91f88e"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_fi.qm",
+    "size": 91,
+    "mtime_utc": "2026-07-24T14:36:15.497146+00:00",
+    "sha256": "342d01c7eeb234e431d0506821c4cd03c0433115d8d63fee3357be2331858879"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_fr.qm",
+    "size": 91,
+    "mtime_utc": "2026-07-24T14:36:15.497146+00:00",
+    "sha256": "c896a38892a92346b033793d56440993236b23e47e06f3974afdb0552f628387"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_gd.qm",
+    "size": 70,
+    "mtime_utc": "2026-07-24T14:36:15.497146+00:00",
+    "sha256": "49df855a004a17950338af3146466f6df4d5852410bd0b58ea80e0d0203a9d24"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_gl.qm",
+    "size": 323590,
+    "mtime_utc": "2026-07-24T14:36:15.497146+00:00",
+    "sha256": "204a01ac7deb6b5bae193afecbd1e50d18c73bf7d94badeb2bbfdf6123c4ed93"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_he.qm",
+    "size": 57,
+    "mtime_utc": "2026-07-24T14:36:15.503881+00:00",
+    "sha256": "36f01fff2f25e116d4b7af78097b7e49520fd5b7fb6fb120e40be228c05c045f"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_ar.qm",
+    "size": 8743,
+    "mtime_utc": "2026-07-24T14:36:15.503881+00:00",
+    "sha256": "222088c9752d1cc3bab985ef2dc77e5ae78578dce18a61ec15b39f02e588163d"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_bg.qm",
+    "size": 10599,
+    "mtime_utc": "2026-07-24T14:36:15.506593+00:00",
+    "sha256": "cbcdd1e0bbae332d80ddb0a286056f17c824fa28d353d7fdf12fc97d9f6fe054"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_ca.qm",
+    "size": 7426,
+    "mtime_utc": "2026-07-24T14:36:15.508603+00:00",
+    "sha256": "8c98b5ee246e18397d0de7bd76b2891773a975553ec5dcdce42f8a696e5b34de"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_cs.qm",
+    "size": 15297,
+    "mtime_utc": "2026-07-24T14:36:15.508603+00:00",
+    "sha256": "4ac56fc63e400943bab13f1d4c418502138908e1d488c24aee6131d3d17552aa"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_da.qm",
+    "size": 4795,
+    "mtime_utc": "2026-07-24T14:36:15.508603+00:00",
+    "sha256": "6bb092552a398687119f6d52145f04bf8373977446d8f00c0dcbd56b96829f0f"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_de.qm",
+    "size": 7569,
+    "mtime_utc": "2026-07-24T14:36:15.508603+00:00",
+    "sha256": "037bc99abf98571ae9375c2513536c15b571d66406c36c1de447b547ff539c07"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_en.qm",
+    "size": 33,
+    "mtime_utc": "2026-07-24T14:36:15.508603+00:00",
+    "sha256": "494ac9a2b2cb2fdeced353f4a9f898ed8dcf616e9bc667438c62681e3f7f79cf"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_es.qm",
+    "size": 10704,
+    "mtime_utc": "2026-07-24T14:36:15.508603+00:00",
+    "sha256": "fd16b279f8cf69077f75e94d90c9c07a2afff3948a579e3789f5ffb5e5f4202d"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_fr.qm",
+    "size": 3573,
+    "mtime_utc": "2026-07-24T14:36:15.508603+00:00",
+    "sha256": "875ee2dcdc64e3dea888d84048e382d3921a175f12847de2e6b1cb12ad9add50"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_gl.qm",
+    "size": 10891,
+    "mtime_utc": "2026-07-24T14:36:15.517006+00:00",
+    "sha256": "7399a248609974773f60866c87b78ea7dfbc4f750313d692f7886cd763883c9f"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_hr.qm",
+    "size": 5170,
+    "mtime_utc": "2026-07-24T14:36:15.517006+00:00",
+    "sha256": "8c8cc3c5b1ab2b074f82937001b896603420ef75592b3b78172177360dd7ea61"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_hu.qm",
+    "size": 7255,
+    "mtime_utc": "2026-07-24T14:36:15.519020+00:00",
+    "sha256": "7be32e015119c969453abb6e8f3fb377963a69fafb10c27b796737b5eb283eaf"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_it.qm",
+    "size": 10612,
+    "mtime_utc": "2026-07-24T14:36:15.519020+00:00",
+    "sha256": "316fe8d0815e2b4b396895beb38ef1a40431915b5e054df80f4c0cd556f26e4b"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_ja.qm",
+    "size": 7917,
+    "mtime_utc": "2026-07-24T14:36:15.519020+00:00",
+    "sha256": "ae603b2c0d434d40cde433ffcba65f9ee27978a9e19316007be7fe782a5b8b47"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_ka.qm",
+    "size": 7091,
+    "mtime_utc": "2026-07-24T14:36:15.519020+00:00",
+    "sha256": "159c74f94b384b5ee6afdf38b6cfc4806bc99ecf73be02d4a7021d4ceba7ec7e"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_ko.qm",
+    "size": 5708,
+    "mtime_utc": "2026-07-24T14:36:15.519020+00:00",
+    "sha256": "f11c64694e8e34e1d2c46c1a1d15d6ba9f2db7b61de4fdf54eca5ab977c3e052"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_nl.qm",
+    "size": 5087,
+    "mtime_utc": "2026-07-24T14:36:15.519020+00:00",
+    "sha256": "44a8a0daf775d14352180052d13f623814d7bdf98e2c5c80144b7bf74214e3b0"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_nn.qm",
+    "size": 6934,
+    "mtime_utc": "2026-07-24T14:36:15.519020+00:00",
+    "sha256": "4c8a7213942078e4f72f5babd26c41b77ace70189714a58b5504a7d5ad0193dc"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_pl.qm",
+    "size": 9673,
+    "mtime_utc": "2026-07-24T14:36:15.519020+00:00",
+    "sha256": "cc6cb4d8c54086224672f2e49e623c8cb7c0c1cd65b8d5ecd42fc9ba3a6065bd"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_pt_BR.qm",
+    "size": 15776,
+    "mtime_utc": "2026-07-24T14:36:15.519020+00:00",
+    "sha256": "17a164045c0fc53d0507cfc90c3970fe1afdfa1c4a8e5c881d34fa1f86a821bf"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_ru.qm",
+    "size": 7288,
+    "mtime_utc": "2026-07-24T14:36:15.519020+00:00",
+    "sha256": "557b644e6da5f1ec720ef93965617087e4d1f40b2494cc5aa524cf3796108de7"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_sk.qm",
+    "size": 10388,
+    "mtime_utc": "2026-07-24T14:36:15.519020+00:00",
+    "sha256": "f41e33e1d790bd0d3eb180f1f875bc191fe74773628f25c2cad95e1402e66867"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_sl.qm",
+    "size": 10363,
+    "mtime_utc": "2026-07-24T14:36:15.519020+00:00",
+    "sha256": "2ec955e662407ebcd8dcdae5aaa21e4108e0b5b0aee0e9db712c27072943535f"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_sv.qm",
+    "size": 6941,
+    "mtime_utc": "2026-07-24T14:36:15.519020+00:00",
+    "sha256": "15185617ba6069a826e1c44d50d07da3477daf9d92931c75f55b53155f4d26c2"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_tr.qm",
+    "size": 6723,
+    "mtime_utc": "2026-07-24T14:36:15.534672+00:00",
+    "sha256": "81da2f88cd624097581f2d29b10311796bcd9ab289e65883346d276110542d28"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_uk.qm",
+    "size": 9750,
+    "mtime_utc": "2026-07-24T14:36:15.534672+00:00",
+    "sha256": "497cfc473684692ee44d7a3795e8fb2270c57069fd9eb98a615dd29ab9be8a7c"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_zh_CN.qm",
+    "size": 5115,
+    "mtime_utc": "2026-07-24T14:36:15.534672+00:00",
+    "sha256": "e256d1f6034a5a5521c62f129f91731216e474f71e1d9caea3d3dcb11b670deb"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_help_zh_TW.qm",
+    "size": 5160,
+    "mtime_utc": "2026-07-24T14:36:15.534672+00:00",
+    "sha256": "40112812abb43853d678cc6d97729f21f21b3a7321c827fc9d18f6c936447d1e"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_hr.qm",
+    "size": 102,
+    "mtime_utc": "2026-07-24T14:36:15.534672+00:00",
+    "sha256": "fc9e4146f33be3d09b234be01e56235d3037d8d82d64f0700b4d4a6e253a61a7"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_hu.qm",
+    "size": 84,
+    "mtime_utc": "2026-07-24T14:36:15.540832+00:00",
+    "sha256": "c2fa649f167cdb801d1cc0cb69c1d93594fd5bf8c0b7e79b969935da5c3e19aa"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_it.qm",
+    "size": 91,
+    "mtime_utc": "2026-07-24T14:36:15.540832+00:00",
+    "sha256": "9e7a18bc20ebeec54baaaf41c918a74534511271f796dffffd0f9b9ec31c68d3"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_ja.qm",
+    "size": 84,
+    "mtime_utc": "2026-07-24T14:36:15.542697+00:00",
+    "sha256": "0f5fe50452947d1ee9755249d860354bff6977279b4c496a5bc77e5b89dd745e"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_ka.qm",
+    "size": 94,
+    "mtime_utc": "2026-07-24T14:36:15.542697+00:00",
+    "sha256": "00b67c6dfc255079b5b98a5640f82519c96b2520a028682fba4078b39d743eaa"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_ko.qm",
+    "size": 84,
+    "mtime_utc": "2026-07-24T14:36:15.542697+00:00",
+    "sha256": "1d254b535e1cb35cbcad8210b15b89f4488159826bf35b4504696263dd102fa3"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_lg.qm",
+    "size": 57,
+    "mtime_utc": "2026-07-24T14:36:15.547076+00:00",
+    "sha256": "6ba668501f4c040c66da1bdc022362da3c8cf663da6aa484cbdb599028da98ed"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_lt.qm",
+    "size": 165383,
+    "mtime_utc": "2026-07-24T14:36:15.547076+00:00",
+    "sha256": "47eb5f97467df769261421d54a5bea1131c9fb9b6388791d38bb6574335b64bf"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_lv.qm",
+    "size": 63,
+    "mtime_utc": "2026-07-24T14:36:15.549672+00:00",
+    "sha256": "addeca285282338294f24ca50d37d08a5f68d3785d0a94af86dd4ec8f2a3b449"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_nl.qm",
+    "size": 91,
+    "mtime_utc": "2026-07-24T14:36:15.550679+00:00",
+    "sha256": "39e870cbd25c0f97fa9b1828d5ea1ed9849857a2e26c5321b3f13c76be8f0548"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_nn.qm",
+    "size": 91,
+    "mtime_utc": "2026-07-24T14:36:15.552689+00:00",
+    "sha256": "4e544e23f75eafe1553dc896973db23b5795cd243786d5c653cc0f36a46ca74f"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_pl.qm",
+    "size": 99,
+    "mtime_utc": "2026-07-24T14:36:15.552689+00:00",
+    "sha256": "e6890afa0caf0f6db0248e4c94f6016b8ec8bc266f1e0e9b8f01e8ea912cf968"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_pt_BR.qm",
+    "size": 106,
+    "mtime_utc": "2026-07-24T14:36:15.554699+00:00",
+    "sha256": "0e24c58e35271853f8cdfb3f0f7b0741b5a9a588e43cdec62ae85a3842771e0a"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_pt_PT.qm",
+    "size": 70334,
+    "mtime_utc": "2026-07-24T14:36:15.554699+00:00",
+    "sha256": "2c1e7bbf5168a64b43752dd4c547601c0bde6d610f8671fa3e3af38597e84783"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_ru.qm",
+    "size": 102,
+    "mtime_utc": "2026-07-24T14:36:15.554699+00:00",
+    "sha256": "1b388e2d6d1bd405603e794e498c6d7ec5f5a5ad819243546f6399181da36758"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_sk.qm",
+    "size": 95,
+    "mtime_utc": "2026-07-24T14:36:15.554699+00:00",
+    "sha256": "840c3b01c89df976fc1d2e5bfc6fc84b65666b8a3ceb4cbf5aa0c22af3d2a383"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_sl.qm",
+    "size": 228428,
+    "mtime_utc": "2026-07-24T14:36:15.554699+00:00",
+    "sha256": "c44e0313a9414cc0e490b65b0c036fa11bca959353b228886547bc2c8492034f"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_sv.qm",
+    "size": 153,
+    "mtime_utc": "2026-07-24T14:36:15.554699+00:00",
+    "sha256": "030f0cceee2fc81b81a78c9720601b77419beb959c586e7621581727b77ab7b0"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_tr.qm",
+    "size": 84,
+    "mtime_utc": "2026-07-24T14:36:15.554699+00:00",
+    "sha256": "59e8a0c411be3b0802a68561b090f182099d6b75c4fe46f398e55f11528e11b9"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_uk.qm",
+    "size": 102,
+    "mtime_utc": "2026-07-24T14:36:15.554699+00:00",
+    "sha256": "053ec1f677c4dba48c6a97eb28f4fc78c1511324d1843d7f4cec2c7c00a66145"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_zh_CN.qm",
+    "size": 99,
+    "mtime_utc": "2026-07-24T14:36:15.554699+00:00",
+    "sha256": "c0e29d32c9540a7e78643b74214e633c56f6ab11f018e516629f2c11b1fb09fc"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qt_zh_TW.qm",
+    "size": 99,
+    "mtime_utc": "2026-07-24T14:36:15.564449+00:00",
+    "sha256": "24e226954491689549a1a1990db3b8cb78888008d8163b2fd2442b772b6d1b5f"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_ar.qm",
+    "size": 160017,
+    "mtime_utc": "2026-07-24T14:36:15.564449+00:00",
+    "sha256": "e03fe68d83201543698fd7fe267dd5dfc5bfd195147e74ff2f19ac3491401263"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_bg.qm",
+    "size": 165337,
+    "mtime_utc": "2026-07-24T14:36:15.566460+00:00",
+    "sha256": "e448ac9e3f16c29eb27af3012efe21052daa78fabfb34cd6dff2f69ee3bd3cdb"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_ca.qm",
+    "size": 209899,
+    "mtime_utc": "2026-07-24T14:36:15.566460+00:00",
+    "sha256": "005b0aa0c9a5b930dfdd870661958a8069bbec862d75f98bce20bf7401bea13d"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_cs.qm",
+    "size": 174701,
+    "mtime_utc": "2026-07-24T14:36:15.566460+00:00",
+    "sha256": "03028b42df5479270371e4c3bdc7df2f56cbbe6dda956a2864ac6f6415861fe8"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_da.qm",
+    "size": 181387,
+    "mtime_utc": "2026-07-24T14:36:15.566460+00:00",
+    "sha256": "7d1e5ca3310b54d104c19bf2abd402b38e584e87039a70e153c4a9af74b25c22"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_de.qm",
+    "size": 223404,
+    "mtime_utc": "2026-07-24T14:36:15.572382+00:00",
+    "sha256": "9cb5504dee6ef0d4d4be8ba2e34ba8294018a9e0ec810ceaf5e973d57a283434"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_en.qm",
+    "size": 33,
+    "mtime_utc": "2026-07-24T14:36:15.572382+00:00",
+    "sha256": "494ac9a2b2cb2fdeced353f4a9f898ed8dcf616e9bc667438c62681e3f7f79cf"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_es.qm",
+    "size": 165170,
+    "mtime_utc": "2026-07-24T14:36:15.572382+00:00",
+    "sha256": "4ffda56ba3bb5414ab0482d1dde64a6f226e3488f6b7f3f11a150e01f53fa4c8"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_fa.qm",
+    "size": 148156,
+    "mtime_utc": "2026-07-24T14:36:15.572382+00:00",
+    "sha256": "f78e59b5bdd586181a999034ba418868ed17fe9c05707fb65e523f70e92253d2"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_fi.qm",
+    "size": 179941,
+    "mtime_utc": "2026-07-24T14:36:15.572382+00:00",
+    "sha256": "e47fe13713e184d07fa4495dde0c589b0e8f562e91574a3558a9363443a4fa72"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_fr.qm",
+    "size": 159463,
+    "mtime_utc": "2026-07-24T14:36:15.572382+00:00",
+    "sha256": "314243a55c32679ad473fdfe48dc7d66e973ad0fc8bf2164480c58dddb50c1a7"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_gd.qm",
+    "size": 189580,
+    "mtime_utc": "2026-07-24T14:36:15.572382+00:00",
+    "sha256": "63b439dd44139aa3aed54c2ebe03fa9bc77f22c14ed8fba8eff2608445bb233d"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_he.qm",
+    "size": 138690,
+    "mtime_utc": "2026-07-24T14:36:15.582577+00:00",
+    "sha256": "e1ebca16afe8994356f81ca007fbdb9ddf865842010fe908923d873b687cad3f"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_hr.qm",
+    "size": 149711,
+    "mtime_utc": "2026-07-24T14:36:15.582577+00:00",
+    "sha256": "bb9eec9a9a652c1340dc75eb2e749be50df00f885b3d6900dfc76799c45b244d"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_hu.qm",
+    "size": 205885,
+    "mtime_utc": "2026-07-24T14:36:15.586121+00:00",
+    "sha256": "98463295539d769c8645a0b7fb95ad38454cfd0b14f36af485513f036ddbbbc6"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_it.qm",
+    "size": 161166,
+    "mtime_utc": "2026-07-24T14:36:15.586121+00:00",
+    "sha256": "7808ed542a7833c4bd94ec8bdfbbca00bb4f2fe15979b9121ce3249323687300"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_ja.qm",
+    "size": 129913,
+    "mtime_utc": "2026-07-24T14:36:15.589746+00:00",
+    "sha256": "2b9581c69b975f59be505b127cd3c19d403ef3d12e0e8386fb97238223e9c1df"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_ka.qm",
+    "size": 201105,
+    "mtime_utc": "2026-07-24T14:36:15.591758+00:00",
+    "sha256": "e55e4b72fa620bebee5297ca59dfe2f49894a1e544f2b7485b1cfd8829289d6f"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_ko.qm",
+    "size": 156799,
+    "mtime_utc": "2026-07-24T14:36:15.591758+00:00",
+    "sha256": "0179ed1b136e1cb3f583351eaa2c545ba3d83a6ee3f82c32505926a1a5f5f183"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_lg.qm",
+    "size": 239242,
+    "mtime_utc": "2026-07-24T14:36:15.595707+00:00",
+    "sha256": "d25972c3de43449d24d9c9fe629d1b38320290a137234c218103f148b4ef9897"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_lv.qm",
+    "size": 153608,
+    "mtime_utc": "2026-07-24T14:36:15.595707+00:00",
+    "sha256": "846e047573ae40c83671c3ba7f73e27efc24b98c82701da0df9973e574178bb2"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_nl.qm",
+    "size": 202861,
+    "mtime_utc": "2026-07-24T14:36:15.600296+00:00",
+    "sha256": "f61513bcdbb6ad800585f9437a95d018aab17fa12ee414aa31462ff279d8240e"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_nn.qm",
+    "size": 196424,
+    "mtime_utc": "2026-07-24T14:36:15.604312+00:00",
+    "sha256": "983734b40aa4d250421ba0d1614416cb8b424d6f140f4a7dbf8b11e65eef63dc"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_pl.qm",
+    "size": 162962,
+    "mtime_utc": "2026-07-24T14:36:15.606320+00:00",
+    "sha256": "3cf6b5c14d5eb0cf81e9af2066e66b3aa579a6b9b3c323ed670761f6254a8c54"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_pt_BR.qm",
+    "size": 208516,
+    "mtime_utc": "2026-07-24T14:36:15.608330+00:00",
+    "sha256": "8344f5bc333c45d37cfd425a09124eb11f12439f33737ec0b8683d04a416746e"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_ru.qm",
+    "size": 203767,
+    "mtime_utc": "2026-07-24T14:36:15.608330+00:00",
+    "sha256": "3da6605668f9178d11a838c4515478084dcfb4f9cf22f99d7a92b492db9c224b"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_sk.qm",
+    "size": 125763,
+    "mtime_utc": "2026-07-24T14:36:15.610340+00:00",
+    "sha256": "d586ae2c314074cf398417fdecb40709d5478dfeb0a67c2fe60d509ee9b59ed7"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_sv.qm",
+    "size": 197334,
+    "mtime_utc": "2026-07-24T14:36:15.610340+00:00",
+    "sha256": "53a7e6141af5bf1a3e97bebdab6578abbbd798c8f17ef7c5ac1623a004d46c1f"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_tr.qm",
+    "size": 248720,
+    "mtime_utc": "2026-07-24T14:36:15.614131+00:00",
+    "sha256": "353fdfd7165659a49212e7a25bf91c0a71588e52c836f7496640f26782414634"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_uk.qm",
+    "size": 158274,
+    "mtime_utc": "2026-07-24T14:36:15.616148+00:00",
+    "sha256": "51b8ff55b37dc5907d637a8ddda12fbe816852b0244c74eb4f0fb84867a786e0"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_zh_CN.qm",
+    "size": 147222,
+    "mtime_utc": "2026-07-24T14:36:15.618960+00:00",
+    "sha256": "0481a9b92a6f0578400e960a7d5ee70217a6a450eaf7f98b7d32b8dbd0d58616"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtbase_zh_TW.qm",
+    "size": 126185,
+    "mtime_utc": "2026-07-24T14:36:15.618960+00:00",
+    "sha256": "21012b2b427f8d09d31ce9cae582ca27955b478ca3dc2ec18a3068d808638c6a"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_ar.qm",
+    "size": 11486,
+    "mtime_utc": "2026-07-24T14:36:15.621680+00:00",
+    "sha256": "5fc10414e168c1161b8590a5c173d140d31b17cf450f0ac93e666ebf7a2ff908"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_bg.qm",
+    "size": 13683,
+    "mtime_utc": "2026-07-24T14:36:15.621680+00:00",
+    "sha256": "add8675fbc2351fb6c8397ed36932f98553782dd4ce0498efc5b89b050ac8626"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_ca.qm",
+    "size": 15538,
+    "mtime_utc": "2026-07-24T14:36:15.626559+00:00",
+    "sha256": "9189b6c3e546966be563d5c038c394005ef7f6293e0c181560148f1c615fd733"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_cs.qm",
+    "size": 15906,
+    "mtime_utc": "2026-07-24T14:36:15.626559+00:00",
+    "sha256": "6f116e7a2fdefe84a890df1718d235e61d5731bf7c2e3e57a838f6ec9eede0fa"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_da.qm",
+    "size": 13659,
+    "mtime_utc": "2026-07-24T14:36:15.626559+00:00",
+    "sha256": "39d902411064cc5c5fd45742f1768022a1ae7953700741b2f608e3807e19110a"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_de.qm",
+    "size": 15794,
+    "mtime_utc": "2026-07-24T14:36:15.626559+00:00",
+    "sha256": "12dfb637448f1f986904c944c118f787276fcedf1c6e11ccbe254024f4f24a12"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_en.qm",
+    "size": 33,
+    "mtime_utc": "2026-07-24T14:36:15.626559+00:00",
+    "sha256": "494ac9a2b2cb2fdeced353f4a9f898ed8dcf616e9bc667438c62681e3f7f79cf"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_es.qm",
+    "size": 17046,
+    "mtime_utc": "2026-07-24T14:36:15.626559+00:00",
+    "sha256": "0866911bfd4c6e78d3517ea298de653caef0b7248aefacdba5236e7565a9b2a5"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_fa.qm",
+    "size": 11278,
+    "mtime_utc": "2026-07-24T14:36:15.626559+00:00",
+    "sha256": "5aa57d6bfaf5f2438c3b1d8f85294c17c852bcc07d5916ca7dfb43d20870c83a"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_fi.qm",
+    "size": 13883,
+    "mtime_utc": "2026-07-24T14:36:15.626559+00:00",
+    "sha256": "628be72c1dc70652ab302e2f8ccb9f3c328e7fdddf7d8d1c5ce21056a9ba84f2"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_fr.qm",
+    "size": 12700,
+    "mtime_utc": "2026-07-24T14:36:15.634543+00:00",
+    "sha256": "9cd2f2663978e931c4a8f54af26c5aee1ddb23af2f18296e82ab763bbe6badea"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_hr.qm",
+    "size": 14176,
+    "mtime_utc": "2026-07-24T14:36:15.636554+00:00",
+    "sha256": "1342a96e1f0714343cfb8bf9f0ecc9f3736385a23cff9dc8e78db6d7762d41b4"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_hu.qm",
+    "size": 14733,
+    "mtime_utc": "2026-07-24T14:36:15.637566+00:00",
+    "sha256": "449400cceab21c7283c1613624c6dab75953d719904c461c2b2d98eca19466b2"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_it.qm",
+    "size": 17194,
+    "mtime_utc": "2026-07-24T14:36:15.637566+00:00",
+    "sha256": "aca8d4dd145e671d827e582496f20281dc559ac91e7e13f88cf508bc2d6301ed"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_ja.qm",
+    "size": 14337,
+    "mtime_utc": "2026-07-24T14:36:15.637566+00:00",
+    "sha256": "f9a888586c42c22894ccb4180257c2de70299ff5d540087bc334da74a8dd5969"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_ka.qm",
+    "size": 14196,
+    "mtime_utc": "2026-07-24T14:36:15.637566+00:00",
+    "sha256": "cdedd4d74f4e6cdaf7e8ec4ce7da203e7a3e1fbf4acccf198fd2169bd6dd9b8d"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_ko.qm",
+    "size": 11006,
+    "mtime_utc": "2026-07-24T14:36:15.637566+00:00",
+    "sha256": "f512a5e985535d0309f737e6156f5959ae9b6405e65ff76abae5a139332f2c7a"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_nl.qm",
+    "size": 14132,
+    "mtime_utc": "2026-07-24T14:36:15.644363+00:00",
+    "sha256": "982652093f93ded8ca0c06e2e70ce012d1b562982ac18f710fb394e0cdf21ba7"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_nn.qm",
+    "size": 13425,
+    "mtime_utc": "2026-07-24T14:36:15.644363+00:00",
+    "sha256": "020a9386bfc18c23048098edc1439f5bc5e9f8a188ae9a49c75cc8ca460a8268"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_pl.qm",
+    "size": 12237,
+    "mtime_utc": "2026-07-24T14:36:15.644363+00:00",
+    "sha256": "3c4cb711f6a59e5b19e4adc0d0a6be63c0bb55f15626ad640db1bfd1d1363664"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_pt_BR.qm",
+    "size": 14450,
+    "mtime_utc": "2026-07-24T14:36:15.644363+00:00",
+    "sha256": "60269398d3df35c338b3a14f3954431a29f44fc17325ad00199ae9a39541d42c"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_ru.qm",
+    "size": 14109,
+    "mtime_utc": "2026-07-24T14:36:15.644363+00:00",
+    "sha256": "32c1118415f25a378d356cf01652393c8f9063145bc8f8a93c4f992166fa9d4d"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_sk.qm",
+    "size": 9896,
+    "mtime_utc": "2026-07-24T14:36:15.644363+00:00",
+    "sha256": "82f544f31ffb0ce80340f445ad2c8e2ba57969413ef9b5d10fe4322bb96a6851"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_sv.qm",
+    "size": 13804,
+    "mtime_utc": "2026-07-24T14:36:15.644363+00:00",
+    "sha256": "9b44e3cb193b0b646d245a277a111899007d426105536bf7bb89db49820cc2cf"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_tr.qm",
+    "size": 13571,
+    "mtime_utc": "2026-07-24T14:36:15.644363+00:00",
+    "sha256": "18eb1c9526f778a24fb0d77d0008571d972716708debb85f5e6c5ee8404bb640"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_uk.qm",
+    "size": 15781,
+    "mtime_utc": "2026-07-24T14:36:15.644363+00:00",
+    "sha256": "ebf67318490f70c765b50b6cc4eb3cd4c0eab9ff10a19bc44a0489b24cecd834"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_zh_CN.qm",
+    "size": 9863,
+    "mtime_utc": "2026-07-24T14:36:15.653678+00:00",
+    "sha256": "70be222728b885e0c37c321cc716813eff8ab9963287a6e80ddbc83e6b6dec64"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/translations/qtmultimedia_zh_TW.qm",
+    "size": 9827,
+    "mtime_utc": "2026-07-24T14:36:15.654999+00:00",
+    "sha256": "80169a59d0f7981f5dbda7ca9c4e6ceb3a9ee17b42a57574cc7e217d4f3547bf"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/VCRUNTIME140.dll",
+    "size": 116960,
+    "mtime_utc": "2026-07-24T14:36:15.416502+00:00",
+    "sha256": "ab1067d75e5c4c80d76cd811859376a2fb6f0ced0e48d6f104b7147799b14f33"
+  },
+  {
+    "path": "MovauraPackage/_internal/PySide6/VCRUNTIME140_1.dll",
+    "size": 42208,
+    "mtime_utc": "2026-07-24T14:36:15.416502+00:00",
+    "sha256": "d2c32ef0a49d30012fe9f5eb8d88100281c6ac5bca174c828bb1c7bbe0fcacac"
+  },
+  {
+    "path": "MovauraPackage/_internal/python3.dll",
+    "size": 56320,
+    "mtime_utc": "2026-07-24T14:36:15.953999+00:00",
+    "sha256": "7b8cff9cdb3de31edce06fe0ba992958f6e3ab5004befee756015ed2e0221c20"
+  },
+  {
+    "path": "MovauraPackage/_internal/python312.dll",
+    "size": 6971904,
+    "mtime_utc": "2026-07-24T14:36:15.959716+00:00",
+    "sha256": "960a3863c9cb129f946bbc28947ebcdc9ebaec16afee2c10764bdfed61416556"
+  },
+  {
+    "path": "MovauraPackage/_internal/pywin32_system32/pywintypes312.dll",
+    "size": 136192,
+    "mtime_utc": "2026-07-24T14:36:15.959716+00:00",
+    "sha256": "b29e4098f9f53f05e3281636d079de58b05a26c03669cea4ec1673e51750fa31"
+  },
+  {
+    "path": "MovauraPackage/_internal/select.pyd",
+    "size": 18944,
+    "mtime_utc": "2026-07-24T14:36:15.959716+00:00",
+    "sha256": "b241c5d193e5723ac56a2ac070123c78f5c515fb5ee252aca57b0874257e5b1b"
+  },
+  {
+    "path": "MovauraPackage/_internal/shiboken6/MSVCP140.dll",
+    "size": 550112,
+    "mtime_utc": "2026-07-24T14:36:15.959716+00:00",
+    "sha256": "111994b729318cb71a21b4d20ee5a7c990d7f35cad5c02c66f9f505111512b66"
+  },
+  {
+    "path": "MovauraPackage/_internal/shiboken6/Shiboken.pyd",
+    "size": 34016,
+    "mtime_utc": "2026-07-24T14:36:15.959716+00:00",
+    "sha256": "ec8adade8808455f9f7d237d287f0959aae652ce48d6b761ca6e7f04ea7f7b0a"
+  },
+  {
+    "path": "MovauraPackage/_internal/shiboken6/shiboken6.abi3.dll",
+    "size": 382688,
+    "mtime_utc": "2026-07-24T14:36:15.959716+00:00",
+    "sha256": "be34f390890c06f98817d13d863e755f5d14eae7994cf3f76a8fb42ab98f1a8d"
+  },
+  {
+    "path": "MovauraPackage/_internal/shiboken6/VCRUNTIME140.dll",
+    "size": 116960,
+    "mtime_utc": "2026-07-24T14:36:15.959716+00:00",
+    "sha256": "065a8767913b5b534445b54954d7780e64e7ddfdfd3d850a857cf7f7b0ec6e89"
+  },
+  {
+    "path": "MovauraPackage/_internal/shiboken6/VCRUNTIME140_1.dll",
+    "size": 42208,
+    "mtime_utc": "2026-07-24T14:36:15.959716+00:00",
+    "sha256": "4d2bd1f8744ed98ea73fc6963384332eebd03912e1b8cf2c41d2c9c400f120f6"
+  },
+  {
+    "path": "MovauraPackage/_internal/swresample-7.dll",
+    "size": 722944,
+    "mtime_utc": "2026-07-24T14:36:15.959716+00:00",
+    "sha256": "7a4ed680ec138a7ee4d31a1957f9fe787eb6d53145ccf65bcdd9b6586ab6f439"
+  },
+  {
+    "path": "MovauraPackage/_internal/swscale-10.dll",
+    "size": 12731392,
+    "mtime_utc": "2026-07-24T14:36:15.985585+00:00",
+    "sha256": "3758abbb7bdc73808600b5bc606882f136a243bac00a6b67cc81edddec1b642f"
+  },
+  {
+    "path": "MovauraPackage/_internal/THIRD_PARTY_NOTICES.txt",
+    "size": 1604,
+    "mtime_utc": "2026-07-24T14:36:15.657104+00:00",
+    "sha256": "085d84a8a82224c5979bdb27ded2ff9adae4e00aa59072ed2ce45ce8a74c74ce"
+  },
+  {
+    "path": "MovauraPackage/_internal/tools/ffmpeg/bin/avcodec-63.dll",
+    "size": 70567424,
+    "mtime_utc": "2026-07-24T14:36:16.051033+00:00",
+    "sha256": "d4f475d7a5d9218def1010b019ba5ebc020cb3e795d58e655f1c114bcf11b2ea"
+  },
+  {
+    "path": "MovauraPackage/_internal/tools/ffmpeg/bin/avdevice-63.dll",
+    "size": 3698688,
+    "mtime_utc": "2026-07-24T14:36:16.056603+00:00",
+    "sha256": "da768f25c28877cb046a50c4192da7cf6779571dd402d73c0f5244df0947d55d"
+  },
+  {
+    "path": "MovauraPackage/_internal/tools/ffmpeg/bin/avfilter-12.dll",
+    "size": 29554176,
+    "mtime_utc": "2026-07-24T14:36:16.203576+00:00",
+    "sha256": "1f046e83e2e2aecbe03711870401d70626e0fd48f93fdd21db092e2c42ca7087"
+  },
+  {
+    "path": "MovauraPackage/_internal/tools/ffmpeg/bin/avformat-63.dll",
+    "size": 21782016,
+    "mtime_utc": "2026-07-24T14:36:16.360785+00:00",
+    "sha256": "9bf009456e78533dc6aa3d3591acb3fab45baf4e90da773f5947c129289ecaf3"
+  },
+  {
+    "path": "MovauraPackage/_internal/tools/ffmpeg/bin/avutil-61.dll",
+    "size": 2943488,
+    "mtime_utc": "2026-07-24T14:36:16.365784+00:00",
+    "sha256": "3d92328446598f490e77ba7ece29c3efc42603f47b451020b4d624b2c3faa70b"
+  },
+  {
+    "path": "MovauraPackage/_internal/tools/ffmpeg/bin/ffmpeg.exe",
+    "size": 543744,
+    "mtime_utc": "2026-07-24T14:36:16.371788+00:00",
+    "sha256": "35b594d864ee183be60d71c5a0efadef958153ef3ff53fddb11fcb90d29b4f3f"
+  },
+  {
+    "path": "MovauraPackage/_internal/tools/ffmpeg/bin/ffplay.exe",
+    "size": 17850368,
+    "mtime_utc": "2026-07-24T14:36:16.407496+00:00",
+    "sha256": "35be3374c6b3f1beeac0c7bc2feb3b708944471ba6c7cd14da751b60578f2b55"
+  },
+  {
+    "path": "MovauraPackage/_internal/tools/ffmpeg/bin/ffprobe.exe",
+    "size": 232448,
+    "mtime_utc": "2026-07-24T14:36:16.409833+00:00",
+    "sha256": "e97c56926e443d144c0e56aa4a3f1bcc00762626e959efaa4d1ddd9cd20684c7"
+  },
+  {
+    "path": "MovauraPackage/_internal/tools/ffmpeg/bin/swresample-7.dll",
+    "size": 722944,
+    "mtime_utc": "2026-07-24T14:36:16.409833+00:00",
+    "sha256": "7a4ed680ec138a7ee4d31a1957f9fe787eb6d53145ccf65bcdd9b6586ab6f439"
+  },
+  {
+    "path": "MovauraPackage/_internal/tools/ffmpeg/bin/swscale-10.dll",
+    "size": 12731392,
+    "mtime_utc": "2026-07-24T14:36:16.437817+00:00",
+    "sha256": "3758abbb7bdc73808600b5bc606882f136a243bac00a6b67cc81edddec1b642f"
+  },
+  {
+    "path": "MovauraPackage/_internal/tools/ffmpeg/LICENSE.txt",
+    "size": 7651,
+    "mtime_utc": "2026-07-24T14:36:15.987592+00:00",
+    "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+  },
+  {
+    "path": "MovauraPackage/_internal/ucrtbase.dll",
+    "size": 1122768,
+    "mtime_utc": "2026-07-24T14:36:16.437817+00:00",
+    "sha256": "c04daeba7e7c4b711d33993ab4c51a2e087f98f4211aea0dcb3a216656ba0ab7"
+  },
+  {
+    "path": "MovauraPackage/_internal/unicodedata.pyd",
+    "size": 1126400,
+    "mtime_utc": "2026-07-24T14:36:16.455855+00:00",
+    "sha256": "c3e10e814e4e36b5f6f66231ccbb80edd6fd219994406b383ecfa44d57efc537"
+  },
+  {
+    "path": "MovauraPackage/_internal/VCRUNTIME140.dll",
+    "size": 124544,
+    "mtime_utc": "2026-07-24T14:36:15.659104+00:00",
+    "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066"
+  },
+  {
+    "path": "MovauraPackage/_internal/VCRUNTIME140_1.dll",
+    "size": 49792,
+    "mtime_utc": "2026-07-24T14:36:15.659900+00:00",
+    "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f"
+  },
+  {
+    "path": "MovauraPackage/_internal/win32/win32gui.pyd",
+    "size": 223232,
+    "mtime_utc": "2026-07-24T14:36:16.457853+00:00",
+    "sha256": "ce92f0b56b4ef3adadf59023ca3b23aeaa1e72b4d1c5146082343e8a6079369d"
+  },
+  {
+    "path": "MovauraPackage/_internal/win32/win32process.pyd",
+    "size": 54272,
+    "mtime_utc": "2026-07-24T14:36:16.458852+00:00",
+    "sha256": "8be089daba4819c30967307261f9c12fe4d7eccc4f01ad5a8b88ce07138d885a"
+  },
+  {
+    "path": "MovauraPackage/AppxManifest.xml",
+    "size": 1645,
+    "mtime_utc": "2026-07-24T14:36:44.534156+00:00",
+    "sha256": "3d7115c2e20564de13f8b94f5874d1e01dfa328518bce6186ec0f62fe31c143e"
+  },
+  {
+    "path": "MovauraPackage/Assets/Square150x150Logo.png",
+    "size": 17632,
+    "mtime_utc": "2026-07-24T14:36:44.494069+00:00",
+    "sha256": "b6897168dd33aa899a0e48815523192eb9e17f936dce7cd07f4a53827fb854aa"
+  },
+  {
+    "path": "MovauraPackage/Assets/Square44x44Logo.png",
+    "size": 2888,
+    "mtime_utc": "2026-07-24T14:36:44.378379+00:00",
+    "sha256": "b5325ec639a93291438013428691b44cc95e4fbeccd96d989d70876244ff5aa6"
+  },
+  {
+    "path": "MovauraPackage/Assets/StoreLogo.png",
+    "size": 3443,
+    "mtime_utc": "2026-07-24T14:36:44.312182+00:00",
+    "sha256": "0a2c3feccef76dc2b334c3a72fe689e69c514afd224c228a4690b9a4ecdcff6d"
+  },
+  {
+    "path": "MovauraPackage/Movaura.exe",
+    "size": 2274827,
+    "mtime_utc": "2026-07-24T14:36:15.336221+00:00",
+    "sha256": "55df1f09f90490dbd3b9dbf7101d531190b5ca18bfab51f66d62027c782fa371"
+  },
+  {
+    "path": "MovauraPackage/wallpapers/LEIA-ME.txt",
+    "size": 273,
+    "mtime_utc": "2026-06-01T14:03:54.484636+00:00",
+    "sha256": "6e833abde6eb7db97372e36e0f4c396d2fc08d1de5fc981dcb0c174253d07568"
+  },
+  {
+    "path": "MovauraPackage/wallpapers/manifest.json",
+    "size": 1845,
+    "mtime_utc": "2026-06-01T14:03:54.484636+00:00",
+    "sha256": "49a381acd66e40eca6805a7a1755916241c7dd500b5c4d67d330bb5d4a0b7ff0"
+  }
+]

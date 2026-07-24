@@ -70,20 +70,36 @@ jobs:
             ForEach-Object { "$($_.Hash)  $($_.Path)" } |
             Set-Content -LiteralPath release/reports/msix-package-sha256.txt -Encoding UTF8
 
+      - name: Generate license compliance evidence
+        run: python scripts/prepare_license_compliance_docs.py
+
+      - name: Validate license payload
+        run: python scripts/validate_license_payload.py
+
       - name: Upload standalone artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: Movaura-standalone-windows
           path: dist/standalone/Movaura
 
       - name: Upload MSIX artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: Movaura-msix-unsigned
           path: release/msix/*.msix
 
       - name: Upload validation reports
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: Movaura-validation-reports
           path: release/reports
+
+      - name: Upload compliance reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Movaura-license-compliance
+          path: release/compliance

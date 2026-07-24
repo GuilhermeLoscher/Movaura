@@ -56,7 +56,15 @@ from core.update_checker import UpdateChecker, UpdateResult
 from core.wallpaper_library import WallpaperItem, WallpaperLibrary
 from ui.ai_generation_page import AIGenerationPage
 from ui.library_dialog import LibraryDialog
-from ui.product_dialogs import AppRulesDialog, CatalogDialog, MonitorProfilesDialog, PlaylistDialog, QuickCreateDialog, SceneEditorDialog
+from ui.product_dialogs import (
+    AppRulesDialog,
+    CatalogDialog,
+    MonitorProfilesDialog,
+    PlaylistDialog,
+    QuickCreateDialog,
+    SceneEditorDialog,
+    ThirdPartyLicensesDialog,
+)
 
 
 EXPERIENCE_MODES = {
@@ -467,6 +475,7 @@ class ControlPanel(QWidget):
         self.support_button = QPushButton("Exportar diagnóstico")
         self.native_diag_button = QPushButton("Diagnóstico nativo")
         self.benchmark_button = QPushButton("Executar benchmark de 30 segundos")
+        self.licenses_button = QPushButton("Sobre e licenças")
         self.update_url_edit = QLineEdit()
         self.update_url_edit.setPlaceholderText("https://seu-site/movaura-update.json")
         self.update_button = QPushButton("Verificar atualizações")
@@ -479,6 +488,7 @@ class ControlPanel(QWidget):
             self.support_button,
             self.native_diag_button,
             self.benchmark_button,
+            self.licenses_button,
         ):
             support_layout.addWidget(button)
         support_layout.addWidget(QLabel("Servidor de atualizações"))
@@ -512,6 +522,7 @@ class ControlPanel(QWidget):
         self.support_button.clicked.connect(self._export_support_report)
         self.native_diag_button.clicked.connect(self._native_diagnose)
         self.benchmark_button.clicked.connect(self._run_benchmark)
+        self.licenses_button.clicked.connect(self._open_licenses)
         self.update_button.clicked.connect(self._check_updates)
         self.download_update_button.clicked.connect(self._download_update)
         self.quit_button.clicked.connect(self._quit)
@@ -1065,6 +1076,9 @@ class ControlPanel(QWidget):
 
     def _open_library_folder(self) -> None:
         self._open_folder(app_root() / "wallpapers")
+
+    def _open_licenses(self) -> None:
+        ThirdPartyLicensesDialog(self).exec()
 
     def _open_folder(self, path: Path) -> None:
         path.mkdir(parents=True, exist_ok=True)

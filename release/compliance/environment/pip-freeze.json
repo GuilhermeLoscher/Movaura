@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "C:\\NovaWall\\.build-venv\\Scripts\\python.exe",
+    "-m",
+    "pip",
+    "freeze"
+  ],
+  "returncode": 0,
+  "stdout": "altgraph==0.17.5\ncustomtkinter==5.2.2\ndarkdetect==0.8.0\nimageio-ffmpeg==0.6.0\npackaging==26.2\npefile==2024.8.26\npillow==12.2.0\npsutil==7.2.2\npyinstaller==6.20.0\npyinstaller-hooks-contrib==2026.5\nPySide6==6.10.0\nPySide6_Addons==6.10.0\nPySide6_Essentials==6.10.0\npywin32==311\npywin32-ctypes==0.2.3\nsetuptools==82.0.1\nshiboken6==6.10.0\n",
+  "stderr": ""
+}

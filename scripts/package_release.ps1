@@ -30,7 +30,8 @@ $rootFiles = @(
     "MovauraStartup.vbs",
     "README.md",
     "AUTHORS.md",
-    "requirements.txt"
+    "requirements.txt",
+    "THIRD_PARTY_NOTICES.txt"
 )
 foreach ($file in $rootFiles) {
     Copy-Item -LiteralPath (Join-Path $root $file) -Destination $stage

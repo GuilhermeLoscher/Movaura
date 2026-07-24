@@ -1,27 +1,16 @@
 # Third-party components lock
 
-Status: `TECHNICAL LOCK PARTIAL`
-
-This file records components known in the current build path. It is not a legal opinion.
-
-| Component | Version | License | Official URL | Source URL | Link form | Notes |
-| --- | --- | --- | --- | --- | --- | --- |
-| Python | 3.12.13 | PSF License | https://www.python.org/ | https://github.com/python/cpython | embedded runtime via PyInstaller | Include full license text before final Store release. |
-| PySide6 | 6.10.0 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only | https://doc.qt.io/qtforpython-6/ | https://download.qt.io/official_releases/QtForPython/pyside6/ | dynamic DLL/modules in package | LGPL technical compliance prepared; legal review required. |
-| PySide6_Addons | 6.10.0 | Qt module-dependent | https://doc.qt.io/qtforpython-6/ | https://download.qt.io/official_releases/QtForPython/pyside6/ | dynamic DLL/modules in package | Inventory generated from final artifact required. |
-| PySide6_Essentials | 6.10.0 | Qt module-dependent | https://doc.qt.io/qtforpython-6/ | https://download.qt.io/official_releases/QtForPython/pyside6/ | dynamic DLL/modules in package | Inventory generated from final artifact required. |
-| shiboken6 | 6.10.0 | LGPL/GPL options | https://doc.qt.io/qtforpython-6/ | https://download.qt.io/official_releases/QtForPython/pyside6/ | dynamic DLL/modules in package | Required by PySide6. |
-| pywin32 | 311 | Python-style open source license | https://github.com/mhammond/pywin32 | https://github.com/mhammond/pywin32 | Python extension modules | Include license text before final release. |
-| PyInstaller | 6.20.0 | GPL with bootloader exception | https://pyinstaller.org/ | https://github.com/pyinstaller/pyinstaller | build tool/bootloader | Verify bootloader notice in final legal review. |
-| FFmpeg | N-124986-g631ac6d055-20260612 | LGPL-oriented build claimed by configuration | https://ffmpeg.org/ | https://ffmpeg.org/download.html | shared binaries in package | Not fully locked to immutable archive yet. |
-
-## Required final action
-
-Generate final inventories from:
-
-- `release/reports/standalone-file-inventory.csv`
-- `release/reports/msix-file-inventory.csv`
-- `release/reports/standalone-sbom.json`
-- `release/reports/msix-sbom.json`
-
-Then update this file with final hashes and exact redistributed files.
+| component | version | license | redistributed | status |
+| --- | --- | --- | --- | --- |
+| PySide6 / PySide6_Essentials / PySide6_Addons | 6.10.0 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only OR commercial | yes | REVIEW REQUIRED - LGPL/MSIX or commercial Qt decision required. |
+| shiboken6 | 6.10.0 | LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only OR commercial | yes | REVIEW REQUIRED - LGPL/MSIX or commercial Qt decision required. |
+| Python runtime | bundled by PyInstaller build | Python Software Foundation License | yes | REVIEW REQUIRED - notices included under `licenses/python`. |
+| Pillow | 12.2.0 | HPND-style Pillow license | yes | REVIEW REQUIRED - notice included under `licenses/pillow`. |
+| pywin32 | 311 | PSF-style | yes | REVIEW REQUIRED - notice included under `licenses/pywin32`. |
+| PyInstaller | 6.20.0 | GPL-2.0-or-later with bootloader exception | build/runtime support | REVIEW REQUIRED - exception supports non-free programs; notices included. |
+| pyinstaller-hooks-contrib | 2026.5 | Apache-2.0/GPL-2.0 mix in package metadata | build support | REVIEW REQUIRED - verify distributed hook files are not in runtime package. |
+| altgraph | 0.17.5 | MIT | build support | REVIEW REQUIRED - notice included. |
+| packaging | 26.x | Apache-2.0 OR BSD-2-Clause | build support | REVIEW REQUIRED - notices included. |
+| pefile | 2024.8.26 | MIT | build support | REVIEW REQUIRED - notice included. |
+| pywin32-ctypes | 0.2.3 | BSD-3-Clause | build support | REVIEW REQUIRED - notice included. |
+| FFmpeg | N-125365-g9a01c1cb6a-20260630 | LGPL build candidate with external libraries | yes | READY FOR PROFESSIONAL LEGAL REVIEW - see `third_party/ffmpeg/LOCK.json`. |

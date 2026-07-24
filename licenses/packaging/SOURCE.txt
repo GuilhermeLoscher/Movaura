@@ -1,0 +1,3 @@
+Package: packaging
+Version: 26.2
+Source: Documentation, https://packaging.pypa.io/

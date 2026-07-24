@@ -1,22 +1,43 @@
 # Final license audit
 
-Status: `NOT READY FOR FINAL STORE SUBMISSION`
+Status: READY FOR PROFESSIONAL LEGAL REVIEW
 
-## Completed
+This is a technical compliance preparation report, not legal advice. It must not be treated as approval for commercial release.
 
-- Third-party notice summary exists in `docs/THIRD_PARTY_NOTICES.md`.
-- Component lock draft exists in `docs/THIRD_PARTY_COMPONENTS_LOCK.md`.
-- LGPL technical guide exists in `docs/LGPL_COMPLIANCE_GUIDE.md`.
-- FFmpeg audit script exists in `scripts/audit_ffmpeg.py`.
-- Build scripts include the `licenses/` directory in standalone when present.
+## What was resolved
 
-## Gaps
+- FFmpeg no longer depends on a floating `latest` artifact in the compliance lock.
+- FFmpeg is pinned to a retained BtbN monthly release with immutable tag URL and archive SHA-256.
+- FFmpeg binary hashes are recorded in `third_party/ffmpeg/LOCK.json` and `docs/FFMPEG_BUILD_LOCK.md`.
+- FFmpeg source and provider source URLs/SHA-256 are recorded without vendoring large source archives into Git.
+- Every enabled `--enable-lib*` flag has a technical license classification or legal-review classification.
+- Qt/PySide6 artifact inventory was regenerated after removing Qt Virtual Keyboard from the local artifact.
+- The build script now excludes Qt Virtual Keyboard and fails if it reappears.
+- Official GPL/LGPL license texts were added for Qt/PySide6/Shiboken6 review packages.
 
-- Full license texts are not yet complete for every dependency.
-- FFmpeg is not locked to an immutable original archive hash.
-- Final artifact module inventory must be regenerated after final build.
-- No professional legal review has been recorded.
+## Still requiring professional review
 
-## Release decision
+- LGPLv3 compliance strategy for MSIX and standalone distribution.
+- Codec and patent review by sale/distribution territory.
+- Final third-party notice wording and EULA/privacy alignment.
+- Owner decision on whether to use Qt commercial licensing or LGPLv3 compliance materials.
 
-Current status: `READY FOR PARTNER CENTER IDENTITY`, not `READY FOR MANUAL STORE SUBMISSION`.
+## Evidence
+
+- `third_party/ffmpeg/LOCK.json`
+- `docs/FFMPEG_BUILD_LOCK.md`
+- `docs/FFMPEG_EXTERNAL_LIBRARY_MATRIX.md`
+- `docs/QT_MODULE_LICENSE_MATRIX.md`
+- `docs/LGPL_MSIX_TECHNICAL_ASSESSMENT.md`
+- `THIRD_PARTY_NOTICES.txt`
+- `release/compliance/`
+
+## Official sources checked
+
+- BtbN FFmpeg-Builds README/release retention and variants: https://github.com/BtbN/FFmpeg-Builds
+- BtbN pinned release: https://github.com/BtbN/FFmpeg-Builds/releases/tag/autobuild-2026-06-30-13-34
+- FFmpeg legal/license documentation: https://ffmpeg.org/legal.html
+- Qt licensing: https://doc.qt.io/qt-6/licensing.html
+- Qt for Python commercial use: https://doc.qt.io/qtforpython-6.10/commercial/index.html
+- Qt Virtual Keyboard licensing: https://doc.qt.io/qt-6/qtvirtualkeyboard-index.html
+- GNU GPL/LGPL license texts: https://www.gnu.org/licenses/

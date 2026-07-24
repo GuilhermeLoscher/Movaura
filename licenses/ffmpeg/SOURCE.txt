@@ -1,16 +1,9 @@
-Official FFmpeg website:
-https://ffmpeg.org/
+FFmpeg corresponding source strategy
 
-Official FFmpeg legal notes:
-https://ffmpeg.org/legal.html
+The FFmpeg source archive was not vendored into this repository to avoid adding a large source archive without owner approval.
+Release packages must provide this source URL and hash, or host the exact source archive next to the distributed binary package.
 
-Bundled binary build project:
-https://github.com/BtbN/FFmpeg-Builds
-
-Bundled artifact family:
-ffmpeg-master-latest-win64-lgpl-shared.zip
-
-Commercial release policy:
-Use an LGPL FFmpeg build with no GPL/nonfree options enabled, keep exact source
-code/link and build configuration available, and mention FFmpeg in the
-application About/licensing text.
+FFmpeg source URL: https://github.com/FFmpeg/FFmpeg/archive/9a01c1cb6a.zip
+FFmpeg source SHA-256: 8ca7287b2659c2309ad5060caad5b9ae4ef51f1b54ed5a30e0bfc815ee1c376d
+BtbN provider source URL: https://github.com/BtbN/FFmpeg-Builds/archive/7a83528ea3431e9eca982a712bc3a7cd0789d5d0.zip
+BtbN provider source SHA-256: 14e560e13dea71189bd317be0b6c3fe5ba42b74c5a73a6b5952ddf44d5225e99

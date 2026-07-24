@@ -61,6 +61,7 @@ Invoke-Checked "product smoke tests" {
     & $python scripts\run_product_smoke_tests.py
 }
 Invoke-Checked "self-test dev" { & $python app.py --self-test }
+Invoke-Checked "ensure locked FFmpeg" { & $python scripts\ensure_ffmpeg_binary.py }
 
 foreach ($path in @($dist, $work, $dataWork)) {
     $resolved = [System.IO.Path]::GetFullPath($path)
@@ -124,10 +125,15 @@ $pyinstallerArgs = @(
     "--add-binary", "$nativeProbe;native_host_app\bin",
     "--add-data", "$stagedPlugins;plugins",
     "--add-data", "$assets;assets",
-    "--add-data", "$catalogManifest;data"
+    "--add-data", "$catalogManifest;data",
+    "--exclude-module", "PySide6.QtVirtualKeyboard"
 )
 if (Test-Path -LiteralPath $licenses) {
     $pyinstallerArgs += @("--add-data", "$licenses;licenses")
+}
+$thirdPartyNotice = Join-Path $root "THIRD_PARTY_NOTICES.txt"
+if (Test-Path -LiteralPath $thirdPartyNotice) {
+    $pyinstallerArgs += @("--add-data", "$thirdPartyNotice;.")
 }
 if (Test-Path -LiteralPath (Join-Path $tools "ffmpeg\bin\ffmpeg.exe")) {
     $ffmpegRoot = Join-Path $tools "ffmpeg"
@@ -158,6 +164,18 @@ $applicationRoot = Join-Path $dist "Movaura"
 $application = Join-Path $applicationRoot "Movaura.exe"
 if (-not (Test-Path -LiteralPath $application)) {
     throw "Executavel autocontido nao foi criado: $application"
+}
+$blockedQtModules = Get-ChildItem -LiteralPath $applicationRoot -Recurse -File -ErrorAction SilentlyContinue |
+    Where-Object { $_.Name -like "*VirtualKeyboard*" -or $_.FullName -match "[\\/]qtvirtualkeyboard" }
+if ($blockedQtModules) {
+    $blockedQtModules | ForEach-Object { Remove-Item -LiteralPath $_.FullName -Force }
+    "Qt VirtualKeyboard removed from standalone payload: $($blockedQtModules.Count) file(s)" | Add-Content -LiteralPath $report -Encoding UTF8
+}
+$blockedQtModulesAfterCleanup = Get-ChildItem -LiteralPath $applicationRoot -Recurse -File -ErrorAction SilentlyContinue |
+    Where-Object { $_.Name -like "*VirtualKeyboard*" -or $_.FullName -match "[\\/]qtvirtualkeyboard" }
+if ($blockedQtModulesAfterCleanup) {
+    $blockedList = ($blockedQtModulesAfterCleanup | Select-Object -ExpandProperty FullName) -join "`n"
+    throw "Modulo Qt GPL-only/comercial ainda presente no standalone apos limpeza:`n$blockedList"
 }
 
 Copy-Item -LiteralPath $wallpapers -Destination $applicationRoot -Recurse -Force

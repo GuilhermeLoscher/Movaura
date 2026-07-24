@@ -1,8 +1,8 @@
 # Legal review handoff
 
 - Product: Movaura
-- Commit: ad18ee50a9672ecf93a8d2a04372f88c2199a8cc
-- Created UTC: 2026-07-24T14:39:03.693319+00:00
+- Commit: 58ca1b8a2dbfedf60b52da45fdf0ae072fdb2723
+- Created UTC: 2026-07-24T15:14:12.558032+00:00
 - Distribution: Windows standalone/MSIX, Microsoft Store candidate
 - Countries: OWNER DECISION REQUIRED
 - Business model: OWNER DECISION REQUIRED

@@ -120,7 +120,7 @@ def main() -> int:
     report = {
         "status": "failed" if any(item["severity"] in {"critical", "high"} for item in findings) else "ok",
         "findings": findings,
-        "note": "A failed status is expected until owner/legal decisions resolve FFmpeg, Qt, LGPL/MSIX and patent blockers.",
+        "note": "An ok status means the technical compliance payload is internally consistent. Professional legal review is still required for LGPL/MSIX, FFmpeg external libraries, codec patents, territories, EULA, privacy, and final publication decisions.",
     }
     output = ROOT / "release" / "compliance" / "reports" / "license-payload-validation.json"
     output.parent.mkdir(parents=True, exist_ok=True)

@@ -1,5 +1,5 @@
 {
   "status": "ok",
   "findings": [],
-  "note": "A failed status is expected until owner/legal decisions resolve FFmpeg, Qt, LGPL/MSIX and patent blockers."
+  "note": "An ok status means the technical compliance payload is internally consistent. Professional legal review is still required for LGPL/MSIX, FFmpeg external libraries, codec patents, territories, EULA, privacy, and final publication decisions."
 }

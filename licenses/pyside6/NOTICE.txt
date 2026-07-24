@@ -1,0 +1,8 @@
+PySide6
+Version: 6.10.0
+License: LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+Homepage: https://pyside.org
+Source / documentation: https://doc.qt.io/qtforpython-6
+Usage in Movaura: Official Python bindings for Qt.
+
+Compliance note: this notice is provided for redistribution review. It is not legal advice and should be reviewed before commercial publication.

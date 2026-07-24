@@ -1,0 +1,3 @@
+Qt licensing information is module-dependent. The Movaura build uses dynamically distributed Qt DLLs from PySide6 wheels.
+Official Qt licensing page: https://doc.qt.io/qt-6/licensing.html
+LGPL obligations overview: https://www.qt.io/development/open-source-lgpl-obligations

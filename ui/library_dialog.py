@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PyQt6.QtCore import QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QIcon, QPixmap
-from PyQt6.QtWidgets import (
+from PySide6.QtCore import QSize, Qt, Signal
+from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
     QFileDialog,
@@ -42,8 +42,8 @@ SORTS = ("Nome", "Recentes primeiro", "Favoritos primeiro")
 
 
 class LibraryDialog(QDialog):
-    selected = pyqtSignal(object)
-    preview_requested = pyqtSignal(object)
+    selected = Signal(object)
+    preview_requested = Signal(object)
 
     def __init__(self, library: WallpaperLibrary, parent=None, initial_path: Path | None = None) -> None:
         super().__init__(parent)

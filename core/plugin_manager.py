@@ -51,6 +51,13 @@ class PluginManager:
         return factories
 
     def _load_plugin(self, plugin_file: Path) -> PluginInfo | None:
+        plugin_root = self.plugins_dir.resolve()
+        resolved = plugin_file.resolve()
+        try:
+            resolved.relative_to(plugin_root)
+        except ValueError:
+            print(f"Plugin path rejected outside plugin root: {resolved}")
+            return None
         name = plugin_file.parent.name
         spec = importlib.util.spec_from_file_location(f"movaura_plugin_{name}", plugin_file)
         if spec is None or spec.loader is None:

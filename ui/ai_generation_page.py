@@ -4,9 +4,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable
 
-from PyQt6.QtCore import QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QIcon, QPixmap
-from PyQt6.QtWidgets import (
+from PySide6.QtCore import QSize, Qt, Signal
+from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtWidgets import (
     QApplication,
     QCheckBox,
     QComboBox,
@@ -42,12 +42,12 @@ from core.wallpaper_library import WallpaperItem, WallpaperLibrary
 
 
 class AIGenerationPage(QWidget):
-    wallpaper_selected = pyqtSignal(object)
-    preview_requested = pyqtSignal()
-    start_requested = pyqtSignal()
-    stop_requested = pyqtSignal()
-    library_requested = pyqtSignal(object)
-    status_changed = pyqtSignal(str)
+    wallpaper_selected = Signal(object)
+    preview_requested = Signal()
+    start_requested = Signal()
+    stop_requested = Signal()
+    library_requested = Signal(object)
+    status_changed = Signal(str)
 
     def __init__(
         self,

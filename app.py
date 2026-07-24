@@ -5,9 +5,9 @@ import signal
 import sys
 from pathlib import Path
 
-from PyQt6.QtCore import QTimer
-from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QApplication
+from PySide6.QtCore import QTimer
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QApplication
 
 from core.app_logging import configure_logging
 from core.desktop_host import HostMode
@@ -36,16 +36,16 @@ def parse_args() -> argparse.Namespace:
         "--renderer",
         help="Renderizador inicial: color, image, video, gif, opengl ou id de plugin.",
     )
-    parser.add_argument("--file", help="Arquivo de mÃ­dia para imagem, vÃ­deo ou GIF.")
-    parser.add_argument("--color", help="Cor hexadecimal para renderizadores compatÃ­veis.")
+    parser.add_argument("--file", help="Arquivo de mídia para imagem, vídeo ou GIF.")
+    parser.add_argument("--color", help="Cor hexadecimal para renderizadores compatíveis.")
     parser.add_argument("--fps", type=int, help="FPS desejado para renderizadores animados.")
-    parser.add_argument("--screen", type=int, help="Iniciar somente no Ã­ndice de monitor informado.")
+    parser.add_argument("--screen", type=int, help="Iniciar somente no índice de monitor informado.")
     parser.add_argument(
         "--native-surface",
         choices=["preview", "fullscreen", "desktop-experimental", "desktop-live"],
-        help="Tipo de superfÃ­cie do compositor nativo.",
+        help="Tipo de superfície do compositor nativo.",
     )
-    parser.add_argument("--diagnose", action="store_true", help="Exibir diagnÃ³stico do Explorer.")
+    parser.add_argument("--diagnose", action="store_true", help="Exibir diagnóstico do Explorer.")
     parser.add_argument(
         "--repair-explorer-host",
         action="store_true",
@@ -59,28 +59,28 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--native-diagnose",
         action="store_true",
-        help="Executar diagnÃ³stico da DLL native_host e sair.",
+        help="Executar diagnóstico da DLL native_host e sair.",
     )
     parser.add_argument(
         "--restore-system-wallpaper",
         action="store_true",
-        help="Restaurar o wallpaper salvo antes do fallback estÃ¡tico seguro.",
+        help="Restaurar o wallpaper salvo antes do fallback estático seguro.",
     )
     parser.add_argument(
         "--native-composition-preview",
         action="store_true",
-        help="Abrir uma prÃ©-visualizaÃ§Ã£o segura com DirectComposition e sair.",
+        help="Abrir uma pré-visualização segura com DirectComposition e sair.",
     )
     parser.add_argument(
         "--native-scene",
         choices=["pulse", "solid", "image", "gif", "video"],
         default="pulse",
-        help="Cena da prÃ©-visualizaÃ§Ã£o do compositor nativo.",
+        help="Cena da pré-visualização do compositor nativo.",
     )
     parser.add_argument(
         "--control-panel",
         action="store_true",
-        help="Abrir o painel grÃ¡fico do Movaura.",
+        help="Abrir o painel gráfico do Movaura.",
     )
     parser.add_argument(
         "--run-wallpaper",
@@ -102,11 +102,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Remover a inicializacao automatica do Movaura e sair.",
     )
-    parser.add_argument("--no-tray", action="store_true", help="Desativar o Ã­cone da bandeja.")
+    parser.add_argument("--no-tray", action="store_true", help="Desativar o ícone da bandeja.")
     parser.add_argument(
         "--self-test",
         action="store_true",
-        help="Executar autoteste de distribuiÃ§Ã£o e sair.",
+        help="Executar autoteste de distribuição e sair.",
     )
     parser.add_argument("--screensaver", action="store_true", help="Executar como protetor de tela.")
     return parser.parse_args()
@@ -212,7 +212,7 @@ def main() -> int:
 
     instance_guard = SingleInstanceGuard()
     if instance_guard.already_running:
-        print("Movaura jÃ¡ estÃ¡ em execuÃ§Ã£o. Use o Ã­cone da bandeja para abrir o painel.")
+        print("Movaura já está em execução. Use o ícone da bandeja para abrir o painel.")
         return 0
 
     app = QApplication(sys.argv)
@@ -255,7 +255,7 @@ def main() -> int:
             return 0
         validation = PresentationValidator().validate(settings.data)
         if not validation.success:
-            print(f"Movaura startup: configuraÃ§Ã£o invÃ¡lida: {validation.message}")
+            print(f"Movaura startup: configuração inválida: {validation.message}")
             return 2
         engine = MovauraEngine(app, settings, diagnose=False, quit_when_no_windows=False)
         engine.start()
@@ -280,7 +280,7 @@ def main() -> int:
     if settings.get_str("host_mode") in {"native-composition", "system-wallpaper"}:
         validation = PresentationValidator().validate(settings.data)
         if not validation.success:
-            print(f"Movaura: configuraÃ§Ã£o invÃ¡lida: {validation.message}")
+            print(f"Movaura: configuração inválida: {validation.message}")
             return 2
 
     engine = MovauraEngine(app, settings, diagnose=diagnose_engine)
@@ -290,6 +290,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
 
 

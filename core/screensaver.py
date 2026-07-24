@@ -7,8 +7,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import winreg
-from PyQt6.QtCore import QTimer
-from PyQt6.QtWidgets import QApplication
+from PySide6.QtCore import QTimer
+from PySide6.QtWidgets import QApplication
 
 from core.native_compositor import NativeCompositorLauncher
 from core.runtime_paths import app_root, is_frozen

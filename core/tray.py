@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from PyQt6.QtGui import QAction, QIcon
-from PyQt6.QtWidgets import QApplication, QMenu, QSystemTrayIcon, QStyle
+from PySide6.QtGui import QAction, QIcon
+from PySide6.QtWidgets import QApplication, QMenu, QSystemTrayIcon, QStyle
 from core.runtime_paths import app_icon_path
 
 

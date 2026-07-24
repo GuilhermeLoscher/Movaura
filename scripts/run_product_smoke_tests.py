@@ -9,8 +9,8 @@ from tempfile import TemporaryDirectory
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from PyQt6.QtCore import QRect
-from PyQt6.QtWidgets import QApplication
+from PySide6.QtCore import QRect
+from PySide6.QtWidgets import QApplication
 
 from core.monitor_manager import MonitorInfo
 from core.media_analyzer import analyze_media
@@ -96,6 +96,19 @@ def test_scene_package() -> None:
         import zipfile
         with zipfile.ZipFile(package) as archive:
             assert any(name.startswith("thumbnail") for name in archive.namelist())
+        malicious = root / "malicious.movaura"
+        with zipfile.ZipFile(malicious, "w", zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr("scene.json", "{}")
+            archive.writestr("../escape.txt", "bad")
+        assert not manager.import_scene(malicious).success
+        script_package = root / "script.movaura"
+        with zipfile.ZipFile(script_package, "w", zipfile.ZIP_DEFLATED) as archive:
+            archive.writestr(
+                "scene.json",
+                json.dumps({"format": "movaura-scene", "version": 1, "settings": {}}),
+            )
+            archive.writestr("media/run.ps1", "bad")
+        assert not manager.import_scene(script_package).success
 
 
 def test_validator() -> None:
@@ -173,10 +186,18 @@ def test_startup_command() -> None:
 
 def test_library_recents() -> None:
     with TemporaryDirectory() as temp:
+        root = Path(temp)
         library = WallpaperLibrary()
-        library.metadata_path = Path(temp) / "library.json"
+        library.included_root = root / "included"
+        library.personal_root = root / "personal"
+        library.personal_root.mkdir(parents=True, exist_ok=True)
+        library.metadata_path = root / "library.json"
         library._metadata = {"favorites": [], "recent": [], "details": {}}
-        item = library.items()[0]
+        source = root / "smoke-wallpaper.png"
+        source.write_bytes(b"png-placeholder")
+        imported = library.import_files([source])
+        assert imported
+        item = imported[0]
         library.mark_recent(item)
         library.update_details(item, ["anime", " neon "], "Colecao teste")
         assert any(current.path == item.path and current.recent for current in library.items())
@@ -187,10 +208,12 @@ def test_library_recents() -> None:
 
 
 def test_media_analyzer() -> None:
-    item = WallpaperLibrary().items()[0]
-    analysis = analyze_media(item.path)
-    assert analysis.kind in {"image", "gif", "video"}
-    assert analysis.resource_class in {"leve", "medio", "pesado"}
+    with TemporaryDirectory() as temp:
+        media = Path(temp) / "smoke-wallpaper.png"
+        media.write_bytes(b"png-placeholder")
+        analysis = analyze_media(media)
+        assert analysis.kind == "image"
+        assert analysis.resource_class in {"leve", "medio", "pesado"}
     assert analysis.user_summary
 
 

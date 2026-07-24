@@ -4,7 +4,7 @@ import logging
 from pathlib import Path
 from threading import Event
 
-from PyQt6.QtCore import QObject, QThread, pyqtSignal
+from PySide6.QtCore import QObject, QThread, Signal
 
 from core.ai_generation.models import GenerationError, GenerationErrorCode, GenerationRequest, GenerationResult, GenerationState
 from core.ai_generation.providers import ImageGenerationProvider
@@ -15,11 +15,11 @@ logger = logging.getLogger(__name__)
 
 
 class GenerationWorker(QObject):
-    progress = pyqtSignal(int, str)
-    state_changed = pyqtSignal(str, str)
-    completed = pyqtSignal(object)
-    failed = pyqtSignal(object)
-    cancelled = pyqtSignal(str)
+    progress = Signal(int, str)
+    state_changed = Signal(str, str)
+    completed = Signal(object)
+    failed = Signal(object)
+    cancelled = Signal(str)
 
     def __init__(
         self,
@@ -127,11 +127,11 @@ class GenerationWorker(QObject):
 
 
 class GenerationQueue(QObject):
-    progress = pyqtSignal(int, str)
-    state_changed = pyqtSignal(str, str)
-    completed = pyqtSignal(object)
-    failed = pyqtSignal(object)
-    cancelled = pyqtSignal(str)
+    progress = Signal(int, str)
+    state_changed = Signal(str, str)
+    completed = Signal(object)
+    failed = Signal(object)
+    cancelled = Signal(str)
 
     def __init__(
         self,

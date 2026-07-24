@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtWidgets import (
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtWidgets import (
     QCheckBox,
     QColorDialog,
     QComboBox,
@@ -35,7 +35,7 @@ from core.wallpaper_library import WallpaperLibrary
 
 
 class PlaylistDialog(QDialog):
-    saved = pyqtSignal(dict)
+    saved = Signal(dict)
 
     def __init__(self, manager: PlaylistManager, settings, parent=None) -> None:
         super().__init__(parent)
@@ -182,7 +182,7 @@ class AppRulesDialog(QDialog):
 
 
 class MonitorProfilesDialog(QDialog):
-    applied = pyqtSignal(dict)
+    applied = Signal(dict)
 
     def __init__(self, settings, library: WallpaperLibrary, parent=None) -> None:
         super().__init__(parent)
@@ -235,7 +235,7 @@ class MonitorProfilesDialog(QDialog):
 
 
 class QuickCreateDialog(QDialog):
-    applied = pyqtSignal(dict)
+    applied = Signal(dict)
 
     def __init__(self, settings, parent=None) -> None:
         super().__init__(parent)
@@ -331,8 +331,8 @@ class QuickCreateDialog(QDialog):
 
 
 class SceneEditorDialog(QDialog):
-    applied = pyqtSignal(dict)
-    preview_requested = pyqtSignal(dict)
+    applied = Signal(dict)
+    preview_requested = Signal(dict)
 
     def __init__(self, settings, parent=None) -> None:
         super().__init__(parent)
@@ -698,7 +698,7 @@ class SceneEditorDialog(QDialog):
 
 
 class CatalogDialog(QDialog):
-    selected = pyqtSignal(object)
+    selected = Signal(object)
 
     def __init__(self, catalog: OnlineCatalog, library: WallpaperLibrary, settings, parent=None) -> None:
         super().__init__(parent)

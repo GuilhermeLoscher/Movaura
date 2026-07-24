@@ -1,0 +1,11 @@
+{
+  "PackageName": "PublisherReservedName.Movaura",
+  "Publisher": "CN=Publisher Distinguished Name From Partner Center",
+  "PublisherDisplayName": "Publisher display name",
+  "Version": "0.9.0.0",
+  "Architecture": "x64",
+  "Notes": [
+    "Copy this file outside the repository or into an untracked local file before using real Partner Center identity data.",
+    "Do not commit private certificates, PFX files, passwords or Partner Center secrets."
+  ]
+}

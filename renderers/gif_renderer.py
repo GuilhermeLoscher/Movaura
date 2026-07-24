@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QMovie
-from PyQt6.QtWidgets import QLabel, QSizePolicy
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QMovie
+from PySide6.QtWidgets import QLabel, QSizePolicy
 
 from renderers.base import RendererContext
 

@@ -5,15 +5,15 @@ import json
 import tempfile
 from pathlib import Path
 
-from PyQt6.QtCore import QObject, QTimer, QUrl, pyqtSignal
-from PyQt6.QtGui import QIcon, QImageReader, QPixmap
-from PyQt6.QtMultimedia import QMediaPlayer, QVideoSink
+from PySide6.QtCore import QObject, QTimer, QUrl, Signal
+from PySide6.QtGui import QIcon, QImageReader, QPixmap
+from PySide6.QtMultimedia import QMediaPlayer, QVideoSink
 
 from core.runtime_paths import data_root
 
 
 class ThumbnailCache(QObject):
-    ready = pyqtSignal(str)
+    ready = Signal(str)
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)

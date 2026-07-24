@@ -10,9 +10,9 @@ from threading import Event
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from PyQt6.QtCore import QEventLoop, QThread, QTimer
-from PyQt6.QtGui import QImage
-from PyQt6.QtWidgets import QApplication
+from PySide6.QtCore import QEventLoop, QThread, QTimer
+from PySide6.QtGui import QImage
+from PySide6.QtWidgets import QApplication
 
 from core.ai_generation.models import GenerationError, GenerationErrorCode, GenerationImage, GenerationRequest, GenerationResult
 from core.ai_generation.prompting import enhance_prompt

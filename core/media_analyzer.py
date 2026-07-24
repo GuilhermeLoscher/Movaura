@@ -7,7 +7,7 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
-from PyQt6.QtGui import QImageReader
+from PySide6.QtGui import QImageReader
 
 from core.video_optimizer import VIDEO_SUFFIXES, VideoOptimizer
 

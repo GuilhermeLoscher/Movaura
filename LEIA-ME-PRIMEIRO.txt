@@ -38,5 +38,5 @@ Observacoes:
 
 - Requer Windows 11 x64.
 - Nao requer Python instalado na maquina.
-- O instalador inclui PyQt6 e os componentes nativos necessarios.
+- O instalador inclui PySide6 e os componentes nativos necessarios.
 - Use o botao "Parar" antes de desinstalar o Movaura.

@@ -4,7 +4,9 @@ param(
     [string]$PublisherDisplayName = "Guilherme Loscher",
     [string]$Version = "0.9.0.0",
     [string]$StandalonePath = "",
-    [string]$PythonExe = ""
+    [string]$PythonExe = "",
+    [switch]$StoreBuild,
+    [switch]$AllowDefaultIdentity
 )
 
 $ErrorActionPreference = "Stop"
@@ -53,6 +55,11 @@ if (-not $makeappx) {
     throw "makeappx.exe nao encontrado. Instale Windows SDK/App Certification Kit para gerar MSIX."
 }
 $python = Resolve-BuildPython $PythonExe
+if ($StoreBuild -and -not $AllowDefaultIdentity) {
+    if ($PackageName -eq "GuilhermeLoscher.Movaura" -or $Publisher -eq "CN=Guilherme Loscher") {
+        throw "StoreBuild exige identidade real do Partner Center ou -AllowDefaultIdentity explicito para build tecnico local."
+    }
+}
 
 if (Test-Path -LiteralPath $layout) {
     Remove-Item -LiteralPath $layout -Recurse -Force
@@ -118,6 +125,22 @@ if (Test-Path -LiteralPath $output) {
 if ($LASTEXITCODE -ne 0) {
     throw "makeappx encerrou com codigo $LASTEXITCODE"
 }
+
+& $python (Join-Path $root "scripts\validate_msix_layout.py") $layout --expected-package-name $PackageName --expected-publisher $Publisher --reports (Join-Path $root "release\reports")
+if ($LASTEXITCODE -ne 0) {
+    throw "Validacao do layout MSIX falhou."
+}
+& $python (Join-Path $root "scripts\check_no_pyqt_artifacts.py") --artifact $layout --report-base (Join-Path $root "release\reports\qt-binding-audit-msix")
+if ($LASTEXITCODE -ne 0) {
+    throw "Validacao PySide/PyQt do MSIX falhou."
+}
+& $python (Join-Path $root "scripts\generate_artifact_reports.py") $layout --name msix --reports (Join-Path $root "release\reports")
+if ($LASTEXITCODE -ne 0) {
+    throw "Falha ao gerar inventario MSIX."
+}
+Get-FileHash -LiteralPath $output -Algorithm SHA256 |
+    ForEach-Object { "$($_.Hash)  $($_.Path)" } |
+    Set-Content -LiteralPath (Join-Path $root "release\reports\msix-package-sha256.txt") -Encoding UTF8
 
 Get-Item -LiteralPath $output | Select-Object FullName, Length, LastWriteTime
 Write-Host "Pacote MSIX gerado sem assinatura local. Assine com scripts\sign_msix.ps1 e os dados reservados no Partner Center."

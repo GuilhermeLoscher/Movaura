@@ -8,7 +8,7 @@ from time import perf_counter
 from core.json_store import read_json_object, write_json_atomic
 from uuid import UUID
 
-from PyQt6.QtGui import QColor, QImage
+from PySide6.QtGui import QColor, QImage
 
 from core.runtime_paths import data_root
 

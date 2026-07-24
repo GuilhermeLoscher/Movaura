@@ -54,7 +54,8 @@ from core.version import APP_AUTHOR_SIGNATURE
 from core.system_wallpaper import SystemWallpaperBackend
 from core.update_checker import UpdateChecker, UpdateResult
 from core.wallpaper_library import WallpaperItem, WallpaperLibrary
-from ui.ai_generation_page import AIGenerationPage
+from ui.pages.ai_page import AIFuturePage
+from ui.pages.explore_page import ExplorePage
 from ui.library_dialog import LibraryDialog
 from ui.product_dialogs import (
     AppRulesDialog,
@@ -252,16 +253,14 @@ class ControlPanel(QWidget):
         settings_tab = QWidget()
         support_tab = QWidget()
         automation_tab = QWidget()
-        ai_tab = AIGenerationPage(
-            self.settings,
-            self.library,
-            self,
-            monitor_resolution_provider=self._selected_monitor_resolution_for_ai,
-        )
+        explore_tab = ExplorePage(self.settings, self.library, self)
+        ai_tab = AIFuturePage(self)
+        self.explore_page = explore_tab
         self.ai_generation_page = ai_tab
         tabs.addTab(quick_tab, "Início")
         tabs.addTab(wallpaper_tab, "Wallpaper")
-        tabs.addTab(ai_tab, "Criar com IA")
+        tabs.addTab(explore_tab, "Explorar")
+        tabs.addTab(ai_tab, "Gerar com IA")
         tabs.addTab(settings_tab, "Desempenho")
         tabs.addTab(automation_tab, "Automação")
         tabs.addTab(support_tab, "Suporte")
@@ -541,6 +540,11 @@ class ControlPanel(QWidget):
         self.quick_advanced_button.clicked.connect(lambda: self.tabs.setCurrentIndex(1))
         self.quick_pause_button.clicked.connect(self._toggle_pause)
         self.quick_stop_button.clicked.connect(self._stop_wallpaper)
+        self.explore_page.wallpaper_selected.connect(self._select_wallpaper)
+        self.explore_page.preview_requested.connect(self._preview_wallpaper)
+        self.explore_page.start_requested.connect(self._start_wallpaper)
+        self.explore_page.library_requested.connect(self._open_library)
+        self.explore_page.status_changed.connect(self.status_label.setText)
         self.ai_generation_page.wallpaper_selected.connect(self._select_wallpaper)
         self.ai_generation_page.preview_requested.connect(self._preview_wallpaper)
         self.ai_generation_page.start_requested.connect(self._start_wallpaper)

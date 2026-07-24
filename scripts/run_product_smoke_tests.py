@@ -26,6 +26,8 @@ from core.settings import MovauraSettings
 from core.startup_manager import StartupManager
 from core.update_checker import UpdateChecker, UpdateResult
 from core.wallpaper_library import WallpaperLibrary
+from models.wallpaper_result import WallpaperSearchQuery
+from services.wallpaper_search_service import WallpaperSearchService
 from ui.control_panel import ControlPanel
 from ui.library_dialog import LibraryDialog
 from ui.product_dialogs import SceneEditorDialog
@@ -308,6 +310,18 @@ def test_local_catalog() -> None:
     assert WallpaperLibrary.kind_for_path(downloaded) == "image"
 
 
+def test_wallpaper_search_without_key() -> None:
+    with TemporaryDirectory() as temp:
+        settings = MovauraSettings.load(Path(temp) / "settings.json")
+        service = WallpaperSearchService(settings)
+        try:
+            service.search(WallpaperSearchQuery("natureza"))
+        except Exception as exc:
+            assert "Configure sua chave da API do Pexels" in service.friendly_error(exc)
+        else:
+            raise AssertionError("Pexels search without API key should fail with a friendly message")
+
+
 def test_performance_snapshot() -> None:
     snapshot = PerformanceMonitor().sample(set())
     assert snapshot.average_cpu_percent == 0.0
@@ -321,6 +335,11 @@ def test_panel() -> None:
         panel = ControlPanel(app, settings)
         library = LibraryDialog(WallpaperLibrary())
         editor = SceneEditorDialog(settings)
+        tab_names = [panel.tabs.tabText(index) for index in range(panel.tabs.count())]
+        assert "Explorar" in tab_names
+        assert "Gerar com IA" in tab_names
+        assert panel.explore_page.search_button.isEnabled()
+        assert panel.ai_generation_page.shutdown()
         assert panel.quick_screen_combo.count() >= 1
         assert panel.quick_stop_preview_button.isEnabled()
         assert panel.quick_optimize_button.isEnabled()
@@ -354,6 +373,7 @@ def main() -> None:
     test_benchmark()
     test_catalog_source_resolution()
     test_local_catalog()
+    test_wallpaper_search_without_key()
     test_panel()
     print("product_smoke_tests=ok")
 

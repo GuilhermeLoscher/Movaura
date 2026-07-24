@@ -1,0 +1,2 @@
+"""Online wallpaper provider integrations."""
+

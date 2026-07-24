@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import json
 import sys
+import time
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -26,8 +27,8 @@ from core.catalog import OnlineCatalog
 from core.settings import MovauraSettings
 from core.startup_manager import StartupManager
 from core.update_checker import UpdateChecker, UpdateResult
-from core.wallpaper_library import WallpaperLibrary
-from core.thumbnail_cache import ThumbnailCache
+from core.wallpaper_library import WallpaperItem, WallpaperLibrary
+from core.thumbnail_cache import ThumbnailCache, thumbnail_digest
 from ui.control_panel import ControlPanel
 from ui.library_dialog import LibraryDialog
 from ui.pages.explore_page import ExplorePage
@@ -464,6 +465,102 @@ def test_library_dialog_filters_drag_and_cache() -> None:
         dialog.close()
 
 
+def test_thumbnail_cache_safety_and_lru() -> None:
+    app = QApplication.instance() or QApplication([])
+    with TemporaryDirectory() as temp:
+        root = Path(temp)
+        image = QImage(80, 45, QImage.Format.Format_RGB32)
+        image.fill(0x00AA88)
+        source = root / "imagem-unicode-acao.png"
+        assert image.save(str(source))
+
+        cache = ThumbnailCache()
+        cache.root = root / "thumbs"
+        cache.root.mkdir(parents=True, exist_ok=True)
+        first_key = thumbnail_digest(source)
+        first_cached = cache.cached_path(source)
+        assert first_key == thumbnail_digest(source)
+        assert not cache.cache_hit(source)
+
+        cache.request_image(source)
+        deadline = time.time() + 2.0
+        while time.time() < deadline and not cache.cache_hit(source):
+            app.processEvents()
+            time.sleep(0.02)
+        assert cache.cache_hit(source), "image thumbnail was not generated asynchronously"
+        metadata = cache.metadata(source)
+        assert metadata.get("version")
+        assert metadata.get("width") == 80
+        assert metadata.get("height") == 45
+
+        cache.metadata_path(source).unlink()
+        assert not cache.cache_hit(source), "thumbnail without versioned metadata must be invalid"
+        cache.request_image(source)
+        deadline = time.time() + 2.0
+        while time.time() < deadline and not cache.cache_hit(source):
+            app.processEvents()
+            time.sleep(0.02)
+        assert cache.cache_hit(source)
+
+        first_cached.write_bytes(b"")
+        assert not cache.cache_hit(source), "empty thumbnail must be invalid"
+
+        time.sleep(0.01)
+        image.fill(0x003355)
+        assert image.save(str(source))
+        assert thumbnail_digest(source) != first_key, "cache key must change when source changes"
+
+        old_a = cache.root / "old-a.jpg"
+        old_b = cache.root / "old-b.jpg"
+        old_a.write_bytes(b"a" * 20)
+        old_b.write_bytes(b"b" * 20)
+        cache.prune(max_bytes=10, max_files=1)
+        deadline = time.time() + 2.0
+        while time.time() < deadline and cache._prune_scheduled:
+            app.processEvents()
+            time.sleep(0.02)
+        assert not old_a.exists() or not old_b.exists(), "LRU prune should remove old cache entries"
+        cache.cancel_pending()
+
+
+def test_library_metadata_resilience_and_duplicate_confirmation() -> None:
+    with TemporaryDirectory() as temp:
+        root = Path(temp)
+        library = WallpaperLibrary()
+        library.included_root = root / "included"
+        library.personal_root = root / "personal"
+        library.personal_root.mkdir(parents=True, exist_ok=True)
+        library.metadata_path = root / "library.json"
+        library.metadata_path.write_text("{invalid-json", encoding="utf-8")
+        loaded = library._load_metadata()
+        assert loaded == {"favorites": [], "recent": [], "details": {}, "ui": {}}
+        assert list(root.glob("library.invalid-*.json")), "invalid metadata must be preserved"
+        library._metadata = loaded
+
+        source_a = root / "same-name.png"
+        source_b_dir = root / "other"
+        source_b_dir.mkdir()
+        source_b = source_b_dir / "same-name.png"
+        source_a.write_bytes(b"first-payload")
+        source_b.write_bytes(b"other-payload")
+        assert source_a.stat().st_size == source_b.stat().st_size
+
+        original_digest = WallpaperLibrary.file_digest
+        WallpaperLibrary.file_digest = staticmethod(lambda _path: "forced-fast-signature")
+        try:
+            assert len(library.import_files([source_a])) == 1
+            assert len(library.import_files([source_b])) == 1
+            assert len(library.items()) == 2, "full hash must reject false duplicate matches"
+        finally:
+            WallpaperLibrary.file_digest = original_digest
+
+        outside = root / "outside.png"
+        outside.write_bytes(b"outside")
+        outside_item = WallpaperItem("image", outside, "Outside", False, False)
+        assert not library.remove_personal(outside_item)
+        assert library.rename_personal(outside_item, "renamed") is None
+
+
 def test_performance_snapshot() -> None:
     snapshot = PerformanceMonitor().sample(set())
     assert snapshot.average_cpu_percent == 0.0
@@ -521,6 +618,8 @@ def main() -> None:
     test_explore_page_without_api_key()
     test_explore_local_import_flow()
     test_library_dialog_filters_drag_and_cache()
+    test_thumbnail_cache_safety_and_lru()
+    test_library_metadata_resilience_and_duplicate_confirmation()
     test_panel()
     print("product_smoke_tests=ok")
 

@@ -80,6 +80,7 @@ class LibraryDialog(QDialog):
         self.setAcceptDrops(True)
         self._build_ui()
         self._load_ui_state()
+        self.thumbnails.prune()
         self.refresh()
 
     def _build_ui(self) -> None:
@@ -466,7 +467,8 @@ class LibraryDialog(QDialog):
 
     def _icon(self, wallpaper: WallpaperItem) -> QIcon:
         if wallpaper.kind in {"image", "gif"}:
-            pixmap = QPixmap(str(wallpaper.path))
+            cached = self.thumbnails.cached_path(wallpaper.path)
+            pixmap = QPixmap(str(cached))
             if not pixmap.isNull():
                 return QIcon(
                     pixmap.scaled(
@@ -476,6 +478,7 @@ class LibraryDialog(QDialog):
                         Qt.TransformationMode.SmoothTransformation,
                     )
                 )
+            self.thumbnails.request_image(wallpaper.path)
         if wallpaper.kind == "video":
             static_dir = wallpaper.path.parent.parent / "static"
             for suffix in (".jpg", ".jpeg", ".png", ".webp"):
@@ -509,6 +512,10 @@ class LibraryDialog(QDialog):
         tags = f"\nTags: {', '.join(wallpaper.tags)}" if wallpaper.tags else ""
         resource = {"leve": "Leve", "medio": "Medio", "pesado": "Pesado"}.get(wallpaper.resource_class, "Leve")
         return f"{wallpaper.path}\n{wallpaper.category} | {resource} | {resolution}{duration} | {size_mb:.1f} MB{tags}"
+
+    def closeEvent(self, event) -> None:
+        self.thumbnails.cancel_pending()
+        super().closeEvent(event)
 
     @staticmethod
     def _import_message(imported: list[WallpaperItem]) -> str:

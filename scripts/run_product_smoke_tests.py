@@ -10,6 +10,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from PySide6.QtCore import QRect
+from PySide6.QtGui import QImage
 from PySide6.QtWidgets import QApplication
 
 from core.monitor_manager import MonitorInfo
@@ -26,10 +27,9 @@ from core.settings import MovauraSettings
 from core.startup_manager import StartupManager
 from core.update_checker import UpdateChecker, UpdateResult
 from core.wallpaper_library import WallpaperLibrary
-from models.wallpaper_result import WallpaperSearchQuery
-from services.wallpaper_search_service import WallpaperSearchService
 from ui.control_panel import ControlPanel
 from ui.library_dialog import LibraryDialog
+from ui.pages.explore_page import ExplorePage
 from ui.product_dialogs import SceneEditorDialog
 
 
@@ -310,16 +310,76 @@ def test_local_catalog() -> None:
     assert WallpaperLibrary.kind_for_path(downloaded) == "image"
 
 
-def test_wallpaper_search_without_key() -> None:
+def test_explore_external_urls() -> None:
+    url = ExplorePage.build_external_url("Pexels", "cyberpunk city")
+    assert url == "https://www.pexels.com/search/cyberpunk+city/"
+    assert ExplorePage.is_allowed_external_url(url)
+    assert ExplorePage.is_allowed_external_url("https://pixabay.com/images/search/anime+wallpaper/")
+    assert ExplorePage.is_allowed_external_url("https://unsplash.com/s/photos/space+station")
+    assert ExplorePage.is_allowed_external_url("https://wallhaven.cc/search?q=sci-fi")
+    assert not ExplorePage.is_allowed_external_url("http://www.pexels.com/search/cyberpunk/")
+    assert not ExplorePage.is_allowed_external_url("https://evil.example/search?q=cyberpunk")
+    special = ExplorePage.build_external_url("Wallhaven", "ação & espaço")
+    assert "a%C3%A7%C3%A3o+%26+espa%C3%A7o" in special
+
+
+def test_explore_page_without_api_key() -> None:
     with TemporaryDirectory() as temp:
         settings = MovauraSettings.load(Path(temp) / "settings.json")
-        service = WallpaperSearchService(settings)
-        try:
-            service.search(WallpaperSearchQuery("natureza"))
-        except Exception as exc:
-            assert "Configure sua chave da API do Pexels" in service.friendly_error(exc)
-        else:
-            raise AssertionError("Pexels search without API key should fail with a friendly message")
+        settings.data["pexels_api_key"] = "legacy-secret"
+        app = QApplication.instance() or QApplication([])
+        library = WallpaperLibrary()
+        page = ExplorePage(settings, library)
+        assert "pexels_api_key" not in settings.data
+        assert "API" not in page.status_label.text()
+        assert page.import_button.isEnabled()
+        assert not page.apply_button.isEnabled()
+        page.close()
+
+
+def test_explore_local_import_flow() -> None:
+    app = QApplication.instance() or QApplication([])
+    with TemporaryDirectory() as temp:
+        root = Path(temp)
+        settings = MovauraSettings.load(root / "settings.json")
+        library = WallpaperLibrary()
+        library.included_root = root / "included"
+        library.personal_root = root / "personal"
+        library.personal_root.mkdir(parents=True, exist_ok=True)
+        library.metadata_path = root / "library.json"
+        library._metadata = {"favorites": [], "recent": [], "details": {}}
+        page = ExplorePage(settings, library)
+
+        assert page.import_paths([]) == []
+        assert "cancelada" in page.status_label.text().lower()
+
+        invalid = root / "invalid.txt"
+        invalid.write_text("not a wallpaper", encoding="utf-8")
+        assert page.import_paths([invalid]) == []
+        assert "compativel" in page.status_label.text().lower()
+
+        source = root / "wallpaper.png"
+        image = QImage(64, 36, QImage.Format.Format_RGB32)
+        image.fill(0x0078FF)
+        assert image.save(str(source))
+
+        imported = page.import_paths([source])
+        assert len(imported) == 1
+        assert page.last_imported is imported[0]
+        assert page.apply_button.isEnabled()
+        assert page.favorite_button.isEnabled()
+        assert source.is_file()
+        assert imported[0].path.is_file()
+        assert imported[0].path.is_relative_to(library.personal_root)
+
+        page._favorite_imported()
+        assert any(item.favorite for item in library.items())
+
+        duplicated = page.import_paths([source])
+        assert duplicated
+        assert len(library.items()) == 1
+        assert "ignorado" in page.status_label.text().lower()
+        page.close()
 
 
 def test_performance_snapshot() -> None:
@@ -338,7 +398,9 @@ def test_panel() -> None:
         tab_names = [panel.tabs.tabText(index) for index in range(panel.tabs.count())]
         assert "Explorar" in tab_names
         assert "Gerar com IA" in tab_names
-        assert panel.explore_page.search_button.isEnabled()
+        assert panel.explore_page.import_button.isEnabled()
+        assert not hasattr(panel.ai_generation_page, "prompt_edit")
+        assert not hasattr(panel.ai_generation_page, "generate_button")
         assert panel.ai_generation_page.shutdown()
         assert panel.quick_screen_combo.count() >= 1
         assert panel.quick_stop_preview_button.isEnabled()
@@ -373,7 +435,9 @@ def main() -> None:
     test_benchmark()
     test_catalog_source_resolution()
     test_local_catalog()
-    test_wallpaper_search_without_key()
+    test_explore_external_urls()
+    test_explore_page_without_api_key()
+    test_explore_local_import_flow()
     test_panel()
     print("product_smoke_tests=ok")
 

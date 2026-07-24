@@ -1,0 +1,125 @@
+{
+  "environment": {
+    "created_at_utc": "2026-07-24T13:57:32.863133+00:00",
+    "project_root": "C:\\NovaWall\\Movaura",
+    "python": "3.12.13 (main, Mar  3 2026, 15:01:35) [MSC v.1944 64 bit (AMD64)]",
+    "python_executable": "C:\\NovaWall\\.build-venv\\Scripts\\python.exe",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 140 Stepping 1, GenuineIntel",
+    "windows_release": "11",
+    "cwd": "C:\\NovaWall\\Movaura",
+    "git": {
+      "status": {
+        "argv": [
+          "git",
+          "status",
+          "--short",
+          "--branch"
+        ],
+        "returncode": 0,
+        "stdout": "## audit/license-compliance-final\n M .github/workflows/windows-build.yml\n M docs/FFMPEG_BUILD_LOCK.md\n M docs/FINAL_LICENSE_AUDIT.md\n M docs/PRIVACY_POLICY.md\n M docs/THIRD_PARTY_COMPONENTS_LOCK.md\n M docs/THIRD_PARTY_NOTICES.md\n M licenses/pyside6/SOURCE.txt\n M licenses/pywin32/SOURCE.txt\n M licenses/shiboken6/SOURCE.txt\n M scripts/build_fixed_release.ps1\n M scripts/build_standalone.ps1\n M scripts/package_release.ps1\n M ui/control_panel.py\n M ui/product_dialogs.py\n?? THIRD_PARTY_NOTICES.txt\n?? docs/CODEC_PATENT_RISK_REGISTER.md\n?? docs/EULA_DRAFT_EN_US.md\n?? docs/EULA_DRAFT_PT_BR.md\n?? docs/FFMPEG_EXTERNAL_LIBRARY_MATRIX.md\n?? docs/LEGAL_REVIEW_HANDOFF.md\n?? docs/LGPL_MSIX_TECHNICAL_ASSESSMENT.md\n?? docs/LICENSE_COMPLIANCE_TEST_REPORT.md\n?? docs/PYTHON_DEPENDENCY_LICENSE_MATRIX.md\n?? docs/QT_MODULE_LICENSE_MATRIX.md\n?? docs/audit-evidence/\n?? licenses/altgraph/\n?? licenses/ffmpeg/BUILD_CONFIGURATION.txt\n?? licenses/packaging/\n?? licenses/pefile/\n?? licenses/pillow/\n?? licenses/pyinstaller-hooks-contrib/\n?? licenses/pyinstaller/\n?? licenses/pyside6-addons/\n?? licenses/pyside6-essentials/\n?? licenses/pyside6/LicenseRef-Qt-Commercial.txt\n?? licenses/pywin32-ctypes/\n?? licenses/pywin32/license.txt\n?? licenses/shiboken6/LicenseRef-Qt-Commercial.txt\n?? release/compliance/\n?? scripts/audit_ffmpeg_compliance.py\n?? scripts/audit_python_licenses.py\n?? scripts/audit_qt_modules.py\n?? scripts/license_compliance_common.py\n?? scripts/prepare_license_compliance_docs.py\n?? scripts/validate_license_payload.py\n?? third_party/\n?? third_party_sources/\n",
+        "stderr": ""
+      },
+      "branch": {
+        "argv": [
+          "git",
+          "branch",
+          "--show-current"
+        ],
+        "returncode": 0,
+        "stdout": "audit/license-compliance-final\n",
+        "stderr": ""
+      },
+      "head": {
+        "argv": [
+          "git",
+          "rev-parse",
+          "HEAD"
+        ],
+        "returncode": 0,
+        "stdout": "cab576b6e1563e4b656d0fc77ffa4b2c11beb4a3\n",
+        "stderr": ""
+      },
+      "remote": {
+        "argv": [
+          "git",
+          "remote",
+          "-v"
+        ],
+        "returncode": 0,
+        "stdout": "origin\thttps://github.com/GuilhermeLoscher/Movaura.git (fetch)\norigin\thttps://github.com/GuilhermeLoscher/Movaura.git (push)\n",
+        "stderr": ""
+      },
+      "log": {
+        "argv": [
+          "git",
+          "log",
+          "-10",
+          "--oneline"
+        ],
+        "returncode": 0,
+        "stdout": "cab576b Merge pull request #1 from GuilhermeLoscher/migration/pyside6\nadb43f5 Document final PR CI validation\n70f6ec9 Fix CI MSIX checksum generation\nba53689 Pin Pillow for MSIX asset generation\n1251e50 Make smoke tests independent of bundled wallpapers\na382c10 Record PR CI validation blocker\n89709fb Document CI and PR validation plan\n7a13b22 Finalize Store audit evidence\n7793d42 Harden Store audit docs and package safety\nbd61c10 Audit final baseline and reproducible build reports\n",
+        "stderr": ""
+      },
+      "diff_check": {
+        "argv": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": "warning: in the working copy of '.github/workflows/windows-build.yml', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/build_fixed_release.ps1', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/build_standalone.ps1', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'scripts/package_release.ps1', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'ui/control_panel.py', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'ui/product_dialogs.py', LF will be replaced by CRLF the next time Git touches it\n"
+      },
+      "fsck": {
+        "argv": [
+          "git",
+          "fsck",
+          "--no-reflogs"
+        ],
+        "returncode": 0,
+        "stdout": "dangling commit 63e94bcb344093c806748a4d94a5ed6c7f3ba629\n",
+        "stderr": ""
+      },
+      "status_ignored": {
+        "argv": [
+          "git",
+          "status",
+          "--ignored",
+          "--short"
+        ],
+        "returncode": 0,
+        "stdout": " M .github/workflows/windows-build.yml\n M docs/FFMPEG_BUILD_LOCK.md\n M docs/FINAL_LICENSE_AUDIT.md\n M docs/PRIVACY_POLICY.md\n M docs/THIRD_PARTY_COMPONENTS_LOCK.md\n M docs/THIRD_PARTY_NOTICES.md\n M licenses/pyside6/SOURCE.txt\n M licenses/pywin32/SOURCE.txt\n M licenses/shiboken6/SOURCE.txt\n M scripts/build_fixed_release.ps1\n M scripts/build_standalone.ps1\n M scripts/package_release.ps1\n M ui/control_panel.py\n M ui/product_dialogs.py\n?? THIRD_PARTY_NOTICES.txt\n?? docs/CODEC_PATENT_RISK_REGISTER.md\n?? docs/EULA_DRAFT_EN_US.md\n?? docs/EULA_DRAFT_PT_BR.md\n?? docs/FFMPEG_EXTERNAL_LIBRARY_MATRIX.md\n?? docs/LEGAL_REVIEW_HANDOFF.md\n?? docs/LGPL_MSIX_TECHNICAL_ASSESSMENT.md\n?? docs/LICENSE_COMPLIANCE_TEST_REPORT.md\n?? docs/PYTHON_DEPENDENCY_LICENSE_MATRIX.md\n?? docs/QT_MODULE_LICENSE_MATRIX.md\n?? docs/audit-evidence/\n?? licenses/altgraph/\n?? licenses/ffmpeg/BUILD_CONFIGURATION.txt\n?? licenses/packaging/\n?? licenses/pefile/\n?? licenses/pillow/\n?? licenses/pyinstaller-hooks-contrib/\n?? licenses/pyinstaller/\n?? licenses/pyside6-addons/\n?? licenses/pyside6-essentials/\n?? licenses/pyside6/LicenseRef-Qt-Commercial.txt\n?? licenses/pywin32-ctypes/\n?? licenses/pywin32/license.txt\n?? licenses/shiboken6/LicenseRef-Qt-Commercial.txt\n?? release/compliance/\n?? scripts/audit_ffmpeg_compliance.py\n?? scripts/audit_python_licenses.py\n?? scripts/audit_qt_modules.py\n?? scripts/license_compliance_common.py\n?? scripts/prepare_license_compliance_docs.py\n?? scripts/validate_license_payload.py\n?? third_party/\n?? third_party_sources/\n!! __pycache__/\n!! build/\n!! core/__pycache__/\n!! core/ai_generation/__pycache__/\n!! data/ai_generation/\n!! data/downloads/\n!! data/library.json\n!! data/license.json\n!! data/logs/\n!! data/optimized_videos/\n!! data/settings.json\n!! data/system_wallpaper_state.json\n!! data/updates/\n!! data/wallpapers/\n!! dist/\n!! installer/Movaura-Setup-0.9.0.exe\n!! msix/\n!! plugins/sample_pulse/__pycache__/\n!! release/beta/\n!! release/certification/wack-20260723-144550.xml\n!! release/certification/wack-20260723-153122.xml\n!! release/certification/wack-20260723-172615.xml\n!! release/installer/\n!! release/msix/\n!! release/reports/\n!! release/wack/\n!! renderers/__pycache__/\n!! scripts/__pycache__/\n!! tools/\n!! ui/__pycache__/\n",
+        "stderr": ""
+      }
+    }
+  },
+  "audit_qt_modules": {
+    "argv": [
+      "C:\\NovaWall\\.build-venv\\Scripts\\python.exe",
+      "C:\\NovaWall\\Movaura\\scripts\\audit_qt_modules.py"
+    ],
+    "returncode": 0,
+    "stdout": "qt_records=189\n",
+    "stderr": ""
+  },
+  "audit_python_licenses": {
+    "argv": [
+      "C:\\NovaWall\\.build-venv\\Scripts\\python.exe",
+      "C:\\NovaWall\\Movaura\\scripts\\audit_python_licenses.py"
+    ],
+    "returncode": 0,
+    "stdout": "python_license_rows=13\n",
+    "stderr": ""
+  },
+  "audit_ffmpeg_compliance": {
+    "argv": [
+      "C:\\NovaWall\\.build-venv\\Scripts\\python.exe",
+      "C:\\NovaWall\\Movaura\\scripts\\audit_ffmpeg_compliance.py"
+    ],
+    "returncode": 1,
+    "stdout": "ffmpeg_findings=9\n",
+    "stderr": ""
+  }
+}

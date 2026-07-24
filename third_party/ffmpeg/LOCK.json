@@ -1,0 +1,114 @@
+{
+  "provider": "PENDING OWNER CONFIRMATION",
+  "artifact_name": "PENDING - current docs mention master-latest",
+  "artifact_url": "PENDING - immutable URL required",
+  "downloaded_at_utc": "PENDING",
+  "archive_sha256": "PENDING",
+  "ffmpeg_version": "N-124986-g631ac6d055-20260612",
+  "ffmpeg_commit": "631ac6d055",
+  "provider_commit": "PENDING",
+  "configuration": "--prefix=/ffbuild/prefix --pkg-config-flags=--static --pkg-config=pkg-config --cross-prefix=x86_64-w64-mingw32- --arch=x86_64 --target-os=mingw32 --enable-version3 --disable-debug --enable-shared --disable-static --disable-w32threads --enable-pthreads --enable-iconv --enable-zlib --enable-libxml2 --enable-libvmaf --enable-fontconfig --enable-libharfbuzz --enable-libfreetype --enable-libfribidi --enable-vulkan --enable-libshaderc --enable-libvorbis --disable-libxcb --disable-xlib --disable-libpulse --enable-opencl --enable-gmp --enable-lzma --enable-liblcevc-dec --enable-amf --enable-libaom --enable-libaribb24 --disable-avisynth --enable-chromaprint --enable-libdav1d --disable-libdavs2 --disable-libdvdread --disable-libdvdnav --disable-libfdk-aac --enable-ffnvcodec --enable-cuda-llvm --disable-frei0r --enable-libgme --enable-libkvazaar --enable-libaribcaption --enable-libass --enable-libbluray --enable-libjxl --enable-libmp3lame --enable-libopus --enable-libplacebo --enable-librist --enable-libssh --enable-libtheora --enable-libvpx --enable-libwebp --enable-libzmq --enable-lv2 --enable-libvpl --enable-openal --enable-liboapv --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenh264 --enable-libopenjpeg --enable-libopenmpt --enable-librav1e --disable-librubberband --enable-schannel --enable-sdl2 --enable-libsnappy --enable-libsoxr --enable-libsrt --enable-libsvtav1 --enable-libtwolame --enable-libuavs3d --disable-libdrm --enable-vaapi --disable-libvidstab --enable-libvvenc --enable-whisper --disable-libx264 --disable-libx265 --disable-libxavs2 --disable-libxvid --enable-libzimg --enable-libzvbi --extra-cflags=-DLIBTWOLAME_STATIC --extra-cxxflags= --extra-libs=-lgomp --extra-ldflags=-pthread --extra-ldexeflags= --cc=x86_64-w64-mingw32-gcc --cxx=x86_64-w64-mingw32-g++ --ar=x86_64-w64-mingw32-gcc-ar --ranlib=x86_64-w64-mingw32-gcc-ranlib --nm=x86_64-w64-mingw32-gcc-nm --extra-version=20260612",
+  "files": [
+    {
+      "path": "bin/avcodec-62.dll",
+      "size": 70587904,
+      "sha256": "b4cf3396efb7795604113f0983ea8655b55dd38f8afe23c28efdc2f8c0a52678"
+    },
+    {
+      "path": "bin/avdevice-62.dll",
+      "size": 3698688,
+      "sha256": "a3164d12279d0d4bea750da6429ff61180096f8adb483de1b8eb070e844429e5"
+    },
+    {
+      "path": "bin/avfilter-11.dll",
+      "size": 90659328,
+      "sha256": "3f367f88ba8ed5e145b4f3d318ce67149bdc0ca3f3b9e9bdaccfa0ab561edf6e"
+    },
+    {
+      "path": "bin/avformat-62.dll",
+      "size": 21773824,
+      "sha256": "536a635e599aa128d430809bf77ec3ea4cb03230833eb436ff83e77c8452be79"
+    },
+    {
+      "path": "bin/avutil-60.dll",
+      "size": 2945536,
+      "sha256": "12b467381a63d779c1913603815ab38a3b4b2f666b9f341e10a2cffd2450f41e"
+    },
+    {
+      "path": "bin/ffmpeg.exe",
+      "size": 545792,
+      "sha256": "4caf01e0dd9f3ed54718c073ac6d792a4da3308420c9ed7d1f5ecdab12eeeefe"
+    },
+    {
+      "path": "bin/swresample-6.dll",
+      "size": 722944,
+      "sha256": "4d49b64a208ad664d80eb00c9f71ea136accc216ced0e14d09eedb1e1d7be9d7"
+    },
+    {
+      "path": "bin/swscale-9.dll",
+      "size": 12736000,
+      "sha256": "a0deb54898ebd960e50c3cd57df54feadf98229859a0259971e351925aba8e2d"
+    },
+    {
+      "path": "LICENSE.txt",
+      "size": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "path": "README.txt",
+      "size": 884,
+      "sha256": "23f8864a837eeb349bab384a0ea81e445c49273e5ff7c9a1062db369ecd5cf1a"
+    }
+  ],
+  "license_classification": "BLOCKED UNTIL IMMUTABLE SOURCE/ARTIFACT LOCK AND EXTERNAL LIB REVIEW",
+  "source_url": "PENDING - corresponding source package required",
+  "source_archive_sha256": "PENDING",
+  "audit_status": "NOT READY - LICENSE BLOCKERS",
+  "findings": [
+    {
+      "severity": "review",
+      "code": "enable-version3",
+      "message": "Version-3 code path enabled; verify LGPLv3/GPLv3 obligations."
+    },
+    {
+      "severity": "review",
+      "code": "enable-libvpx",
+      "message": "External codec library; include license and patent review."
+    },
+    {
+      "severity": "review",
+      "code": "enable-libopus",
+      "message": "External codec library; include license and patent review."
+    },
+    {
+      "severity": "review",
+      "code": "enable-libvorbis",
+      "message": "External codec library; include license and patent review."
+    },
+    {
+      "severity": "review",
+      "code": "enable-libdav1d",
+      "message": "External codec library; include license and patent review."
+    },
+    {
+      "severity": "review",
+      "code": "enable-libsvtav1",
+      "message": "External codec library; include license and patent review."
+    },
+    {
+      "severity": "review",
+      "code": "enable-libaom",
+      "message": "External codec library; include license and patent review."
+    },
+    {
+      "severity": "review",
+      "code": "enable-libass",
+      "message": "External subtitle library; include license and dependencies."
+    },
+    {
+      "severity": "high",
+      "code": "master-latest-reference",
+      "message": "FFmpeg is still documented as master-latest; replace with immutable artifact or reproducible source build before release."
+    }
+  ]
+}

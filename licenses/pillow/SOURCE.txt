@@ -1,0 +1,3 @@
+Package: Pillow
+Version: 12.2.0
+Source: Release notes, https://pillow.readthedocs.io/en/stable/releasenotes/index.html

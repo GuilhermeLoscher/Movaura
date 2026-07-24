@@ -1,0 +1,119 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "Movaura technical SBOM",
+  "documentNamespace": "https://movaura.local/spdx/20260724135752",
+  "creationInfo": {
+    "created": "2026-07-24T13:57:52Z",
+    "creators": [
+      "Tool: Movaura license compliance scripts"
+    ]
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Package-altgraph",
+      "name": "altgraph",
+      "versionInfo": "0.17.5",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "downloadLocation": "https://altgraph.readthedocs.io"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-packaging",
+      "name": "packaging",
+      "versionInfo": "26.2",
+      "licenseConcluded": "UNKNOWN",
+      "licenseDeclared": "UNKNOWN",
+      "downloadLocation": "Documentation, https://packaging.pypa.io/"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-pefile",
+      "name": "pefile",
+      "versionInfo": "2024.8.26",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "downloadLocation": "https://github.com/erocarrera/pefile"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-pillow",
+      "name": "pillow",
+      "versionInfo": "12.2.0",
+      "licenseConcluded": "UNKNOWN",
+      "licenseDeclared": "UNKNOWN",
+      "downloadLocation": "Release notes, https://pillow.readthedocs.io/en/stable/releasenotes/index.html"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-pyinstaller",
+      "name": "pyinstaller",
+      "versionInfo": "6.20.0",
+      "licenseConcluded": "GPLv2-or-later with a special exception which allows to use PyInstaller to build and distribute non-free programs (including commercial ones)",
+      "licenseDeclared": "GPLv2-or-later with a special exception which allows to use PyInstaller to build and distribute non-free programs (including commercial ones)",
+      "downloadLocation": "Homepage, https://pyinstaller.org"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-pyinstaller-hooks-contrib",
+      "name": "pyinstaller-hooks-contrib",
+      "versionInfo": "2026.5",
+      "licenseConcluded": "OSI Approved :: Apache Software License; OSI Approved :: GNU General Public License v2 (GPLv2)",
+      "licenseDeclared": "OSI Approved :: Apache Software License; OSI Approved :: GNU General Public License v2 (GPLv2)",
+      "downloadLocation": "https://github.com/pyinstaller/pyinstaller-hooks-contrib"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-PySide6",
+      "name": "PySide6",
+      "versionInfo": "6.10.0",
+      "licenseConcluded": "LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "licenseDeclared": "LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "downloadLocation": "Homepage, https://pyside.org"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-PySide6_Addons",
+      "name": "PySide6_Addons",
+      "versionInfo": "6.10.0",
+      "licenseConcluded": "LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "licenseDeclared": "LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "downloadLocation": "Homepage, https://pyside.org"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-PySide6_Essentials",
+      "name": "PySide6_Essentials",
+      "versionInfo": "6.10.0",
+      "licenseConcluded": "LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "licenseDeclared": "LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "downloadLocation": "Homepage, https://pyside.org"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-pywin32",
+      "name": "pywin32",
+      "versionInfo": "311",
+      "licenseConcluded": "PSF",
+      "licenseDeclared": "PSF",
+      "downloadLocation": "Homepage, https://github.com/mhammond/pywin32"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-pywin32-ctypes",
+      "name": "pywin32-ctypes",
+      "versionInfo": "0.2.3",
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "downloadLocation": "https://github.com/enthought/pywin32-ctypes"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-setuptools",
+      "name": "setuptools",
+      "versionInfo": "82.0.1",
+      "licenseConcluded": "UNKNOWN",
+      "licenseDeclared": "UNKNOWN",
+      "downloadLocation": "Source, https://github.com/pypa/setuptools"
+    },
+    {
+      "SPDXID": "SPDXRef-Package-shiboken6",
+      "name": "shiboken6",
+      "versionInfo": "6.10.0",
+      "licenseConcluded": "LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "licenseDeclared": "LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only",
+      "downloadLocation": "Homepage, https://pyside.org"
+    }
+  ]
+}

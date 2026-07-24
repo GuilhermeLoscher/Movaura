@@ -1,40 +1,22 @@
 # FFmpeg build lock
 
-Status: `PARTIAL - NOT STORE FINAL`
+Status: NOT READY - LICENSE BLOCKERS.
 
-## Bundled binary
+The current package still needs an immutable FFmpeg artifact/source lock before commercial release.
 
-- Path: `tools/ffmpeg/bin/ffmpeg.exe`
-- Observed version: `N-124986-g631ac6d055-20260612`
-- Configuration includes:
-  - `--enable-shared`
-  - `--disable-static`
-  - `--disable-libx264`
-  - `--disable-libx265`
+- Version: N-124986-g631ac6d055-20260612
+- Commit: 631ac6d055
+- Archive SHA-256: PENDING
+- Audit status: NOT READY - LICENSE BLOCKERS
 
-## Current technical audit
+See `third_party/ffmpeg/LOCK.json` and `release/compliance/ffmpeg/ffmpeg-audit.json`.
 
-The script `scripts/audit_ffmpeg.py` validates:
+## Official sources checked
 
-- `ffmpeg.exe -version`;
-- blocked flags:
-  - `--enable-gpl`
-  - `--enable-nonfree`
-  - `--enable-libx264`
-  - `--enable-libx265`
-- required flags:
-  - `--enable-shared`
-  - `--disable-static`
-  - `--disable-libx264`
-  - `--disable-libx265`
-- SHA-256 hashes of files in `tools/ffmpeg`.
+- FFmpeg legal/license documentation: https://ffmpeg.org/legal.html
+- FFmpeg license documentation snapshot: https://ffmpeg.org/doxygen/7.0/md_LICENSE.html
 
-## Missing for final Store submission
+## Release blocker
 
-- exact upstream ZIP/source archive URL;
-- SHA-256 of original downloaded archive;
-- immutable vendor release identifier;
-- source offer/link reviewed by legal counsel;
-- confirmation that every enabled external library is compatible with the intended commercial distribution.
-
-Status cannot be raised above `READY FOR PARTNER CENTER IDENTITY` until FFmpeg is fully locked and legally reviewed.
+The current audit found a real FFmpeg binary and recorded its configuration and file hashes, but the original archive URL, original archive SHA-256, provider commit and corresponding source archive are still pending.
+The current `master-latest` reference is not acceptable for a final commercial release because it is not an immutable provenance lock.

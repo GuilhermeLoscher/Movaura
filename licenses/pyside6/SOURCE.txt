@@ -1,1 +1,3 @@
-https://doc.qt.io/qtforpython-6
+Package: PySide6
+Version: 6.10.0
+Source: Homepage, https://pyside.org

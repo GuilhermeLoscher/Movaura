@@ -129,6 +129,10 @@ $pyinstallerArgs = @(
 if (Test-Path -LiteralPath $licenses) {
     $pyinstallerArgs += @("--add-data", "$licenses;licenses")
 }
+$thirdPartyNotice = Join-Path $root "THIRD_PARTY_NOTICES.txt"
+if (Test-Path -LiteralPath $thirdPartyNotice) {
+    $pyinstallerArgs += @("--add-data", "$thirdPartyNotice;.")
+}
 if (Test-Path -LiteralPath (Join-Path $tools "ffmpeg\bin\ffmpeg.exe")) {
     $ffmpegRoot = Join-Path $tools "ffmpeg"
     $ffmpegExe = Join-Path $ffmpegRoot "bin\ffmpeg.exe"

@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Qt, QUrl, Signal
+from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import (
     QCheckBox,
     QColorDialog,
@@ -20,6 +21,7 @@ from PySide6.QtWidgets import (
     QPushButton,
     QSlider,
     QSpinBox,
+    QTextEdit,
     QVBoxLayout,
 )
 
@@ -31,7 +33,63 @@ from core.monitor_profile_manager import MonitorProfileManager
 from core.scene_package import ScenePackageManager
 from core.scene_layers import BLEND_MODES, normalize_layers, primary_background, primary_effect
 from core.scene_presets import ScenePresetManager
+from core.runtime_paths import resource_root
+from core.version import APP_AUTHOR, APP_VERSION
 from core.wallpaper_library import WallpaperLibrary
+
+
+class ThirdPartyLicensesDialog(QDialog):
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent)
+        self.setWindowTitle("Sobre e licenças")
+        self.resize(760, 560)
+        self.license_root = resource_root() / "licenses"
+        self.notice_path = resource_root() / "THIRD_PARTY_NOTICES.txt"
+
+        root = QVBoxLayout(self)
+        title = QLabel(f"Movaura {APP_VERSION}")
+        title.setStyleSheet("font-size: 18px; font-weight: 600;")
+        root.addWidget(title)
+        root.addWidget(QLabel(f"Copyright: {APP_AUTHOR}. Software proprietário com componentes de terceiros."))
+        root.addWidget(
+            QLabel(
+                "O EULA do Movaura não limita direitos concedidos por licenças de terceiros. "
+                "Os textos locais abaixo devem acompanhar o pacote."
+            )
+        )
+        self.text = QTextEdit()
+        self.text.setReadOnly(True)
+        self.text.setPlainText(self._notice_text())
+        root.addWidget(self.text, 1)
+
+        buttons = QHBoxLayout()
+        open_notice = QPushButton("Abrir aviso local")
+        open_folder = QPushButton("Abrir pasta de licenças")
+        close = QPushButton("Fechar")
+        open_notice.clicked.connect(self._open_notice)
+        open_folder.clicked.connect(self._open_folder)
+        close.clicked.connect(self.accept)
+        buttons.addWidget(open_notice)
+        buttons.addWidget(open_folder)
+        buttons.addStretch(1)
+        buttons.addWidget(close)
+        root.addLayout(buttons)
+
+    def _notice_text(self) -> str:
+        if self.notice_path.is_file():
+            return self.notice_path.read_text(encoding="utf-8", errors="replace")
+        return (
+            "THIRD_PARTY_NOTICES.txt não foi encontrado no pacote.\n"
+            "Isto deve ser corrigido antes de distribuição comercial."
+        )
+
+    def _open_notice(self) -> None:
+        if self.notice_path.is_file():
+            QDesktopServices.openUrl(QUrl.fromLocalFile(str(self.notice_path)))
+
+    def _open_folder(self) -> None:
+        if self.license_root.is_dir():
+            QDesktopServices.openUrl(QUrl.fromLocalFile(str(self.license_root)))
 
 
 class PlaylistDialog(QDialog):

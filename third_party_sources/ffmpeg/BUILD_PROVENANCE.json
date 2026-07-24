@@ -1,0 +1,5 @@
+{
+  "status": "PENDING",
+  "reason": "Current FFmpeg binary is not locked to an immutable source/archive provenance.",
+  "created_at_utc": "2026-07-24T13:57:52.856348+00:00"
+}

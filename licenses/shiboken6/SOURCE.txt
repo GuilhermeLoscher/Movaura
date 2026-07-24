@@ -1,1 +1,3 @@
-https://doc.qt.io/qtforpython/shiboken6
+Package: shiboken6
+Version: 6.10.0
+Source: Homepage, https://pyside.org

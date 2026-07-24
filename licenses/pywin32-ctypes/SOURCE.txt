@@ -1,0 +1,3 @@
+Package: pywin32-ctypes
+Version: 0.2.3
+Source: https://github.com/enthought/pywin32-ctypes

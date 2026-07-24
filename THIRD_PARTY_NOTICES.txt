@@ -1,0 +1,17 @@
+Third-party notices
+
+Status: REVIEW REQUIRED. This notice summarizes technical inventory and must be reviewed against official license texts.
+
+#Runtime components
+
+
+#Qt/PySide6 payload
+
+- Qt/PySide/Shiboken files inventoried: 189
+- See `docs/QT_MODULE_LICENSE_MATRIX.md` for per-file review status.
+
+#FFmpeg
+
+- FFmpeg is bundled for optional local video optimization.
+- Current status: NOT READY until immutable artifact/source lock and external library review are completed.
+- See `docs/FFMPEG_BUILD_LOCK.md` and `third_party/ffmpeg/LOCK.json`.

@@ -43,6 +43,10 @@ $pyinstallerArgs = @(
 if (Test-Path -LiteralPath $licenses) {
     $pyinstallerArgs += @("--add-data", "$licenses;licenses")
 }
+$thirdPartyNotice = Join-Path $root "THIRD_PARTY_NOTICES.txt"
+if (Test-Path -LiteralPath $thirdPartyNotice) {
+    $pyinstallerArgs += @("--add-data", "$thirdPartyNotice;.")
+}
 if (Test-Path -LiteralPath $catalogManifest) {
     $pyinstallerArgs += @("--add-data", "$catalogManifest;data")
 }

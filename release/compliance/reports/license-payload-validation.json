@@ -1,0 +1,41 @@
+{
+  "status": "failed",
+  "findings": [
+    {
+      "severity": "critical",
+      "path": "third_party\\ffmpeg\\LOCK.json",
+      "message": "FFmpeg lock field is incomplete: artifact_url"
+    },
+    {
+      "severity": "critical",
+      "path": "third_party\\ffmpeg\\LOCK.json",
+      "message": "FFmpeg lock field is incomplete: archive_sha256"
+    },
+    {
+      "severity": "critical",
+      "path": "third_party\\ffmpeg\\LOCK.json",
+      "message": "FFmpeg lock field is incomplete: source_url"
+    },
+    {
+      "severity": "critical",
+      "path": "third_party\\ffmpeg\\LOCK.json",
+      "message": "FFmpeg lock field is incomplete: source_archive_sha256"
+    },
+    {
+      "severity": "critical",
+      "path": "third_party\\ffmpeg\\LOCK.json",
+      "message": "FFmpeg lock still references master-latest"
+    },
+    {
+      "severity": "high",
+      "path": "licenses/ffmpeg/NOTICE.txt",
+      "message": "master-latest reference remains"
+    },
+    {
+      "severity": "high",
+      "path": "licenses/ffmpeg/SOURCE.txt",
+      "message": "master-latest reference remains"
+    }
+  ],
+  "note": "A failed status is expected until owner/legal decisions resolve FFmpeg, Qt, LGPL/MSIX and patent blockers."
+}

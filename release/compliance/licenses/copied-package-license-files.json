@@ -1,0 +1,121 @@
+[
+  {
+    "package": "PySide6",
+    "version": "6.10.0",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\pyside6-6.10.0.dist-info\\licenses\\LicenseRef-Qt-Commercial.txt",
+    "destination": "licenses\\pyside6\\LicenseRef-Qt-Commercial.txt",
+    "sha256": "4f54763ac0fe2abd8f7f8d8fe370a94a08ebf84786aa0b91045bd6628deb08a3"
+  },
+  {
+    "package": "PySide6_Addons",
+    "version": "6.10.0",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\pyside6_addons-6.10.0.dist-info\\licenses\\LicenseRef-Qt-Commercial.txt",
+    "destination": "licenses\\pyside6-addons\\LicenseRef-Qt-Commercial.txt",
+    "sha256": "4f54763ac0fe2abd8f7f8d8fe370a94a08ebf84786aa0b91045bd6628deb08a3"
+  },
+  {
+    "package": "PySide6_Essentials",
+    "version": "6.10.0",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\pyside6_essentials-6.10.0.dist-info\\licenses\\LicenseRef-Qt-Commercial.txt",
+    "destination": "licenses\\pyside6-essentials\\LicenseRef-Qt-Commercial.txt",
+    "sha256": "4f54763ac0fe2abd8f7f8d8fe370a94a08ebf84786aa0b91045bd6628deb08a3"
+  },
+  {
+    "package": "shiboken6",
+    "version": "6.10.0",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\shiboken6-6.10.0.dist-info\\licenses\\LicenseRef-Qt-Commercial.txt",
+    "destination": "licenses\\shiboken6\\LicenseRef-Qt-Commercial.txt",
+    "sha256": "4f54763ac0fe2abd8f7f8d8fe370a94a08ebf84786aa0b91045bd6628deb08a3"
+  },
+  {
+    "package": "pywin32",
+    "version": "311",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\adodbapi\\license.txt",
+    "destination": "licenses\\pywin32\\license.txt",
+    "sha256": "5ea2f23c7f00c3006bacf267183e816d8d4b6dc95ea57a4ddb0ff81de6d8719e"
+  },
+  {
+    "package": "pywin32",
+    "version": "311",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\pythonwin\\license.txt",
+    "destination": "licenses\\pywin32\\license.txt",
+    "sha256": "11d8462e134e8efe8f4bd52372292a72ff0b670753d2f49f71675eed0dbfd085"
+  },
+  {
+    "package": "pywin32",
+    "version": "311",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\win32\\license.txt",
+    "destination": "licenses\\pywin32\\license.txt",
+    "sha256": "11d8462e134e8efe8f4bd52372292a72ff0b670753d2f49f71675eed0dbfd085"
+  },
+  {
+    "package": "pywin32",
+    "version": "311",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\win32com\\License.txt",
+    "destination": "licenses\\pywin32\\License.txt",
+    "sha256": "c3bdfa1152a9b9d404ddc90b817e1b6945803879ac53a14d2dde30d677f883bd"
+  },
+  {
+    "package": "Pillow",
+    "version": "12.2.0",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\pillow-12.2.0.dist-info\\licenses\\LICENSE",
+    "destination": "licenses\\pillow\\LICENSE",
+    "sha256": "75bb81b58f9b39786eeb2e56a1eb829aae501042d49e1dc766ca187b6ce9656f"
+  },
+  {
+    "package": "pyinstaller",
+    "version": "6.20.0",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\pyinstaller-6.20.0.dist-info\\licenses\\COPYING.txt",
+    "destination": "licenses\\pyinstaller\\COPYING.txt",
+    "sha256": "dcf75fdb959db1e3b41c0f8505069d2ece781b5ec6b3d0a4d30975cfc6580245"
+  },
+  {
+    "package": "pyinstaller-hooks-contrib",
+    "version": "2026.5",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\pyinstaller_hooks_contrib-2026.5.dist-info\\licenses\\LICENSE",
+    "destination": "licenses\\pyinstaller-hooks-contrib\\LICENSE",
+    "sha256": "91d0baaff00773038e72c0a1fc9d5d2d38706b7a2b9c04f34296608f931b9cd0"
+  },
+  {
+    "package": "altgraph",
+    "version": "0.17.5",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\altgraph-0.17.5.dist-info\\LICENSE",
+    "destination": "licenses\\altgraph\\LICENSE",
+    "sha256": "6c194d6db0c64d45535d10c95142b9b0cda7b7dcc7f1ddee302b3d536f3dbe46"
+  },
+  {
+    "package": "packaging",
+    "version": "26.2",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\packaging-26.2.dist-info\\licenses\\LICENSE",
+    "destination": "licenses\\packaging\\LICENSE",
+    "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
+  },
+  {
+    "package": "packaging",
+    "version": "26.2",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\packaging-26.2.dist-info\\licenses\\LICENSE.APACHE",
+    "destination": "licenses\\packaging\\LICENSE.APACHE",
+    "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+  },
+  {
+    "package": "packaging",
+    "version": "26.2",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\packaging-26.2.dist-info\\licenses\\LICENSE.BSD",
+    "destination": "licenses\\packaging\\LICENSE.BSD",
+    "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
+  },
+  {
+    "package": "pefile",
+    "version": "2024.8.26",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\pefile-2024.8.26.dist-info\\LICENSE",
+    "destination": "licenses\\pefile\\LICENSE",
+    "sha256": "b44409c067c6da52bfb54bb6624fb11a7b52157c3a13ae1400232f8196e86ad3"
+  },
+  {
+    "package": "pywin32-ctypes",
+    "version": "0.2.3",
+    "source": "C:\\NovaWall\\.build-venv\\Lib\\site-packages\\pywin32_ctypes-0.2.3.dist-info\\LICENSE.txt",
+    "destination": "licenses\\pywin32-ctypes\\LICENSE.txt",
+    "sha256": "dfa83b3e2709adfcdb838d9ad55823ca674abb780e60563d9dd9544ccbf785e9"
+  }
+]

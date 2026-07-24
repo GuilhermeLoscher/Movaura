@@ -1,22 +1,35 @@
 # Final license audit
 
-Status: `NOT READY FOR FINAL STORE SUBMISSION`
+Status: NOT READY - LICENSE BLOCKERS
 
-## Completed
+This is a technical compliance preparation report, not legal advice.
 
-- Third-party notice summary exists in `docs/THIRD_PARTY_NOTICES.md`.
-- Component lock draft exists in `docs/THIRD_PARTY_COMPONENTS_LOCK.md`.
-- LGPL technical guide exists in `docs/LGPL_COMPLIANCE_GUIDE.md`.
-- FFmpeg audit script exists in `scripts/audit_ffmpeg.py`.
-- Build scripts include the `licenses/` directory in standalone when present.
+## Blockers
 
-## Gaps
+- FFmpeg immutable archive/source lock is pending.
+- FFmpeg external libraries require official per-library review.
+- Qt module licensing still requires official module-by-module confirmation.
+- LGPLv3 and MSIX replacement/relink strategy requires owner/legal decision.
+- Patent/codecs review requires territory-specific legal review.
 
-- Full license texts are not yet complete for every dependency.
-- FFmpeg is not locked to an immutable original archive hash.
-- Final artifact module inventory must be regenerated after final build.
-- No professional legal review has been recorded.
+## Evidence
 
-## Release decision
+- `release/compliance/`
+- `docs/audit-evidence/movaura-beta-baseline.json`
+- `third_party/ffmpeg/LOCK.json`
+- `THIRD_PARTY_NOTICES.txt`
 
-Current status: `READY FOR PARTNER CENTER IDENTITY`, not `READY FOR MANUAL STORE SUBMISSION`.
+## Official sources checked
+
+- Qt licensing: https://doc.qt.io/qt-6/licensing.html
+- Qt for Python commercial use: https://doc.qt.io/qtforpython-6.10/commercial/index.html
+- FFmpeg legal/license documentation: https://ffmpeg.org/legal.html
+- FFmpeg license documentation snapshot: https://ffmpeg.org/doxygen/7.0/md_LICENSE.html
+- MSIX package signing: https://learn.microsoft.com/en-us/windows/msix/package/signing-package-overview
+- MSIX package identity/runtime context: https://learn.microsoft.com/en-us/windows/msix/detect-package-identity
+- PyInstaller license: https://pyinstaller.org/en/stable/license.html
+
+## License text blocker
+
+The local PySide6 wheels did not expose full LGPL/GPL text files under names such as `LGPL*.txt` or `GPL*.txt` during this audit.
+Existing short notices must not be treated as complete license texts. Full official license texts and Qt third-party notices remain required before commercial publication.

@@ -1,1 +1,3 @@
-https://github.com/mhammond/pywin32
+Package: pywin32
+Version: 311
+Source: Homepage, https://github.com/mhammond/pywin32

@@ -1,47 +1,20 @@
 # Politica de privacidade - Movaura
 
-Ultima atualizacao: 12 de junho de 2026.
+Status: minuta tecnica para revisao juridica.
 
-Movaura e um aplicativo de wallpapers animados para Windows desenvolvido por Guilherme Loscher (GL).
+O Movaura processa wallpapers, configuracoes, biblioteca local, logs tecnicos e arquivos importados no computador do usuario.
 
-## Coleta de dados
-O Movaura nao envia automaticamente wallpapers pessoais, historico de uso ou diagnosticos para servidores externos.
+## Ativacao/licenciamento
+Builds que ativam licenciamento podem enviar chave, e-mail informado, nome informado e identificador tecnico de maquina ao servidor de ativacao configurado pelo proprietario. Builds sem licenciamento obrigatorio nao exigem esse envio.
 
-Builds com ativacao beta/licenciamento podem enviar ao servidor de ativacao configurado:
-- chave beta informada;
-- e-mail informado;
-- nome informado, quando preenchido;
-- identificador tecnico do computador em formato hash;
-- data de ativacao.
+## IA
+A versao atual usa provider mock/local. Nenhuma API real de IA foi integrada nesta tarefa.
 
-Esses dados sao usados para validar a chave de acesso e impedir uso duplicado indevido durante testes beta.
+## Telemetria
+Nao foi adicionada telemetria nesta tarefa. Qualquer telemetria futura deve ser opcional, documentada e revisada.
 
-## Dados salvos localmente
-O aplicativo pode salvar no computador do usuario:
-- configuracoes do app;
-- favoritos e biblioteca local;
-- perfis de desempenho;
-- cache de miniaturas;
-- copias otimizadas de videos importados;
-- relatorios de diagnostico gerados manualmente pelo usuario.
+## Logs
+Logs tecnicos ficam localmente para diagnostico e podem conter caminhos de arquivos locais. O usuario escolhe quando exportar relatorio de suporte.
 
-Esses dados ficam armazenados localmente, normalmente em `%LOCALAPPDATA%\Movaura`, e podem ser apagados pelo usuario ao desinstalar ou limpar os dados do aplicativo.
-
-## Diagnosticos
-Quando o usuario gera um relatorio de suporte, o arquivo pode conter informacoes tecnicas como versao do Windows, GPU detectada, monitores, caminho do compositor e mensagens de erro. O relatorio so e compartilhado se o proprio usuario enviar o arquivo.
-
-## Internet
-O Movaura pode acessar a internet apenas para recursos opcionais ou configurados, como ativacao beta, verificacao de atualizacao ou catalogo online. Wallpapers importados pelo usuario permanecem locais por padrao.
-
-## Terceiros
-O Movaura usa FFmpeg para otimizacao opcional de videos. As licencas e avisos ficam na pasta `licenses/ffmpeg`.
-
-Builds beta podem usar Supabase como servidor de ativacao, conforme configuracao do distribuidor.
-
-## Retencao e exclusao
-Dados locais ficam no computador do usuario, normalmente em `%LOCALAPPDATA%\Movaura`.
-
-Dados enviados para ativacao beta devem ser removidos ou expirados pelo operador do beta conforme a politica definida para o teste.
-
-## Contato
-Suporte: informe o canal oficial definido na pagina da Microsoft Store ou no site do produto.
+## Revisao
+Esta politica nao declara conformidade LGPD/GDPR automaticamente. Revisao juridica profissional e necessaria antes de publicacao comercial.
